@@ -16,10 +16,7 @@
 {{-- KeenIcons --}}
 <link href="{{ asset('assets/vendors/keenicons/styles.bundle.css') }}" rel="stylesheet"/>
 
-{{-- Metronic compiled CSS --}}
-<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet"/>
-
-{{-- Vite: custom additions + Tailwind scan --}}
+{{-- Vite: Metronic source CSS (config.ktui + KTUI + components + demo1) + Tailwind utilities --}}
 @vite('resources/css/app.css')
 
 @stack('styles')

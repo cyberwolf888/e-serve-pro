@@ -1,73 +1,136 @@
 {{-- auth/login.blade.php — FR-AUTH-01 / NFR-08 --}}
-@extends('layouts.guest')
+<!DOCTYPE html>
+<html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    @include('layouts.partials.head')
+    <title>Masuk — {{ config('app.name') }}</title>
+    <style>
+        .branded-bg { background-image: url('/assets/media/images/2600x1600/1.png'); }
+        .dark .branded-bg { background-image: url('/assets/media/images/2600x1600/1-dark.png'); }
+    </style>
+</head>
+<body class="antialiased flex h-full text-base text-foreground bg-background">
 
-@section('content')
-<div class="card shadow-sm">
-    <div class="card-body p-8">
+    <script>
+        const defaultThemeMode = 'light';
+        let themeMode;
+        if (document.documentElement) {
+            if (localStorage.getItem('kt-theme')) {
+                themeMode = localStorage.getItem('kt-theme');
+            } else if (document.documentElement.hasAttribute('data-kt-theme-mode')) {
+                themeMode = document.documentElement.getAttribute('data-kt-theme-mode');
+            } else {
+                themeMode = defaultThemeMode;
+            }
+            if (themeMode === 'system') {
+                themeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.classList.add(themeMode);
+        }
+    </script>
 
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-semibold text-foreground">Masuk ke Akun</h1>
-            <p class="text-sm text-secondary-foreground mt-1">Masukkan email dan kata sandi Anda</p>
+    <div class="grid lg:grid-cols-2 grow">
+
+        {{-- Form column --}}
+        <div class="flex justify-center items-center p-8 lg:p-10 order-2 lg:order-1">
+            <div class="kt-card max-w-[370px] w-full">
+                <form method="POST" action="{{ route('auth.login') }}" class="kt-card-content flex flex-col gap-5 p-10">
+                    @csrf
+
+                    <div class="text-center mb-2.5">
+                        <h3 class="text-lg font-medium text-mono leading-none mb-2.5">Masuk</h3>
+                        <div class="flex items-center justify-center font-medium">
+                            <span class="text-sm text-secondary-foreground me-1.5">Belum punya akun?</span>
+                            <a class="text-sm link" href="{{ route('auth.register.show') }}">Daftar</a>
+                        </div>
+                    </div>
+
+                    @if (session('status'))
+                        <div class="kt-alert kt-alert-success">{{ session('status') }}</div>
+                    @endif
+
+                    {{-- Email --}}
+                    <div class="flex flex-col gap-1">
+                        <label class="kt-form-label font-normal text-mono" for="email">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            value="{{ old('email') }}"
+                            placeholder="email@email.com"
+                            class="kt-input @error('email') border-destructive @enderror"
+                            required
+                            autofocus
+                        />
+                        @error('email')
+                            <p class="text-destructive text-xs">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center justify-between gap-1">
+                            <label class="kt-form-label font-normal text-mono" for="password">Kata Sandi</label>
+                            <a class="text-sm kt-link shrink-0" href="{{ route('auth.forgot.show') }}">Lupa kata sandi?</a>
+                        </div>
+                        <div class="kt-input" data-kt-toggle-password="true">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Masukkan kata sandi"
+                                autocomplete="current-password"
+                                required
+                            />
+                            <button class="kt-btn kt-btn-sm kt-btn-ghost kt-btn-icon bg-transparent! -me-1.5" data-kt-toggle-password-trigger="true" type="button">
+                                <span class="kt-toggle-password-active:hidden">
+                                    <i class="ki-filled ki-eye text-muted-foreground"></i>
+                                </span>
+                                <span class="hidden kt-toggle-password-active:block">
+                                    <i class="ki-filled ki-eye-slash text-muted-foreground"></i>
+                                </span>
+                            </button>
+                        </div>
+                        @error('password')
+                            <p class="text-destructive text-xs">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Remember me --}}
+                    <label class="kt-label">
+                        <input class="kt-checkbox kt-checkbox-sm" name="remember" type="checkbox" value="1"/>
+                        <span class="kt-checkbox-label">Ingat saya</span>
+                    </label>
+
+                    <button type="submit" class="kt-btn kt-btn-primary flex justify-center grow">
+                        Masuk
+                    </button>
+                </form>
+            </div>
         </div>
 
-        @if (session('status'))
-            <div class="alert alert-success mb-4">{{ session('status') }}</div>
-        @endif
-
-        <form method="POST" action="{{ route('auth.login') }}" class="space-y-5">
-            @csrf
-
-            {{-- Email --}}
-            <div>
-                <label class="form-label" for="email">Email</label>
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autocomplete="email"
-                    value="{{ old('email') }}"
-                    class="input @error('email') border-destructive @enderror"
-                    required
-                    autofocus
-                />
-                @error('email')
-                    <p class="text-destructive text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Password --}}
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label class="form-label mb-0" for="password">Kata Sandi</label>
-                    <a href="{{ route('auth.forgot.show') }}" class="text-xs text-primary hover:underline">Lupa kata sandi?</a>
+        {{-- Branded background column --}}
+        <div class="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-top xxl:bg-center xl:bg-cover bg-no-repeat branded-bg">
+            <div class="flex flex-col p-8 lg:p-16 gap-4">
+                <a href="{{ url('/') }}">
+                    <img class="h-[28px] max-w-none dark:hidden" src="{{ asset('assets/media/app/default-logo.svg') }}" alt="{{ config('app.name') }}"/>
+                    <img class="h-[28px] max-w-none hidden dark:block" src="{{ asset('assets/media/app/default-logo-dark.svg') }}" alt="{{ config('app.name') }}"/>
+                </a>
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-2xl font-semibold text-mono">Portal Pembelajaran</h3>
+                    <div class="text-base font-medium text-secondary-foreground">
+                        Platform pembelajaran Bahasa Indonesia<br/>
+                        berbasis <span class="text-mono font-semibold">Kurikulum Merdeka</span><br/>
+                        untuk guru dan siswa.
+                    </div>
                 </div>
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autocomplete="current-password"
-                    class="input"
-                    required
-                />
-                @error('password')
-                    <p class="text-destructive text-xs mt-1">{{ $message }}</p>
-                @enderror
             </div>
-
-            {{-- Remember --}}
-            <div class="flex items-center gap-2">
-                <input id="remember" name="remember" type="checkbox" class="checkbox" value="1"/>
-                <label for="remember" class="text-sm text-secondary-foreground">Ingat saya</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-full">Masuk</button>
-        </form>
-
-        <p class="text-center text-sm text-secondary-foreground mt-6">
-            Belum punya akun?
-            <a href="{{ route('auth.register.show') }}" class="text-primary hover:underline font-medium">Daftar sekarang</a>
-        </p>
+        </div>
 
     </div>
-</div>
-@endsection
+
+    <script src="{{ asset('assets/js/core.bundle.js') }}"></script>
+    @vite('resources/js/app.js')
+</body>
+</html>

@@ -3,6 +3,8 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
+const METRONIC_SRC = new URL('./resources/metronic', import.meta.url).pathname;
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -11,6 +13,11 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            '@metronic': METRONIC_SRC,
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

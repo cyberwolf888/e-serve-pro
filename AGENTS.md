@@ -77,6 +77,10 @@ php artisan octane:start     # M8 only
 - Octane stays **off** until M8 to avoid shared-state debugging noise. When enabling it, audit for request state in singletons/statics.
 - Never build features not in the PRD. If something's missing, ask.
 
+## Metronic Reference (before building views)
+
+Before creating any Blade components or views, inspect the Metronic demo HTML at `/Users/master/Projects/HTML-Templates/metronic-tailwind-html-demos/dist/html/demo1/`. Browse the relevant page or partial in the demo to match Metronic's exact markup, component classes, and layout structure — then replicate it in Blade. Do not guess Metronic HTML patterns; use the demo as the source of truth.
+
 ## Definition of Done (per requirement)
 
 1. Code implemented and tagged with its PRD ID.

@@ -1,5 +1,17 @@
-/* NFR-08 — custom additions on top of pre-built Metronic styles.css */
+/* NFR-08 — Metronic 9.5.0 source integration via Vite */
 @import 'tailwindcss';
+
+/* Metronic theme tokens (CSS custom properties + @theme inline mapping) */
+@import '@metronic/css/config.ktui.css';
+
+/* KTUI component styles */
+@import '@keenthemes/ktui/styles.css';
+
+/* Metronic component overrides (apexcharts, menu, scrollable, etc.) */
+@import '@metronic/css/components/index.css';
+
+/* Demo1 layout (sidebar + header dimensions, transitions) */
+@import '@metronic/css/demos/demo1.css';
 
 /* Scan Blade templates so custom utility classes are not purged */
 @source '../../resources/views/**/*.blade.php';
