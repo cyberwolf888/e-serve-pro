@@ -8,6 +8,20 @@ use App\Models\User;
 
 class LoginTest extends AuthTestCase
 {
+    // NFR-03: HTTPS pages must not generate mixed-content asset or form URLs.
+    public function test_login_page_generates_https_urls_behind_a_tls_proxy(): void
+    {
+        $this->withHeaders([
+            'X-Forwarded-Proto' => 'https',
+            'X-Forwarded-Host' => 'bi-pro-smart.test',
+            'X-Forwarded-Port' => '443',
+        ])->get(route('auth.login.show', absolute: false))
+            ->assertOk()
+            ->assertSee('https://bi-pro-smart.test/assets/css/styles.css', false)
+            ->assertSee('https://bi-pro-smart.test/assets/js/core.bundle.js', false)
+            ->assertSee('https://bi-pro-smart.test/login', false);
+    }
+
     // Happy path: siswa login redirects to siswa dashboard
     public function test_siswa_can_login(): void
     {

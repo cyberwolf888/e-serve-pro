@@ -35,24 +35,24 @@
 
 ## M1 — Auth & RBAC
 
-- [ ] Migration `users` with all columns incl. `is_active`, `created_by` (no custom `role` column). `[DATA-01]`
-- [ ] Install `spatie/laravel-permission`, publish config/migrations. `[§3.1, §4]`
-- [ ] Run Spatie permission migrations: `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions`. `[DATA-18..22]`
-- [ ] Migration `password_reset_tokens` (standard). `[DATA-17]`
-- [ ] Migration `activity_logs`. `[DATA-16]`
-- [ ] Add `HasRoles` to `User` and use the `web` guard for role assignment/checks. `[§3.1]`
-- [ ] Seed fixed roles `super_admin`, `guru`, `siswa`; seed baseline permissions mapped from §3.2. `[§3.1, §3.2]`
-- [ ] Login (email+password) for all roles + logout. `[FR-AUTH-01, FR-AUTH-05]`
-- [ ] Siswa self-registration (assign role `siswa`, is_active=1). `[FR-AUTH-02]`
-- [ ] Block guru/admin self-registration at the public route. `[FR-AUTH-03]`
-- [ ] Enforce unique email across all users. `[FR-AUTH-06]`
-- [ ] Forgot/reset password via emailed token, queued mail, SMTP configured. `[FR-AUTH-04, BR-02]`
-- [ ] Passwords hashed (bcrypt/argon2). `[FR-AUTH-05, NFR-03]`
-- [ ] Spatie `role` middleware (`role:super_admin|guru|siswa`) + route groups. `[§3.2]`
-- [ ] Scaffold one Policy per model for `OWN` and read-only checks (empty methods now, filled per milestone). `[§3.2]`
-- [ ] Write login/logout events to `activity_logs`. `[BR-06]`
-- [ ] Role-based post-login redirect to each dashboard.
-- [ ] **Gate M1:** siswa self-register + login; guru self-register rejected; super_admin creates+logs-in guru; password reset email works; login events logged. `[§11 Auth scenarios]`
+- [x] Migration `users` with all columns incl. `is_active`, `created_by` (no custom `role` column). `[DATA-01]`
+- [x] Install `spatie/laravel-permission`, publish config/migrations. `[§3.1, §4]`
+- [x] Run Spatie permission migrations: `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions`. `[DATA-18..22]`
+- [x] Migration `password_reset_tokens` (standard). `[DATA-17]`
+- [x] Migration `activity_logs`. `[DATA-16]`
+- [x] Add `HasRoles` to `User` and use the `web` guard for role assignment/checks. `[§3.1]`
+- [x] Seed fixed roles `super_admin`, `guru`, `siswa`; seed baseline permissions mapped from §3.2. `[§3.1, §3.2]`
+- [x] Login (email+password) for all roles + logout. `[FR-AUTH-01, FR-AUTH-05]`
+- [x] Siswa self-registration (assign role `siswa`, is_active=1). `[FR-AUTH-02]`
+- [x] Block guru/admin self-registration at the public route. `[FR-AUTH-03]`
+- [x] Enforce unique email across all users. `[FR-AUTH-06]`
+- [x] Forgot/reset password via emailed token, queued mail, SMTP configured. `[FR-AUTH-04, BR-02]`
+- [x] Passwords hashed (bcrypt/argon2). `[FR-AUTH-05, NFR-03]`
+- [x] Spatie `role` middleware (`role:super_admin|guru|siswa`) + route groups. `[§3.2]`
+- [x] Scaffold one Policy per model for `OWN` and read-only checks (empty methods now, filled per milestone). `[§3.2]`
+- [x] Write login/logout events to `activity_logs`. `[BR-06]`
+- [x] Role-based post-login redirect to each dashboard.
+- [x] **Gate M1:** siswa self-register + login; guru self-register rejected; super_admin creates+logs-in guru; password reset email works; login events logged. `[§11 Auth scenarios]`
 
 ---
 
@@ -139,7 +139,7 @@
 
 ## M8 — Hardening & Octane
 
-- [ ] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`
+- [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`
 - [ ] Audit for shared-state leaks (no request state in singletons/statics; rebind stateful services). `[§4]`
 - [ ] Performance pass — page load < 2 s, TTFB target < 300 ms. `[NFR-01]`
 - [ ] Security review — HTTPS, CSRF/XSS/SQLi defaults, RBAC coverage on every route. `[NFR-03]`
