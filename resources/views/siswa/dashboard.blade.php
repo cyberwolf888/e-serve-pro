@@ -1,0 +1,9 @@
+{{-- siswa/dashboard.blade.php — FR-SW-02 / FR-SW-06 / NFR-08 --}}
+@extends('layouts.app')
+
+@section('content')
+<div class="py-6">
+    <h1 class="text-2xl font-semibold text-foreground mb-2">Dashboard Siswa</h1>
+    <p class="text-secondary-foreground text-sm">Selamat datang, {{ auth()->user()->name }}.</p>
+</div>
+@endsection

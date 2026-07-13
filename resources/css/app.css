@@ -1,0 +1,6 @@
+/* NFR-08 — custom additions on top of pre-built Metronic styles.css */
+@import 'tailwindcss';
+
+/* Scan Blade templates so custom utility classes are not purged */
+@source '../../resources/views/**/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
