@@ -40,6 +40,9 @@
 
             {{-- Content --}}
             <main class="grow pt-5" id="content" role="main">
+                {{-- Reparent target for breadcrumb on mobile --}}
+                <div class="kt-container-fixed" id="contentContainer"></div>
+
                 <div class="kt-container-fixed">
                     @yield('content')
                 </div>

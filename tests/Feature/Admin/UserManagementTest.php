@@ -74,6 +74,44 @@ class UserManagementTest extends TestCase
         $this->actingAs($admin)->get(route('admin.users.index'))->assertOk();
     }
 
+    // FR-SA-02: status filter and created date sorting apply server-side.
+    public function test_admin_can_filter_users_by_status_and_sort_by_creation_date(): void
+    {
+        $admin = $this->admin();
+        $active = $this->guru();
+        $inactive = $this->siswa();
+        $inactive->update(['is_active' => false]);
+
+        $this->actingAs($admin)->get(route('admin.users.index', ['status' => 'inactive']))
+            ->assertSee($inactive->email)
+            ->assertDontSee($active->email);
+
+        $this->actingAs($admin)->get(route('admin.users.index', ['sort' => 'oldest']))
+            ->assertSeeInOrder([$active->email, $inactive->email]);
+    }
+
+    // NFR-08: flash alerts on user index auto-dismiss after 5 seconds
+    public function test_flash_alert_has_auto_dismiss_script(): void
+    {
+        $admin = $this->admin();
+
+        $response = $this->actingAs($admin)
+            ->from(route('admin.users.index'))
+            ->post(route('admin.users.store'), [
+                'name' => 'Guru Alert',
+                'email' => 'guru.alert@test.com',
+                'role' => 'guru',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $this->followRedirects($response)
+            ->assertSee('data-auto-dismiss')
+            ->assertSee('setTimeout')
+            ->assertSee('5000');
+    }
+
     // Super admin itself not in the list (excluded by repo)
     public function test_super_admin_not_in_list(): void
     {

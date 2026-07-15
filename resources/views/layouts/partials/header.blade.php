@@ -19,10 +19,8 @@
             </div>
         </div>
 
-        {{-- Page Breadcrumb / Title slot --}}
-        <div class="flex items-center gap-4 grow">
-            @yield('header_title')
-        </div>
+        {{-- Breadcrumbs --}}
+        @yield('breadcrumb')
 
         {{-- Topbar Right --}}
         <div class="flex items-center gap-2 lg:gap-3.5">

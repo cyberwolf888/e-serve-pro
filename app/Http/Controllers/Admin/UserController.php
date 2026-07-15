@@ -12,6 +12,7 @@ use App\Repositories\UserRepository;
 use App\Services\ReadOnlyGuard;
 use App\Services\UserAdminService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -22,11 +23,15 @@ class UserController extends Controller
     ) {}
 
     /** GET /admin/users — FR-SA-02 */
-    public function index(): View
+    public function index(Request $request): View
     {
         $this->authorize('viewAny', User::class);
 
-        $users = $this->repo->paginate();
+        $filters = $request->validate([
+            'status' => ['nullable', 'in:active,inactive'],
+            'sort' => ['nullable', 'in:newest,oldest'],
+        ]);
+        $users = $this->repo->getAll($filters['status'] ?? null, $filters['sort'] ?? 'newest');
 
         return view('admin.users.index', compact('users'));
     }

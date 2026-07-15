@@ -5,6 +5,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository
@@ -16,6 +17,17 @@ class UserRepository
             ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'super_admin'))
             ->latest()
             ->paginate($perPage);
+    }
+
+    /** Full (unpaginated) filtered list for client-side datatable. FR-SA-02 */
+    public function getAll(?string $status = null, string $sort = 'newest'): Collection
+    {
+        // ponytail: loads all non-admin users at once; switch to paginate() + AJAX if >5k users
+        return User::with(['roles', 'createdBy'])
+            ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'super_admin'))
+            ->when($status, fn ($query) => $query->where('is_active', $status === 'active'))
+            ->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc')
+            ->get();
     }
 
     public function create(array $data): User

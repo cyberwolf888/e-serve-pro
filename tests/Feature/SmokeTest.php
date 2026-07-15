@@ -8,6 +8,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class SmokeTest extends TestCase
@@ -38,9 +39,23 @@ class SmokeTest extends TestCase
             ->assertSee('core.bundle.js', false);
     }
 
-    /** @test — failure path: unknown route returns 404 */
+    /** @test — failure path: unknown route renders the custom 404 page */
     public function test_unknown_route_returns_404(): void
     {
-        $this->get('/this-route-does-not-exist')->assertStatus(404);
+        $this->get('/this-route-does-not-exist')
+            ->assertNotFound()
+            ->assertSee('Halaman tidak ditemukan')
+            ->assertSee('illustrations/19.svg', false);
+    }
+
+    /** @test — failure path: server errors render the custom 500 page */
+    public function test_server_error_renders_custom_500_page(): void
+    {
+        Route::get('/test-server-error', fn () => abort(500));
+
+        $this->get('/test-server-error')
+            ->assertStatus(500)
+            ->assertSee('Terjadi kesalahan pada server')
+            ->assertSee('illustrations/20.svg', false);
     }
 }

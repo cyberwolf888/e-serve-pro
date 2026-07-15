@@ -63,12 +63,7 @@
 
 {{-- Password --}}
 <div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-    <label class="kt-form-label max-w-56" for="password">
-        Kata Sandi
-        @if ($isEdit ?? false)
-            <span class="block text-xs font-normal text-secondary-foreground mt-0.5">Kosongkan jika tidak diubah</span>
-        @endif
-    </label>
+    <label class="kt-form-label max-w-56" for="password">Kata Sandi</label>
     <div class="grow">
         <div class="kt-input @error('password') border-destructive @enderror" data-kt-toggle-password="true">
             <input
@@ -87,6 +82,9 @@
                 </span>
             </button>
         </div>
+        @if ($isEdit ?? false)
+            <p class="text-xs text-secondary-foreground mt-1">Kosongkan jika tidak diubah</p>
+        @endif
         @error('password')
             <p class="text-destructive text-xs mt-1">{{ $message }}</p>
         @enderror

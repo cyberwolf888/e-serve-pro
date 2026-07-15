@@ -1,6 +1,10 @@
 {{-- siswa/dashboard.blade.php — FR-SW-02 / FR-SW-06 / NFR-08 --}}
 @extends('layouts.app')
 
+@section('breadcrumb')
+    <x-breadcrumb :items="[['label' => 'Dashboard']]" />
+@endsection
+
 @section('content')
 <div class="py-6">
     <h1 class="text-2xl font-semibold text-foreground mb-2">Dashboard Siswa</h1>
