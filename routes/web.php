@@ -1,7 +1,8 @@
 <?php
 
-// §8 — Route map / M1 Auth & RBAC
+// §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -37,7 +38,10 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // ─── Super Admin ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
-    // FR-SA-* routes added in M2+
+
+    // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
+    Route::resource('users', AdminUserController::class)->except(['destroy']);
+    Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
 });
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────

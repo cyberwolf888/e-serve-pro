@@ -58,13 +58,13 @@
 
 ## M2 — Users Admin & Read-only Guard
 
-- [ ] Super Admin user CRUD (create guru, edit, delete, deactivate). `[FR-SA-02]`
-- [ ] Guru creation sets `created_by = auth id`, assigns role `guru`. `[DATA-01, FR-AUTH-03]`
-- [ ] Deactivate = set `is_active=0`, never hard-delete. `[BR-05]`
-- [ ] Shared **read-only guard** (middleware/policy) rejecting (403) writes on records owned by inactive users. `[BR-05, NFR-09]`
-- [ ] UserPolicy: only super_admin manages users. `[§3.2]`
-- [ ] Validation for admin user store (name/email unique/role in [guru]/password min:8). `[§9]`
-- [ ] **Gate M2:** deactivating a guru retains data, blocks writes (403), deletes nothing. `[§11 Deactivation scenario]`
+- [x] Super Admin user CRUD (create guru, edit, delete, deactivate). `[FR-SA-02]`
+- [x] Guru creation sets `created_by = auth id`, assigns role `guru`. `[DATA-01, FR-AUTH-03]`
+- [x] Deactivate = set `is_active=0`, never hard-delete. `[BR-05]`
+- [x] Shared **read-only guard** (middleware/policy) rejecting (403) writes on records owned by inactive users. `[BR-05, NFR-09]`
+- [x] UserPolicy: only super_admin manages users. `[§3.2]`
+- [x] Validation for admin user store (name/email unique/role in [guru,siswa]/password min:8). `[§9]`
+- [x] **Gate M2:** deactivating a guru retains data, blocks writes (403), deletes nothing. `[§11 Deactivation scenario]`
 
 ---
 

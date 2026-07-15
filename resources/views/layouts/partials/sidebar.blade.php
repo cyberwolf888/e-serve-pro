@@ -57,6 +57,27 @@
                 {{-- Role-specific nav items will be @include'd here in M1 --}}
                 @stack('sidebar_nav')
 
+                {{-- Super Admin nav — FR-SA-02 / M2 --}}
+                @role('super_admin')
+                <div class="kt-menu-item pt-2">
+                    <span class="kt-menu-heading text-xs font-semibold text-secondary-foreground uppercase tracking-wider ps-[10px]">Admin</span>
+                </div>
+                <div class="kt-menu-item {{ request()->routeIs('admin.users.*') ? 'kt-menu-item-active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('admin.users.index') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]">
+                            <i class="ki-filled ki-profile-circle text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Pengguna
+                        </span>
+                    </a>
+                </div>
+                @endrole
+
             </div>
             {{-- End Sidebar Menu --}}
         </div>
