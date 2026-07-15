@@ -32,4 +32,16 @@ class SchoolClass extends Model
     {
         return $this->hasMany(ClassMember::class, 'class_id');
     }
+
+    // DATA-04 / M4
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class, 'class_id');
+    }
+
+    // DATA-05 / M4
+    public function meetings(): HasMany
+    {
+        return $this->hasMany(Meeting::class, 'class_id');
+    }
 }

@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Material;
+use App\Models\Meeting;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Policies\MaterialPolicy;
+use App\Policies\MeetingPolicy;
 use App\Policies\SchoolClassPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -18,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
         // §3.2 — UserPolicy
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(SchoolClass::class, SchoolClassPolicy::class);
+        // M4
+        Gate::policy(Material::class, MaterialPolicy::class);
+        Gate::policy(Meeting::class, MeetingPolicy::class);
 
         // FR-SA-04 / BR-06
         Gate::define(

@@ -85,18 +85,18 @@
 
 ## M4 — Materials, Meetings & Attendance
 
-- [ ] Migration `materials` (type figma|file, figma_url, file_path, file_size_kb). `[DATA-04]`
-- [ ] Migration `meetings`. `[DATA-05]`
-- [ ] Migration `meeting_materials` UNIQUE(meeting_id, material_id). `[DATA-06]`
-- [ ] Migration `attendances` UNIQUE(meeting_id, student_id), status enum. `[DATA-07]`
-- [ ] Material via Figma link. `[FR-GR-04]`
-- [ ] Material via PDF upload — validate `mimes:pdf`, `max:20480` KB, store size. `[FR-GR-05, BR-04, §9]`
-- [ ] Meeting CRUD per class (title, scheduled_at). `[FR-GR-06]`
-- [ ] Record attendance per meeting (hadir/izin/sakit/alfa). `[FR-GR-07]`
-- [ ] Share materials to a meeting. `[FR-GR-08]`
-- [ ] Siswa views meetings + accesses shared materials of joined classes only. `[FR-SW-04, §3.2]`
-- [ ] Log attendance events. `[BR-06]`
-- [ ] **Gate M4:** non-PDF/oversized upload rejected; valid PDF saved; attendance recorded & logged. `[§11 Materials scenarios]`
+- [x] Migration `materials` (type figma|file, figma_url, file_path, file_size_kb). `[DATA-04]`
+- [x] Migration `meetings`. `[DATA-05]`
+- [x] Migration `meeting_materials` UNIQUE(meeting_id, material_id). `[DATA-06]`
+- [x] Migration `attendances` UNIQUE(meeting_id, student_id), status enum. `[DATA-07]`
+- [x] Material via Figma link. `[FR-GR-04]`
+- [x] Material via PDF upload — validate `mimes:pdf`, `max:20480` KB, store size. `[FR-GR-05, BR-04, §9]`
+- [x] Meeting CRUD per class (title, scheduled_at). `[FR-GR-06]`
+- [x] Record attendance per meeting (hadir/izin/sakit/alfa). `[FR-GR-07]`
+- [x] Share materials to a meeting. `[FR-GR-08]`
+- [x] Siswa views meetings + accesses shared materials of joined classes only. `[FR-SW-04, §3.2]`
+- [x] Log attendance events. `[BR-06]`
+- [x] **Gate M4:** non-PDF/oversized upload rejected; valid PDF saved; attendance recorded & logged. `[§11 Materials scenarios]`
 
 ---
 
@@ -169,6 +169,7 @@
 - [ ] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? `[§13]`
 - [ ] **Q3** Recap export format — CSV / XLSX / PDF? *(default: XLSX)* `[§13]`
 - [ ] **Q4** Extra required `siswa` fields (e.g. NIS / student ID)? `[§13]`
+- [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(decided: deferred — Guru+Siswa only this milestone; MaterialPolicy/MeetingPolicy already grant super_admin ✅ per §3.2, so a future Admin\* controller can reuse them without policy changes)*
 
 ---
 

@@ -8,7 +8,11 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
+use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
+use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
+use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +44,11 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // ponytail: GET fallback for stray reload/back-button hits on /logout, avoids 405
 Route::get('/logout', fn () => redirect()->route('auth.login.show'))->middleware('auth');
 
+// FR-GR-05 / FR-SW-04 / §3.2 — shared download, authorized via MaterialPolicy (any role)
+Route::get('/materials/{material}/download', MaterialDownloadController::class)
+    ->middleware('auth')
+    ->name('materials.download');
+
 // ─── Super Admin ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
@@ -57,6 +66,20 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::resource('classes', GuruSchoolClassController::class)->except(['show']);
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
+
+    // FR-GR-04 / FR-GR-05 / BR-04
+    Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
+
+    // FR-GR-06 / FR-GR-08
+    Route::resource('classes.meetings', GuruMeetingController::class);
+    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
+        ->name('classes.meetings.share');
+
+    // FR-GR-07
+    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
+        ->name('classes.meetings.attendance.edit');
+    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
+        ->name('classes.meetings.attendance.store');
 });
 
 // ─── Siswa ────────────────────────────────────────────────────────────────────
