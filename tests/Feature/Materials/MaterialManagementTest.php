@@ -64,6 +64,7 @@ class MaterialManagementTest extends TestCase
         $this->actingAs($guru)->post(route('guru.classes.materials.store', $class), [
             'title' => 'Modul Bab 1',
             'type' => 'file',
+            'figma_url' => '',
             'file' => $file,
         ])->assertRedirect(route('guru.classes.materials.index', $class));
 
@@ -80,11 +81,11 @@ class MaterialManagementTest extends TestCase
         $class = $this->schoolClass($guru);
         $file = UploadedFile::fake()->create('materi.docx', 100, 'application/msword');
 
-        $this->actingAs($guru)->post(route('guru.classes.materials.store', $class), [
+        $this->followingRedirects()->actingAs($guru)->from(route('guru.classes.materials.create', $class))->post(route('guru.classes.materials.store', $class), [
             'title' => 'Modul Salah Format',
             'type' => 'file',
             'file' => $file,
-        ])->assertSessionHasErrors('file');
+        ])->assertSee('Periksa kembali data yang diisi.')->assertSee('The file field must be a file of type: pdf.');
 
         $this->assertDatabaseCount('materials', 0);
     }

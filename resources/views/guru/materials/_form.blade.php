@@ -1,4 +1,8 @@
 {{-- guru/materials/_form.blade.php — FR-GR-04 / FR-GR-05 / BR-04 / §9 / NFR-08 / M4 --}}
+@if ($errors->any())
+    <div class="kt-alert kt-alert-destructive">Periksa kembali data yang diisi.</div>
+@endif
+
 <div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
     <label class="kt-form-label max-w-56" for="title">Judul Materi</label>
     <div class="grow">

@@ -19,7 +19,7 @@ class StoreMaterialRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:figma,file'],
-            'figma_url' => ['required_if:type,figma', 'url'],
+            'figma_url' => ['nullable', 'required_if:type,figma', 'url'],
             'file' => ['required_if:type,file', 'file', 'mimes:pdf', 'max:20480'],
         ];
     }
