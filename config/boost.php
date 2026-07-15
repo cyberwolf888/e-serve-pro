@@ -57,8 +57,8 @@ return [
 
     'agents' => [
         'opencode' => [
-            'guidelines_path' => '.ai/boost/AGENTS.md',
-            'skills_path' => '.ai/skills',
+            'guidelines_path' => '.agents/boost/AGENTS.md',
+            'skills_path' => '.agents/skills',
         ],
     ],
 
