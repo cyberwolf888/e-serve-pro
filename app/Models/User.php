@@ -47,4 +47,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(ClassMember::class, 'student_id');
     }
+
+    /** Quiz attempts made by this siswa. DATA-11 / M5 */
+    public function quizAttempts(): HasMany
+    {
+        return $this->hasMany(QuizAttempt::class, 'student_id');
+    }
 }

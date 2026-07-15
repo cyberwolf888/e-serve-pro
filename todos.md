@@ -102,14 +102,14 @@
 
 ## M5 — Quizzes
 
-- [ ] Migrations: `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers`. `[DATA-08..12]`
-- [ ] Guru quiz builder: questions + options; enforce exactly one correct option/question. `[FR-GR-09, DATA-10]`
-- [ ] Publish/unpublish + optional opens_at/closes_at window. `[DATA-08]`
-- [ ] Siswa takes quiz (only joined class, within window, single attempt default). `[FR-SW-05, §9]`
-- [ ] Auto-score on submit → store 0–100 on attempt; mark per-answer correctness. `[FR-SW-05, §13 scoring assumption]`
-- [ ] Log quiz-attempt events. `[BR-06]`
-- [ ] QuizPolicy (guru OWN class, siswa take-only). `[§3.2]`
-- [ ] **Gate M5:** submit auto-scores correctly; attempt logged. `[§11 Quizzes scenario]`
+- [x] Migrations: `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers`. `[DATA-08..12]`
+- [x] Guru quiz builder: questions + options; enforce exactly one correct option/question. `[FR-GR-09, DATA-10]`
+- [x] Publish/unpublish + optional opens_at/closes_at window. `[DATA-08]`
+- [x] Siswa takes quiz (only joined class, within window, single attempt default). `[FR-SW-05, §9]`
+- [x] Auto-score on submit → store 0–100 on attempt; mark per-answer correctness. `[FR-SW-05, §13 scoring assumption]`
+- [x] Log quiz-attempt events. `[BR-06]`
+- [x] QuizPolicy (guru OWN class, siswa take-only). `[§3.2]`
+- [x] **Gate M5:** submit auto-scores correctly; attempt logged. `[§11 Quizzes scenario]`
 
 ---
 
@@ -165,8 +165,8 @@
 
 ## Open Questions (resolve by M5–M6; do not block M0–M3)
 
-- [ ] **Q1** Quiz retakes allowed? *(default: no — single attempt)* `[§13]`
-- [ ] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? `[§13]`
+- [x] **Q1** Quiz retakes allowed? *(decided: no — single attempt, UNIQUE(quiz_id, student_id); race-safe via DB constraint caught in `QuizAttemptService::submit`)* `[§13]`
+- [ ] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? *(deferred to M6 — decided: no auto-sync in M5)* `[§13]`
 - [ ] **Q3** Recap export format — CSV / XLSX / PDF? *(default: XLSX)* `[§13]`
 - [ ] **Q4** Extra required `siswa` fields (e.g. NIS / student ID)? `[§13]`
 - [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(decided: deferred — Guru+Siswa only this milestone; MaterialPolicy/MeetingPolicy already grant super_admin ✅ per §3.2, so a future Admin\* controller can reuse them without policy changes)*

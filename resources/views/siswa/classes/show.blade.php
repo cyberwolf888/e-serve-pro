@@ -17,6 +17,20 @@
     </div>
 
     <div class="kt-card">
+        <div class="kt-card-header"><h3 class="kt-card-title text-sm">Kuis Tersedia</h3></div>
+        <div class="kt-card-content grid gap-3 p-7.5">
+            @forelse($quizzes as $quiz)
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">{{ $quiz->title }}</span>
+                    <a href="{{ route('siswa.quizzes.show', $quiz) }}" class="kt-btn kt-btn-sm kt-btn-outline kt-btn-primary">Kerjakan</a>
+                </div>
+            @empty
+                <p class="text-secondary-foreground text-sm">Tidak ada kuis yang tersedia saat ini.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <div class="kt-card">
         <div class="kt-card-header"><h3 class="kt-card-title text-sm">Pertemuan</h3></div>
         <div class="kt-card-content grid gap-5 p-7.5">
             @forelse($meetings as $meeting)

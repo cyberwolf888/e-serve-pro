@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JoinSchoolClassRequest;
 use App\Models\SchoolClass;
 use App\Repositories\MeetingRepository;
+use App\Repositories\QuizRepository;
 use App\Repositories\SchoolClassRepository;
 use App\Services\SchoolClassService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,7 @@ class SchoolClassController extends Controller
         private SchoolClassRepository $repo,
         private SchoolClassService $service,
         private MeetingRepository $meetingRepo,
+        private QuizRepository $quizRepo,
     ) {}
 
     public function index(): View
@@ -41,9 +43,11 @@ class SchoolClassController extends Controller
         $this->authorize('view', $class);
 
         // FR-SW-04 — meetings + only the materials shared to them
+        // FR-SW-05 — quizzes currently available to this student
         return view('siswa.classes.show', [
             'class' => $class,
             'meetings' => $this->meetingRepo->forStudentClass($class),
+            'quizzes' => $this->quizRepo->availableForStudent($class, auth()->user()),
         ]);
     }
 }

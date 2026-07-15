@@ -11,8 +11,11 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
 use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
+use App\Http\Controllers\Guru\QuizController as GuruQuizController;
+use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
 use App\Http\Controllers\MaterialDownloadController;
+use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +83,13 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
         ->name('classes.meetings.attendance.edit');
     Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
         ->name('classes.meetings.attendance.store');
+
+    // FR-GR-09
+    Route::resource('classes.quizzes', GuruQuizController::class);
+    Route::patch('classes/{class}/quizzes/{quiz}/publish', [GuruQuizController::class, 'publish'])->name('classes.quizzes.publish');
+    Route::patch('classes/{class}/quizzes/{quiz}/unpublish', [GuruQuizController::class, 'unpublish'])->name('classes.quizzes.unpublish');
+    Route::resource('classes.quizzes.questions', GuruQuizQuestionController::class)
+        ->except(['index', 'show']);
 });
 
 // ─── Siswa ────────────────────────────────────────────────────────────────────
@@ -88,4 +98,8 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::post('/classes/join', [SiswaSchoolClassController::class, 'join'])->name('classes.join');
     Route::get('/classes', [SiswaSchoolClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{class}', [SiswaSchoolClassController::class, 'show'])->name('classes.show');
+
+    // FR-SW-05
+    Route::get('/quizzes/{quiz}', [SiswaQuizController::class, 'show'])->name('quizzes.show');
+    Route::post('/quizzes/{quiz}/submit', [SiswaQuizController::class, 'submit'])->name('quizzes.submit');
 });

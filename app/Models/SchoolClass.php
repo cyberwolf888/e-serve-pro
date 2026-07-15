@@ -44,4 +44,10 @@ class SchoolClass extends Model
     {
         return $this->hasMany(Meeting::class, 'class_id');
     }
+
+    // DATA-08 / FR-GR-09 / M5
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'class_id');
+    }
 }
