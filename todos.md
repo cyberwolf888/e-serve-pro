@@ -70,16 +70,16 @@
 
 ## M3 — Classes & Membership
 
-- [ ] Migration `classes` (+ unique `class_code`, `guru_id`, `is_active`). `[DATA-02]`
-- [ ] Migration `class_members` with UNIQUE(class_id, student_id). `[DATA-03]`
-- [ ] Guru class CRUD (owned only). `[FR-GR-02]`
-- [ ] Auto-generate unique 6–8 char `class_code` on class create. `[§9, BR-01]`
-- [ ] Guru adds students to owned classes. `[FR-GR-03]`
-- [ ] Siswa join-by-code, **no approval**, reject duplicate join. `[FR-SW-03, BR-01, §9]`
-- [ ] No caps on students/class or classes/guru. `[BR-07]`
-- [ ] ClassPolicy: guru OWN, super_admin all, siswa join only. `[§3.2]`
-- [ ] Siswa "my classes" list. `[FR-SW-04]`
-- [ ] **Gate M3:** join-by-code works with no approval; duplicate join rejected; unlimited members/classes. `[§11 Classes scenarios]`
+- [x] Migration `classes` (+ unique `class_code`, `guru_id`, `is_active`). `[DATA-02]`
+- [x] Migration `class_members` with UNIQUE(class_id, student_id). `[DATA-03]`
+- [x] Guru class CRUD (owned only). `[FR-GR-02]`
+- [x] Auto-generate unique 6–8 char `class_code` on class create. `[§9, BR-01]`
+- [x] Guru adds students to owned classes. `[FR-GR-03]`
+- [x] Siswa join-by-code, **no approval**, reject duplicate join. `[FR-SW-03, BR-01, §9]`
+- [x] No caps on students/class or classes/guru. `[BR-07]`
+- [x] ClassPolicy: guru OWN, super_admin all, siswa join only. `[§3.2]`
+- [x] Siswa "my classes" list. `[FR-SW-04]`
+- [x] **Gate M3:** join-by-code works with no approval; duplicate join rejected; unlimited members/classes. `[§11 Classes scenarios]`
 
 ---
 

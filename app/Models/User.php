@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -33,5 +34,17 @@ class User extends Authenticatable
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /** Classes owned by this guru. DATA-02 */
+    public function classes(): HasMany
+    {
+        return $this->hasMany(SchoolClass::class, 'guru_id');
+    }
+
+    /** Class memberships held by this siswa. DATA-03 */
+    public function classMemberships(): HasMany
+    {
+        return $this->hasMany(ClassMember::class, 'student_id');
     }
 }

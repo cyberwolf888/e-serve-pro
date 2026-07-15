@@ -39,12 +39,13 @@
                  id="sidebar_menu">
 
                 {{-- Dashboard (placeholder — all roles) --}}
-                <div class="kt-menu-item">
+                <div class="kt-menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <a class="kt-menu-link border border-transparent items-center grow
                               kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
                               hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
                        href="{{ url('/dashboard') }}">
-                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
                             <i class="ki-filled ki-element-11 text-lg"></i>
                         </span>
                         <span class="kt-menu-title text-sm font-medium text-foreground
@@ -62,7 +63,7 @@
                 <div class="kt-menu-item pt-2">
                     <span class="kt-menu-heading text-xs font-semibold text-secondary-foreground uppercase tracking-wider ps-[10px]">Admin</span>
                 </div>
-                <div class="kt-menu-item {{ request()->routeIs('admin.users.*') ? 'kt-menu-item-active' : '' }}">
+                <div class="kt-menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                     <a class="kt-menu-link border border-transparent items-center grow
                               kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
                               hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
@@ -73,6 +74,57 @@
                         <span class="kt-menu-title text-sm font-medium text-foreground
                                      kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
                             Pengguna
+                        </span>
+                    </a>
+                </div>
+                <div class="kt-menu-item {{ request()->routeIs('admin.classes.*') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('admin.classes.index') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            <i class="ki-filled ki-book-open text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Kelas
+                        </span>
+                    </a>
+                </div>
+                @endrole
+
+                @role('guru')
+                <div class="kt-menu-item {{ request()->routeIs('guru.classes.*') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('guru.classes.index') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            <i class="ki-filled ki-book-open text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Kelas Saya
+                        </span>
+                    </a>
+                </div>
+                @endrole
+
+                @role('siswa')
+                <div class="kt-menu-item {{ request()->routeIs('siswa.classes.*') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('siswa.classes.index') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            <i class="ki-filled ki-book-open text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Kelas Saya
                         </span>
                     </a>
                 </div>

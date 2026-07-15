@@ -81,6 +81,10 @@ php artisan octane:start     # M8 only
 
 Before creating any Blade components or views, inspect the Metronic demo HTML at `/Users/master/Projects/HTML-Templates/metronic-tailwind-html-demos/dist/html/demo1/`. Browse the relevant page or partial in the demo to match Metronic's exact markup, component classes, and layout structure — then replicate it in Blade. Do not guess Metronic HTML patterns; use the demo as the source of truth.
 
+## KTUI Reference (before building interactive components)
+
+Before using any interactive JS component (modal, dropdown, tabs, select, collapsible, etc.), inspect its KTUI docs at `https://ktui.io/docs/<component-name>` (e.g. `https://ktui.io/docs/modal`). Match KTUI's exact data-attribute API (`data-kt-*`), semantic component classes (`kt-*`), and initialization method. For declarative usage, prefer the zero-JS `data-kt-*` markup approach wherever possible. For programmatic usage, import selectively from `@keenthemes/ktui/components/<name>`. Do not guess KTUI APIs; use the docs as the source of truth.
+
 ## Definition of Done (per requirement)
 
 1. Code implemented and tagged with its PRD ID.

@@ -2,11 +2,14 @@
 
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
+use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
+use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Root redirect ───────────────────────────────────────────────────────────
@@ -34,6 +37,8 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('auth.logout');
+// ponytail: GET fallback for stray reload/back-button hits on /logout, avoids 405
+Route::get('/logout', fn () => redirect()->route('auth.login.show'))->middleware('auth');
 
 // ─── Super Admin ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -42,16 +47,22 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
     Route::resource('users', AdminUserController::class)->except(['destroy']);
     Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
+    Route::resource('classes', AdminSchoolClassController::class)->except(['show']);
+    Route::patch('classes/{class}/activate', [AdminSchoolClassController::class, 'activate'])->name('classes.activate');
 });
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/dashboard', fn () => view('guru.dashboard'))->name('dashboard');
-    // FR-GR-* routes added in M3+
+    Route::resource('classes', GuruSchoolClassController::class)->except(['show']);
+    Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
+    Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
 });
 
 // ─── Siswa ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
     Route::get('/dashboard', fn () => view('siswa.dashboard'))->name('dashboard');
-    // FR-SW-* routes added in M3+
+    Route::post('/classes/join', [SiswaSchoolClassController::class, 'join'])->name('classes.join');
+    Route::get('/classes', [SiswaSchoolClassController::class, 'index'])->name('classes.index');
+    Route::get('/classes/{class}', [SiswaSchoolClassController::class, 'show'])->name('classes.show');
 });
