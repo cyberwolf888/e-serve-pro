@@ -1,6 +1,6 @@
 {{-- guru/meetings/index.blade.php — FR-GR-06 / NFR-08 / M4 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.edit', $class)], ['label' => 'Pertemuan']]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Pertemuan']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     @include('guru.classes._tabs', ['class' => $class])

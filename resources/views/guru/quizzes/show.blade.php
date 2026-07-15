@@ -1,6 +1,6 @@
 {{-- guru/quizzes/show.blade.php — FR-GR-09 / NFR-08 / M5 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.edit', $class)], ['label' => 'Kuis', 'url' => route('guru.classes.quizzes.index', $class)], ['label' => $quiz->title]]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Kuis', 'url' => route('guru.classes.quizzes.index', $class)], ['label' => $quiz->title]]" />@endsection
 @section('content')
 @php($locked = $quiz->is_published || $quiz->attempts_count > 0)
 <div class="grid gap-5 lg:gap-7.5 py-6 xl:w-[46rem] mx-auto">

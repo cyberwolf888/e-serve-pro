@@ -116,7 +116,7 @@
                                     <td>
                                         <div class="flex flex-col">
                                             <a class="text-sm font-medium text-mono hover:text-primary mb-px"
-                                               href="{{ $class->is_active ? route('admin.classes.edit', $class) : '#' }}">
+                                               href="{{ route('admin.classes.show', $class) }}">
                                                 {{ $class->name }}
                                             </a>
                                             <span class="text-sm text-secondary-foreground font-normal">{{ $class->class_code }}</span>

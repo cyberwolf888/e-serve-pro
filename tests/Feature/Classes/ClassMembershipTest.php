@@ -62,6 +62,35 @@ class ClassMembershipTest extends TestCase
         ])->assertForbidden();
     }
 
+    public function test_guru_views_own_class_detail_with_members_and_is_forbidden_from_others(): void
+    {
+        $owner = $this->user('guru');
+        $otherGuru = $this->user('guru');
+        $student = $this->user('siswa');
+        $class = $this->schoolClass($owner);
+        ClassMember::create(['class_id' => $class->id, 'student_id' => $student->id, 'joined_at' => now()]);
+
+        $this->actingAs($owner)->get(route('guru.classes.show', $class))
+            ->assertOk()
+            ->assertSee($class->class_code)
+            ->assertSee($student->name)
+            ->assertSee($student->email);
+
+        $this->actingAs($otherGuru)->get(route('guru.classes.show', $class))->assertForbidden();
+    }
+
+    public function test_admin_views_any_class_detail_read_only_when_inactive(): void
+    {
+        $admin = $this->user('super_admin');
+        $guru = $this->user('guru');
+        $class = $this->schoolClass($guru, ['class_code' => 'DETAIL01', 'is_active' => false]);
+
+        $this->actingAs($admin)->get(route('admin.classes.show', $class))
+            ->assertOk()
+            ->assertSee($class->name)
+            ->assertSee($guru->name);
+    }
+
     public function test_guru_adds_active_siswa_by_email_and_rejects_duplicates(): void
     {
         $guru = $this->user('guru');
@@ -69,7 +98,7 @@ class ClassMembershipTest extends TestCase
         $class = $this->schoolClass($guru);
 
         $this->actingAs($guru)->post(route('guru.classes.students.store', $class), ['email' => $student->email])
-            ->assertRedirect(route('guru.classes.edit', $class));
+            ->assertRedirect(route('guru.classes.show', $class));
 
         $this->assertDatabaseHas('class_members', ['class_id' => $class->id, 'student_id' => $student->id]);
 

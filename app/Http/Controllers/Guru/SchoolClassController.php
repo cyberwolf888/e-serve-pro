@@ -50,6 +50,16 @@ class SchoolClassController extends Controller
         return to_route('guru.classes.index')->with('success', 'Kelas berhasil dibuat.');
     }
 
+    public function show(SchoolClass $class): View
+    {
+        $this->authorize('view', $class);
+
+        return view('guru.classes.show', [
+            'class' => $class,
+            'members' => $this->repo->paginatedMembers($class),
+        ]);
+    }
+
     public function edit(SchoolClass $class): View
     {
         $this->authorize('update', $class);
@@ -90,6 +100,6 @@ class SchoolClassController extends Controller
 
         $this->service->addStudent($class, $student);
 
-        return to_route('guru.classes.edit', $class)->with('success', 'Siswa berhasil ditambahkan.');
+        return to_route('guru.classes.show', $class)->with('success', 'Siswa berhasil ditambahkan.');
     }
 }

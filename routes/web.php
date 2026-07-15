@@ -59,14 +59,14 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
     Route::resource('users', AdminUserController::class)->except(['destroy']);
     Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
-    Route::resource('classes', AdminSchoolClassController::class)->except(['show']);
+    Route::resource('classes', AdminSchoolClassController::class);
     Route::patch('classes/{class}/activate', [AdminSchoolClassController::class, 'activate'])->name('classes.activate');
 });
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/dashboard', fn () => view('guru.dashboard'))->name('dashboard');
-    Route::resource('classes', GuruSchoolClassController::class)->except(['show']);
+    Route::resource('classes', GuruSchoolClassController::class);
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
 

@@ -1,6 +1,6 @@
 {{-- guru/materials/index.blade.php — FR-GR-04 / FR-GR-05 / NFR-08 / M4 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.edit', $class)], ['label' => 'Materi']]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Materi']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     @include('guru.classes._tabs', ['class' => $class])

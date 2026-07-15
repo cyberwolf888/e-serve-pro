@@ -1,6 +1,6 @@
 {{-- guru/quizzes/index.blade.php — FR-GR-09 / NFR-08 / M5 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.edit', $class)], ['label' => 'Kuis']]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Kuis']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     @include('guru.classes._tabs', ['class' => $class])

@@ -7,10 +7,17 @@ namespace App\Repositories;
 use App\Models\ClassMember;
 use App\Models\SchoolClass;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class SchoolClassRepository
 {
+    /** Paginated enrolled students for class detail page. FR-GR-02 / FR-SA-03 */
+    public function paginatedMembers(SchoolClass $class, int $perPage = 15): LengthAwarePaginator
+    {
+        return $class->members()->with('student')->latest('joined_at')->paginate($perPage);
+    }
+
     public function all(?string $status = null, string $sort = 'newest'): Collection
     {
         return SchoolClass::with('guru')

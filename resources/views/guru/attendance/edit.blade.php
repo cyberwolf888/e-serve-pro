@@ -1,6 +1,6 @@
 {{-- guru/attendance/edit.blade.php — FR-GR-07 / §9 / NFR-08 / M4 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.edit', $class)], ['label' => 'Pertemuan', 'url' => route('guru.classes.meetings.index', $class)], ['label' => $meeting->title, 'url' => route('guru.classes.meetings.show', [$class, $meeting])], ['label' => 'Absensi']]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Pertemuan', 'url' => route('guru.classes.meetings.index', $class)], ['label' => $meeting->title, 'url' => route('guru.classes.meetings.show', [$class, $meeting])], ['label' => 'Absensi']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     <div class="flex items-center gap-3">

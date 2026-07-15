@@ -49,6 +49,16 @@ class SchoolClassController extends Controller
         return to_route('admin.classes.index')->with('success', 'Kelas berhasil dibuat.');
     }
 
+    public function show(SchoolClass $class): View
+    {
+        $this->authorize('view', $class);
+
+        return view('admin.classes.show', [
+            'class' => $class->load('guru'),
+            'members' => $this->repo->paginatedMembers($class),
+        ]);
+    }
+
     public function edit(SchoolClass $class): View
     {
         $this->authorize('update', $class);
