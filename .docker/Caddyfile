@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Global Caddy / FrankenPHP options
+# ─────────────────────────────────────────────────────────────────────────────
+{
+    frankenphp
+
+    # Disable admin API in production
+    admin off
+
+    # Disable automatic HTTPS – TLS is handled by an upstream reverse proxy
+    auto_https off
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Virtual host – SERVER_NAME env var is injected by the Dockerfile / runtime
+# ─────────────────────────────────────────────────────────────────────────────
+{$SERVER_NAME} {
+    root * /app/public
+
+    # Modern compression (zstd > brotli > gzip)
+    encode zstd br gzip
+
+    # Allow large file uploads (matches php.ini upload_max_filesize / post_max_size)
+    request_body {
+        max_size 1024MB
+    }
+
+    # Long-lived cache for versioned static assets
+    @static path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg \
+                 *.woff *.woff2 *.ttf *.otf *.eot *.webp *.avif
+    header @static Cache-Control "public, max-age=2592000, immutable"
+
+    # Don't leak server version information
+    header -Server
+
+    # FrankenPHP: serve PHP via try_files → index.php (standard Laravel routing)
+    php_server
+
+    log {
+        output stdout
+        format json
+    }
+}

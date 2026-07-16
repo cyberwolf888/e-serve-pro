@@ -1,0 +1,42 @@
+name: Deploy Application
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - deploy
+
+concurrency:
+  group: application-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest .
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
+
+  deploy:
+    needs: build-image
+    runs-on: self-hosted
+    steps:
+      - name: Delete Old Container
+        run: docker rm -f neo-sippp-container || true
+      - name: Remove Old Image
+        run: docker rmi -f ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest || true
+      - name: Pull New Docker Image
+        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
+      - name: Create runtime env file
+        run: echo '${{ vars.ENV_FILE }}' > $RUNNER_TEMP/neo-sippp.env
+      - name: Run New Container
+        run: docker run -d --name neo-sippp-container --network=sipp --hostname neo-sippp --restart=unless-stopped -p 8091:80 -v neo_sippp_storage:/app/storage -v $RUNNER_TEMP/neo-sippp.env:/app/.env ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
