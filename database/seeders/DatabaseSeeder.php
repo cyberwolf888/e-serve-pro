@@ -20,13 +20,32 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         $superAdmin = User::updateOrCreate([
-            'email' => 'superadmin@probi-smart.local',
+            'email' => 'superadmin@mail.com',
         ], [
             'name' => 'Super Admin',
             'password' => Hash::make('password'),
             'is_active' => true,
         ]);
 
+        $guru = User::updateOrCreate([
+            'email' => 'guru@mail.com',
+        ], [
+            'name' => 'Guru',
+            'password' => Hash::make('password'),
+            'is_active' => true,
+        ]);
+
+        $siswa = User::updateOrCreate([
+            'email' => 'siswa@mail.com',
+        ], [
+            'name' => 'Siswa',
+            'password' => Hash::make('password'),
+            'is_active' => true,
+        ]);
+
         $superAdmin->syncRoles(['super_admin']);
+        $guru->syncRoles(['guru']);
+        $siswa->syncRoles(['siswa']);
+
     }
 }
