@@ -115,15 +115,15 @@
 
 ## M6 — Grading & Recap
 
-- [ ] Migrations: `grade_components`, `component_scores`, `final_grades`. `[DATA-13,15,14]`
-- [ ] Guru defines grade components + manual weights per class; warn (not block) if total ≠ 100. `[FR-GR-12, BR-03, §9]`
-- [ ] Enter/record `component_scores` per student. `[DATA-15]`
-- [ ] Final-grade calculation = weighted sum → store `final_grades`. `[FR-GR-11]`
-- [ ] Guru recap of all students in owned classes. `[FR-GR-10]`
-- [ ] Siswa dashboard shows OWN grades only. `[FR-SW-06, §3.2]`
-- [ ] Super Admin recap across ALL classes. `[FR-SA-05]`
-- [ ] Super Admin export recap (default XLSX — confirm, see Open Q3). `[FR-SA-05, §13]`
-- [ ] **Gate M6:** weighted final grade computed & stored; role-scoped recap views correct. `[§11 Grading scenario]`
+- [x] Migrations: `grade_components`, `component_scores`, `final_grades`. `[DATA-13,15,14]`
+- [x] Guru defines grade components + manual weights per class; warn (not block) if total ≠ 100. `[FR-GR-12, BR-03, §9]`
+- [x] Enter/record `component_scores` per student. `[DATA-15]`
+- [x] Final-grade calculation = weighted sum → store `final_grades`. `[FR-GR-11]`
+- [x] Guru recap of all students in owned classes. `[FR-GR-10]`
+- [x] Siswa dashboard shows OWN grades only. `[FR-SW-06, §3.2]`
+- [x] Super Admin recap across ALL classes. `[FR-SA-05]`
+- [x] Super Admin export recap (default XLSX — confirm, see Open Q3). `[FR-SA-05, §13]`
+- [x] **Gate M6:** weighted final grade computed & stored; role-scoped recap views correct. `[§11 Grading scenario]`
 
 ---
 
@@ -166,8 +166,8 @@
 ## Open Questions (resolve by M5–M6; do not block M0–M3)
 
 - [x] **Q1** Quiz retakes allowed? *(decided: no — single attempt, UNIQUE(quiz_id, student_id); race-safe via DB constraint caught in `QuizAttemptService::submit`)* `[§13]`
-- [ ] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? *(deferred to M6 — decided: no auto-sync in M5)* `[§13]`
-- [ ] **Q3** Recap export format — CSV / XLSX / PDF? *(default: XLSX)* `[§13]`
+- [x] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? *(decided: linked quiz component auto-fills/backfills scores; manual overrides persist)* `[§13]`
+- [x] **Q3** Recap export format — CSV / XLSX / PDF? *(decided: XLSX)* `[§13]`
 - [ ] **Q4** Extra required `siswa` fields (e.g. NIS / student ID)? `[§13]`
 - [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(decided: deferred — Guru+Siswa only this milestone; MaterialPolicy/MeetingPolicy already grant super_admin ✅ per §3.2, so a future Admin\* controller can reuse them without policy changes)*
 

@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\FinalGrade;
+use App\Models\GradeComponent;
 use App\Models\Material;
 use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Policies\FinalGradePolicy;
+use App\Policies\GradeComponentPolicy;
 use App\Policies\MaterialPolicy;
 use App\Policies\MeetingPolicy;
 use App\Policies\QuizPolicy;
@@ -33,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
         // M5
         Gate::policy(Quiz::class, QuizPolicy::class);
         Gate::policy(QuizQuestion::class, QuizQuestionPolicy::class);
+
+        // M6
+        Gate::policy(GradeComponent::class, GradeComponentPolicy::class);
+        Gate::policy(FinalGrade::class, FinalGradePolicy::class);
 
         // FR-SA-04 / BR-06
         Gate::define(

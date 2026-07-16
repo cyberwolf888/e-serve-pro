@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['class_id', 'title', 'description', 'is_published', 'opens_at', 'closes_at'])]
 class Quiz extends Model
@@ -38,6 +39,12 @@ class Quiz extends Model
     public function attempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);
+    }
+
+    // DATA-13 / M6
+    public function gradeComponent(): HasOne
+    {
+        return $this->hasOne(GradeComponent::class);
     }
 
     /** Quiz is time-wise open right now. Nullable bounds don't constrain. §9 */

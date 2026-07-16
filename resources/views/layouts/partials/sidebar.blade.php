@@ -92,6 +92,9 @@
                         </span>
                     </a>
                 </div>
+                <div class="kt-menu-item {{ request()->routeIs('admin.recap.*') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]" href="{{ route('admin.recap.index') }}"><span class="kt-menu-icon w-[20px]"><i class="ki-filled ki-chart-line text-lg"></i></span><span class="kt-menu-title text-sm font-medium text-foreground">Rekap Nilai</span></a>
+                </div>
                 @endrole
 
                 @role('guru')
@@ -127,6 +130,9 @@
                             Kelas Saya
                         </span>
                     </a>
+                </div>
+                <div class="kt-menu-item {{ request()->routeIs('siswa.grades.*') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]" href="{{ route('siswa.grades.index') }}"><span class="kt-menu-icon w-[20px]"><i class="ki-filled ki-chart-line text-lg"></i></span><span class="kt-menu-title text-sm font-medium text-foreground">Nilai Saya</span></a>
                 </div>
                 @endrole
 

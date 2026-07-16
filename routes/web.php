@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\GradeComponentController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
 use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\Guru\QuizController as GuruQuizController;
 use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
 use App\Http\Controllers\MaterialDownloadController;
+use App\Http\Controllers\RecapController;
 use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +64,15 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
     Route::resource('classes', AdminSchoolClassController::class);
     Route::patch('classes/{class}/activate', [AdminSchoolClassController::class, 'activate'])->name('classes.activate');
+    // FR-SA-05 / FR-GR-11 / FR-GR-12
+    Route::get('recap', [RecapController::class, 'adminRecap'])->name('recap.index');
+    Route::get('recap/export', [RecapController::class, 'exportAll'])->name('recap.export');
+    Route::get('classes/{class}/recap', [RecapController::class, 'classRecap'])->name('classes.recap');
+    Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
+    Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
+    Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
+    Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
 });
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────
@@ -90,11 +102,18 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::patch('classes/{class}/quizzes/{quiz}/unpublish', [GuruQuizController::class, 'unpublish'])->name('classes.quizzes.unpublish');
     Route::resource('classes.quizzes.questions', GuruQuizQuestionController::class)
         ->except(['index', 'show']);
+    // FR-GR-10 / FR-GR-11 / FR-GR-12 / BR-03
+    Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
+    Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
+    Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
+    Route::get('classes/{class}/recap', [RecapController::class, 'classRecap'])->name('classes.recap');
+    Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
 });
 
 // ─── Siswa ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    Route::get('/dashboard', fn () => view('siswa.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [RecapController::class, 'studentDashboard'])->name('dashboard');
     Route::post('/classes/join', [SiswaSchoolClassController::class, 'join'])->name('classes.join');
     Route::get('/classes', [SiswaSchoolClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{class}', [SiswaSchoolClassController::class, 'show'])->name('classes.show');
@@ -102,4 +121,6 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     // FR-SW-05
     Route::get('/quizzes/{quiz}', [SiswaQuizController::class, 'show'])->name('quizzes.show');
     Route::post('/quizzes/{quiz}/submit', [SiswaQuizController::class, 'submit'])->name('quizzes.submit');
+    // FR-SW-06
+    Route::get('/grades', [RecapController::class, 'studentGrades'])->name('grades.index');
 });

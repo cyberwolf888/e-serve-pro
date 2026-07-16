@@ -50,4 +50,16 @@ class SchoolClass extends Model
     {
         return $this->hasMany(Quiz::class, 'class_id');
     }
+
+    // DATA-13 / M6
+    public function gradeComponents(): HasMany
+    {
+        return $this->hasMany(GradeComponent::class, 'class_id');
+    }
+
+    // DATA-14 / M6
+    public function finalGrades(): HasMany
+    {
+        return $this->hasMany(FinalGrade::class, 'class_id');
+    }
 }

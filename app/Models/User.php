@@ -53,4 +53,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizAttempt::class, 'student_id');
     }
+
+    // DATA-15 / M6
+    public function componentScores(): HasMany
+    {
+        return $this->hasMany(ComponentScore::class, 'student_id');
+    }
+
+    // DATA-14 / M6
+    public function finalGrades(): HasMany
+    {
+        return $this->hasMany(FinalGrade::class, 'student_id');
+    }
 }

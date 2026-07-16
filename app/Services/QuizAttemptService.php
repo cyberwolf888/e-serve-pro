@@ -19,6 +19,7 @@ class QuizAttemptService
     public function __construct(
         private QuizAttemptRepository $repo,
         private AuthService $auth,
+        private GradeService $grades,
     ) {}
 
     /**
@@ -60,6 +61,7 @@ class QuizAttemptService
 
             $score = round($correctCount / $questions->count() * 100, 2, PHP_ROUND_HALF_UP);
             $this->repo->updateScore($attempt, $score);
+            $this->grades->syncQuizAttempt($attempt->fresh('student'));
 
             $this->auth->logActivity($student, 'quiz_attempt', $request, "Percobaan kuis: {$quiz->title} (skor {$score})", $attempt);
 
