@@ -9,6 +9,9 @@ on:
 concurrency:
   group: application-deploy
   cancel-in-progress: true
+env:
+  CONTAINER_NAME: pro-bi-smart
+  CONTAINER_PORT: 8105
 
 jobs:
   build-image:
@@ -22,21 +25,21 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest .
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest
 
   deploy:
     needs: build-image
     runs-on: self-hosted
     steps:
       - name: Delete Old Container
-        run: docker rm -f neo-sippp-container || true
+        run: docker rm -f ${{ env.CONTAINER_NAME }}-container || true
       - name: Remove Old Image
-        run: docker rmi -f ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest || true
+        run: docker rmi -f ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest || true
       - name: Pull New Docker Image
-        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
+        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest
       - name: Create runtime env file
-        run: echo '${{ vars.ENV_FILE }}' > $RUNNER_TEMP/neo-sippp.env
+        run: echo '${{ vars.ENV_FILE }}' > $RUNNER_TEMP/${{ env.CONTAINER_NAME }}.env
       - name: Run New Container
-        run: docker run -d --name neo-sippp-container --network=sipp --hostname neo-sippp --restart=unless-stopped -p 8091:80 -v neo_sippp_storage:/app/storage -v $RUNNER_TEMP/neo-sippp.env:/app/.env ${{ secrets.DOCKER_HUB_USERNAME }}/neo-sippp:latest
+        run: docker run -d --name ${{ env.CONTAINER_NAME }}-container --network=sipp --hostname ${{ env.CONTAINER_NAME }} --restart=unless-stopped -p ${{ env.CONTAINER_PORT }}:80 -v ${{ env.CONTAINER_NAME }}_storage:/app/storage -v $RUNNER_TEMP/${{ env.CONTAINER_NAME }}.env:/app/.env ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest
