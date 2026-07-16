@@ -4,8 +4,8 @@
 {
     frankenphp
 
-    # Disable admin API in production
-    admin off
+    # Required by the inherited FrankenPHP health check; loopback-only by default.
+    admin localhost:2019
 
     # Disable automatic HTTPS – TLS is handled by an upstream reverse proxy
     auto_https off
