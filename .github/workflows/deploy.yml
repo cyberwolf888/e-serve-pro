@@ -42,4 +42,4 @@ jobs:
       - name: Create runtime env file
         run: echo '${{ vars.ENV_FILE }}' > $RUNNER_TEMP/${{ env.CONTAINER_NAME }}.env
       - name: Run New Container
-        run: docker run -d --name ${{ env.CONTAINER_NAME }}-container --network=sipp --hostname ${{ env.CONTAINER_NAME }} --restart=unless-stopped -p ${{ env.CONTAINER_PORT }}:80 -v ${{ env.CONTAINER_NAME }}_storage:/app/storage -v $RUNNER_TEMP/${{ env.CONTAINER_NAME }}.env:/app/.env ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest
+        run: docker run -d --name ${{ env.CONTAINER_NAME }}-container --hostname ${{ env.CONTAINER_NAME }} --restart=unless-stopped -p ${{ env.CONTAINER_PORT }}:80 -v ${{ env.CONTAINER_NAME }}_storage:/app/storage -v $RUNNER_TEMP/${{ env.CONTAINER_NAME }}.env:/app/.env ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.CONTAINER_NAME }}:latest
