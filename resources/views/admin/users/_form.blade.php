@@ -47,7 +47,9 @@
         <select
             id="role"
             name="role"
-            class="kt-input w-full @error('role') border-destructive @enderror"
+            class="kt-select w-full @error('role') border-destructive @enderror"
+            data-kt-select="true"
+            data-kt-select-placeholder="Pilih peran"
             required
         >
             <option value="">-- Pilih Peran --</option>

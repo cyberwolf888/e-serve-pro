@@ -5,6 +5,6 @@
 <div class="grid gap-5 lg:gap-7.5 py-6 xl:w-[38.75rem] mx-auto">
     <div class="flex items-center gap-3"><a href="{{ route('guru.classes.show', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a><h1 class="text-xl font-semibold text-mono">{{ $class->name }}</h1></div>
     @if(session('success'))<div class="kt-alert kt-alert-success">{{ session('success') }}</div>@endif
-    <div class="kt-card"><form method="POST" action="{{ route('guru.classes.update', $class) }}">@csrf @method('PUT')<div class="kt-card-content grid gap-5 p-7.5">@include('guru.classes._form')</div><div class="kt-card-footer flex justify-end gap-2.5"><button class="kt-btn kt-btn-primary"><i class="ki-filled ki-check"></i>Simpan</button></div></form>    </div>
+    <div class="kt-card"><form method="POST" action="{{ route('guru.classes.update', $class) }}">@csrf @method('PUT')<div class="kt-card-content grid gap-5 p-7.5">@include('guru.classes._form')</div><div class="kt-card-footer flex justify-end gap-2.5"><a href="{{ route('guru.classes.show', $class) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-cross"></i>Batal</a><button class="kt-btn kt-btn-primary"><i class="ki-filled ki-check"></i>Simpan</button></div></form>    </div>
 </div>
 @endsection

@@ -196,6 +196,20 @@ class ClassMembershipTest extends TestCase
         $this->assertDatabaseHas('classes', ['id' => $class->id, 'guru_id' => $secondGuru->id, 'name' => 'Kelas Pindah']);
     }
 
+    public function test_admin_create_page_has_a_searchable_teacher_select(): void
+    {
+        $admin = $this->user('super_admin');
+        $guru = $this->user('guru');
+
+        $this->actingAs($admin)->get(route('admin.classes.create'))
+            ->assertOk()
+            ->assertSee('id="guru_id"', false)
+            ->assertSee('data-kt-select-enable-search="true"', false)
+            ->assertSee($guru->email);
+
+        $this->actingAs($this->user('siswa'))->get(route('admin.classes.create'))->assertForbidden();
+    }
+
     public function test_inactive_guru_class_is_read_only_and_no_member_or_class_caps_exist(): void
     {
         $guru = $this->user('guru', false);
