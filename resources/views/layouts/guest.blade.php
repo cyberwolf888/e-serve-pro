@@ -30,8 +30,8 @@
 
             <div class="flex justify-center mb-6">
                 <a href="{{ url('/') }}">
-                    <img class="dark:hidden max-h-[32px]" src="{{ asset('assets/media/app/default-logo.svg') }}" alt="{{ config('app.name') }}"/>
-                    <img class="hidden dark:block max-h-[32px]" src="{{ asset('assets/media/app/default-logo-dark.svg') }}" alt="{{ config('app.name') }}"/>
+                    <img class="dark:hidden max-h-[64px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
+                    <img class="hidden dark:block max-h-[64px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
                 </a>
             </div>
 

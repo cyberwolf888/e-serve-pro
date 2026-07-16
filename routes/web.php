@@ -20,6 +20,8 @@ use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ─── Root redirect ───────────────────────────────────────────────────────────
@@ -49,6 +51,18 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->name('auth.logout');
 // ponytail: GET fallback for stray reload/back-button hits on /logout, avoids 405
 Route::get('/logout', fn () => redirect()->route('auth.login.show'))->middleware('auth');
+
+// FR-AUTH-01 — role-aware dashboard redirect so generic /dashboard link never 404s
+Route::get('/dashboard', function () {
+    /** @var User $user */
+    $user = Auth::user();
+
+    return $user->hasRole('super_admin')
+        ? redirect()->route('admin.dashboard')
+        : ($user->hasRole('guru')
+            ? redirect()->route('guru.dashboard')
+            : redirect()->route('siswa.dashboard'));
+})->middleware('auth')->name('dashboard');
 
 // FR-GR-05 / FR-SW-04 / §3.2 — shared download, authorized via MaterialPolicy (any role)
 Route::get('/materials/{material}/download', MaterialDownloadController::class)

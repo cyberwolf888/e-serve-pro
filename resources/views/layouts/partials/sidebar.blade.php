@@ -7,12 +7,12 @@
     {{-- Sidebar Header: Logo + Collapse Toggle --}}
     <div class="kt-sidebar-header hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0" id="sidebar_header">
         <a class="dark:hidden" href="{{ url('/') }}">
-            <img class="default-logo min-h-[22px] max-w-none" src="{{ asset('assets/media/app/default-logo.svg') }}" alt="{{ config('app.name') }}"/>
-            <img class="small-logo min-h-[22px] max-w-none" src="{{ asset('assets/media/app/mini-logo.svg') }}" alt="{{ config('app.name') }}"/>
+            <img class="default-logo min-h-[22px] max-w-[200px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
+            <img class="small-logo min-h-[22px] max-w-[32px]" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="{{ config('app.name') }}"/>
         </a>
         <a class="hidden dark:block" href="{{ url('/') }}">
-            <img class="default-logo min-h-[22px] max-w-none" src="{{ asset('assets/media/app/default-logo-dark.svg') }}" alt="{{ config('app.name') }}"/>
-            <img class="small-logo min-h-[22px] max-w-none" src="{{ asset('assets/media/app/mini-logo.svg') }}" alt="{{ config('app.name') }}"/>
+            <img class="default-logo min-h-[22px] max-w-[200px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+            <img class="small-logo min-h-[22px] max-w-[32px]" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="{{ config('app.name') }}"/>
         </a>
         <button class="kt-btn kt-btn-outline kt-btn-icon size-[30px] absolute start-full top-2/4 -translate-x-2/4 -translate-y-2/4 rtl:translate-x-2/4"
                 data-kt-toggle="body"
@@ -38,12 +38,19 @@
                  data-kt-menu-accordion-expand-all="false"
                  id="sidebar_menu">
 
-                {{-- Dashboard (placeholder — all roles) --}}
-                <div class="kt-menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                {{-- Dashboard — FR-AUTH-01 / §3.2: routes are role-scoped, so link directly to the role's dashboard --}}
+                @php
+                    $dashboardRoute = auth()->user()?->hasRole('super_admin')
+                        ? route('admin.dashboard')
+                        : (auth()->user()?->hasRole('guru')
+                            ? route('guru.dashboard')
+                            : route('siswa.dashboard'));
+                @endphp
+                <div class="kt-menu-item {{ request()->routeIs('admin.dashboard', 'guru.dashboard', 'siswa.dashboard') ? 'active' : '' }}">
                     <a class="kt-menu-link border border-transparent items-center grow
                               kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
                               hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
-                       href="{{ url('/dashboard') }}">
+                       href="{{ $dashboardRoute }}">
                         <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
                                      kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
                             <i class="ki-filled ki-element-11 text-lg"></i>
