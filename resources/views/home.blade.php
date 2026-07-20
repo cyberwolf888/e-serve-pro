@@ -7,22 +7,40 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="px-6 lg:px-16 py-16 lg:py-24 text-center flex flex-col items-center gap-6">
-    <h1 class="text-3xl lg:text-5xl font-semibold text-mono max-w-3xl">
-        Portal Pembelajaran Bahasa Indonesia berbasis <span class="text-primary">Kurikulum Merdeka</span>
-    </h1>
-    <p class="text-base lg:text-lg text-secondary-foreground max-w-2xl">
-        Satu platform untuk materi belajar, sesi pertemuan, presensi, kuis otomatis, dan rekap nilai —
-        dirancang untuk guru dan siswa.
-    </p>
-    <div class="flex items-center gap-3">
-        <a href="{{ route('auth.register.show') }}" class="kt-btn kt-btn-primary kt-btn-lg">Daftar sebagai Siswa</a>
-        <a href="{{ route('auth.login.show') }}" class="kt-btn kt-btn-outline kt-btn-lg">Masuk</a>
+<section class="relative px-6 lg:px-16 py-16 lg:py-24 bg-muted/30 bg-[radial-gradient(theme(colors.primary/6)_1px,transparent_1px)] bg-[length:18px_18px]">
+    <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        <div class="flex flex-col gap-6">
+            <h1 class="text-3xl lg:text-5xl font-semibold text-mono">
+                Portal Pembelajaran Bahasa Indonesia berbasis
+                <span class="text-primary">Kurikulum Merdeka</span>
+            </h1>
+            <p class="text-base lg:text-lg text-secondary-foreground max-w-lg">
+                Satu platform untuk materi belajar, sesi pertemuan, presensi, kuis otomatis, dan rekap nilai —
+                dirancang untuk guru dan siswa.
+            </p>
+            <a href="{{ route('auth.login.show') }}" class="kt-btn kt-btn-primary kt-btn-lg rounded-full w-fit">
+                <i class="ki-outline ki-entrance-left"></i>
+                <span>Masuk</span>
+            </a>
+        </div>
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-tut-wuri-handayani.jpeg') }}" alt="Tut Wuri Handayani" class="h-10 w-auto object-contain"></span>
+                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-bima.jpeg') }}" alt="BIMA" class="h-10 w-auto object-contain"></span>
+                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-undiksha.png') }}" alt="Undiksha" class="h-10 w-auto object-contain"></span>
+            </div>
+            {{-- ASSUMPTION: picsum.photos placeholder per user direction; swap for a real product screenshot later --}}
+            <img
+                src="https://picsum.photos/seed/probismart/640/440"
+                alt="Pratinjau platform PRO-BI SMART"
+                class="rounded-2xl shadow-xl w-full transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl"
+            >
+        </div>
     </div>
 </section>
 
 {{-- Kurikulum Merdeka blurb --}}
-<section class="px-6 lg:px-16 py-10 bg-muted/40">
+<section id="tentang" class="px-6 lg:px-16 py-10 bg-muted/40">
     <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-xl font-semibold text-mono mb-3">Selaras dengan Kurikulum Merdeka</h2>
         <p class="text-sm lg:text-base text-secondary-foreground">
@@ -34,7 +52,7 @@
 </section>
 
 {{-- Feature highlights --}}
-<section class="px-6 lg:px-16 py-16">
+<section id="fitur" class="px-6 lg:px-16 py-16">
     <h2 class="text-2xl font-semibold text-mono text-center mb-10">Fitur Utama</h2>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
         @foreach ([

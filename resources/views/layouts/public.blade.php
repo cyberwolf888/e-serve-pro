@@ -1,7 +1,7 @@
 {{-- layouts/public.blade.php — public marketing layout (landing page) --}}
 {{-- FR-PUB-01 --}}
 <!DOCTYPE html>
-<html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="h-full scroll-smooth" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @include('layouts.partials.head')
 </head>
@@ -25,24 +25,38 @@
         }
     </script>
 
-    {{-- Topbar --}}
-    <header class="flex items-center justify-between px-6 lg:px-16 py-4 border-b border-border">
-        <a href="{{ url('/') }}">
-            <img class="dark:hidden max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-            <img class="hidden dark:block max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
-        </a>
-        <div class="flex items-center gap-2.5">
-            <a href="{{ route('auth.login.show') }}" class="kt-btn kt-btn-outline">Masuk</a>
-            <a href="{{ route('auth.register.show') }}" class="kt-btn kt-btn-primary">Daftar</a>
-        </div>
-    </header>
+    {{-- Topbar — sticky on scroll (FR-PUB-01) --}}
+    <div data-kt-sticky-wrapper>
+        <header
+            class="flex items-center justify-between px-6 lg:px-16 py-4 border-b border-border bg-background"
+            data-kt-sticky="true"
+            data-kt-sticky-name="header"
+            data-kt-sticky-offset="10"
+            data-kt-sticky-class="fixed top-0 inset-x-0 z-50 shadow-md"
+        >
+            <a href="{{ url('/') }}">
+                <img class="dark:hidden max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
+                <img class="hidden dark:block max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+            </a>
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-secondary-foreground">
+                <a href="#" class="text-primary font-semibold underline underline-offset-8">Beranda</a>
+                <a href="#fitur" class="hover:text-primary">Fitur</a>
+                <a href="#tentang" class="hover:text-primary">Tentang</a>
+                <a href="#kontak" class="hover:text-primary">Kontak</a>
+            </nav>
+            <a href="{{ route('auth.login.show') }}" class="kt-btn kt-btn-outline rounded-full">
+                <span>Masuk</span>
+                <i class="ki-outline ki-arrow-right"></i>
+            </a>
+        </header>
+    </div>
 
     <main class="grow">
         @yield('content')
     </main>
 
     {{-- Footer --}}
-    <footer class="border-t border-border px-6 lg:px-16 py-8">
+    <footer id="kontak" class="border-t border-border px-6 lg:px-16 py-8">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-secondary-foreground">
             <div class="flex items-center gap-2.5">
                 <img class="dark:hidden max-h-[28px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
