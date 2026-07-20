@@ -16,6 +16,7 @@ use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
 use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
@@ -24,8 +25,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// ─── Root redirect ───────────────────────────────────────────────────────────
-Route::get('/', fn () => redirect()->route('auth.login.show'))->name('home');
+// ─── Public landing page (FR-PUB-01) ─────────────────────────────────────────
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ─── Guest-only routes ────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {

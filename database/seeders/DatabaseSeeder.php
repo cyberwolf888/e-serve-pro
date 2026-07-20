@@ -27,25 +27,10 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        $guru = User::updateOrCreate([
-            'email' => 'guru@mail.com',
-        ], [
-            'name' => 'Guru',
-            'password' => Hash::make('password'),
-            'is_active' => true,
-        ]);
-
-        $siswa = User::updateOrCreate([
-            'email' => 'siswa@mail.com',
-        ], [
-            'name' => 'Siswa',
-            'password' => Hash::make('password'),
-            'is_active' => true,
-        ]);
-
         $superAdmin->syncRoles(['super_admin']);
-        $guru->syncRoles(['guru']);
-        $siswa->syncRoles(['siswa']);
 
+        // Demo fixtures: 10 guru (incl. guru@mail.com), 50 siswa (incl. siswa@mail.com),
+        // 5 kelas/guru, 25 siswa/kelas, 10 pertemuan/kelas + materi/kuis.
+        $this->call(DemoDataSeeder::class);
     }
 }

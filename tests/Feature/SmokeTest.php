@@ -19,10 +19,10 @@ class SmokeTest extends TestCase
 
     protected string $seeder = RoleSeeder::class;
 
-    /** @test — happy path: app root redirects guests to login */
+    /** @test — happy path: app root renders the public landing page (FR-PUB-01) */
     public function test_app_boots_and_welcome_route_returns_200(): void
     {
-        $this->get('/')->assertRedirect(route('auth.login.show'));
+        $this->get('/')->assertOk()->assertSee('Kurikulum Merdeka');
     }
 
     /** @test — happy path: authenticated siswa dashboard renders Metronic layout shell */

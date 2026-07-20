@@ -137,6 +137,21 @@
 
 ---
 
+## M7.5 — Public Landing Page
+
+- [x] Controller + route for `/` — guest sees landing, authenticated redirected by role. `[FR-PUB-01]`
+- [x] Public layout (topbar + footer, full-width, distinct from `layouts/guest.blade.php`). `[NFR-08]`
+- [x] Hero section (logo, tagline, Masuk/Daftar CTAs).
+- [x] Kurikulum Merdeka alignment blurb.
+- [x] Feature highlights grid (6 cards from PRD §1 core capabilities).
+- [x] Role explainer (Super Admin/Guru/Siswa, 3 cols).
+- [x] Footer (brand, contact placeholder, © year).
+- [x] Remove dead `resources/views/welcome.blade.php` (unused Laravel scaffold).
+- [x] Feature test: guest GET `/` \u2192 200 + key copy; each authed role GET `/` \u2192 redirected to own dashboard.
+- [x] **Gate M7.5:** guest lands on marketing page; all 3 roles bounce to their dashboard; Pint clean. `[FR-PUB-01]`
+
+---
+
 ## M8 — Hardening & Octane
 
 - [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`

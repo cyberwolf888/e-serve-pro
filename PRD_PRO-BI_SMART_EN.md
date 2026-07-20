@@ -115,6 +115,12 @@ Roles are fixed names: `super_admin`, `guru`, `siswa`. Implement RBAC with **spa
 
 IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 
+### 5.0 Public (`FR-PUB-*`)
+
+| ID | Requirement |
+|---|---|
+| FR-PUB-01 | Provide a public landing page at `/` (no auth required) with hero, Kurikulum Merdeka alignment blurb, feature highlights, role explainer, and footer sections; CTAs link to `/login` and `/register`. Authenticated users hitting `/` are redirected to their role dashboard instead. |
+
 ### 5.1 Auth & Account (`FR-AUTH-*`)
 
 | ID | Requirement |
@@ -388,6 +394,7 @@ Group by Spatie `role` middleware. Use resourceful controllers where sensible. `
 
 ```
 # Public / Guest
+GET   /                             home                       FR-PUB-01 (guest: landing page; auth: redirect to own dashboard)
 GET   /login                        auth.login.show
 POST  /login                        auth.login
 GET   /register                     auth.register.show        (siswa only)
