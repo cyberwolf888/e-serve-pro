@@ -7,7 +7,7 @@
             <i class="ki-filled ki-right text-muted-foreground text-[10px]"></i>
         @endif
         @if ($loop->last)
-            <span class="text-mono font-medium">{{ $item['label'] }}</span>
+            <span class="text-primary font-semibold">{{ $item['label'] }}</span>
         @elseif (!empty($item['url']))
             <a href="{{ $item['url'] }}" class="text-secondary-foreground hover:text-primary">{{ $item['label'] }}</a>
         @else

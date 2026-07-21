@@ -80,7 +80,7 @@
                     <table class="kt-table table-auto kt-table-border" data-kt-datatable-table="true">
                         <thead>
                             <tr>
-                                <th class="min-w-[280px]">
+                                <th class="min-w-[280px]" data-field="name">
                                     <span class="kt-table-col">
                                         <span class="kt-table-col-label">Kelas</span>
                                         <span class="kt-table-col-sort"></span>
@@ -115,7 +115,7 @@
                                     {{-- Kelas: name + code --}}
                                     <td>
                                         <div class="flex flex-col">
-                                            <a class="text-sm font-medium text-mono hover:text-primary mb-px"
+                                            <a class="text-sm font-bold text-blue-500 hover:text-primary mb-px"
                                                href="{{ route('admin.classes.show', $class) }}">
                                                 {{ $class->name }}
                                             </a>

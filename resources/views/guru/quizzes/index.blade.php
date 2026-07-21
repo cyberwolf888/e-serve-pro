@@ -28,7 +28,7 @@
                 <tbody>
                     @forelse($quizzes as $quiz)
                     <tr>
-                        <td><a class="hover:text-primary" href="{{ route('guru.classes.quizzes.show', [$class, $quiz]) }}">{{ $quiz->title }}</a></td>
+                        <td><a class="font-semibold text-primary hover:text-primary-active" href="{{ route('guru.classes.quizzes.show', [$class, $quiz]) }}">{{ $quiz->title }}</a></td>
                         <td>
                             @if($quiz->is_published)
                                 <span class="kt-badge kt-badge-success kt-badge-outline">Terbit</span>

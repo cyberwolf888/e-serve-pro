@@ -16,14 +16,14 @@ class QuizRepository
         return $class->quizzes()->withCount(['questions', 'attempts'])->latest()->get();
     }
 
-    /** Quizzes a siswa can take right now: published, within window, not yet attempted. FR-SW-05 */
+    /** Quizzes visible to a siswa right now: published, within window, flagged if already attempted. FR-SW-05 */
     public function availableForStudent(SchoolClass $class, User $student): Collection
     {
         return $class->quizzes()
             ->where('is_published', true)
             ->where(fn ($q) => $q->whereNull('opens_at')->orWhere('opens_at', '<=', now()))
             ->where(fn ($q) => $q->whereNull('closes_at')->orWhere('closes_at', '>=', now()))
-            ->whereDoesntHave('attempts', fn ($q) => $q->where('student_id', $student->id))
+            ->withExists(['attempts as attempted' => fn ($q) => $q->where('student_id', $student->id)])
             ->get();
     }
 

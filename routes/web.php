@@ -2,6 +2,7 @@
 
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
+use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -86,6 +87,9 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
     Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
     Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04
+    Route::resource('classes.materials', AdminMaterialController::class)->except(['show']);
     Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
     Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
 });

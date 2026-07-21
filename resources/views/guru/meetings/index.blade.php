@@ -28,7 +28,7 @@
                 <tbody>
                     @forelse($meetings as $meeting)
                     <tr>
-                        <td><a class="hover:text-primary" href="{{ route('guru.classes.meetings.show', [$class, $meeting]) }}">{{ $meeting->title }}</a></td>
+                        <td><a class="font-semibold text-primary hover:text-primary-active" href="{{ route('guru.classes.meetings.show', [$class, $meeting]) }}">{{ $meeting->title }}</a></td>
                         <td>{{ $meeting->scheduled_at->translatedFormat('d M Y H:i') }}</td>
                         <td>{{ $meeting->materials_count }}</td>
                         <td>{{ $meeting->attendances_count }}</td>

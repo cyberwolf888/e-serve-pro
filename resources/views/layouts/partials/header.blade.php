@@ -1,7 +1,6 @@
 {{-- layouts/partials/header.blade.php — NFR-08, M0 shell (topbar wired in M1+) --}}
-<header class="kt-header fixed top-0 z-10 start-0 end-0 flex items-stretch shrink-0 bg-background"
+<header class="kt-header fixed top-0 z-10 start-0 end-0 flex items-stretch shrink-0 bg-background border-b border-border"
         data-kt-sticky="true"
-        data-kt-sticky-class="border-b border-border"
         data-kt-sticky-name="header"
         id="header">
 
