@@ -5,8 +5,8 @@
     @include('layouts.partials.head')
     <title>Masuk — {{ config('app.name') }}</title>
     <style>
-        .branded-bg { background-image: url('/assets/media/images/2600x1600/1.png'); }
-        .dark .branded-bg { background-image: url('/assets/media/images/2600x1600/1-dark.png'); }
+        .branded-bg { background-image: url('/assets/media/images/2600x1600/login.jpg'); }
+        .dark .branded-bg { background-image: url('/assets/media/images/2600x1600/login.jpg'); }
     </style>
 </head>
 <body class="antialiased flex h-full text-base text-foreground bg-background">
@@ -111,7 +111,7 @@
         </div>
 
         {{-- Branded background column --}}
-        <div class="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-top xxl:bg-center xl:bg-cover bg-no-repeat branded-bg">
+        <div class="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-center bg-cover bg-no-repeat branded-bg">
             <div class="flex flex-col p-8 lg:p-16 gap-4">
                 <a href="{{ url('/') }}">
                     <img class="h-[64px] max-w-none dark:hidden" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>

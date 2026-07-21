@@ -31,7 +31,7 @@
             </div>
             {{-- ASSUMPTION: picsum.photos placeholder per user direction; swap for a real product screenshot later --}}
             <img
-                src="https://picsum.photos/seed/probismart/640/440"
+                src="{{ url('assets/media/images/600x400/siswa.jpg') }}"
                 alt="Pratinjau platform PRO-BI SMART"
                 class="rounded-2xl shadow-xl w-full transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
