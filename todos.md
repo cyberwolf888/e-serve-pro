@@ -152,6 +152,14 @@
 
 ---
 
+## M7.6 — Super Admin Dashboard
+
+- [x] 30-day operational dashboard: KPIs, activity chart, alerts, latest activity. `[FR-SA-06]`
+- [x] Teacher-owned 30-day dashboard: KPIs, teacher activity chart, class alerts, latest teacher activity. `[FR-GR-13]`
+- [x] Student 30-day learning dashboard: KPIs, activity chart, alerts, latest activity. `[FR-SW-06]`
+
+---
+
 ## M8 — Hardening & Octane
 
 - [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`

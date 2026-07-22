@@ -2,6 +2,7 @@
 
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MonitoringController as AdminMonitoringController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\GradeComponentController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
+use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
 use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
@@ -73,7 +75,8 @@ Route::get('/materials/{material}/download', MaterialDownloadController::class)
 
 // ─── Super Admin ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
+    // FR-SA-06
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
     Route::resource('users', AdminUserController::class)->except(['destroy']);
@@ -118,7 +121,8 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
-    Route::get('/dashboard', fn () => view('guru.dashboard'))->name('dashboard');
+    // FR-GR-13
+    Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::resource('classes', GuruSchoolClassController::class);
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');

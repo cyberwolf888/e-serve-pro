@@ -141,6 +141,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SA-03 | Manage all reference data & config (classes, materials, learning results). |
 | FR-SA-04 | Monitor all user activity via a monitoring view backed by activity logs (`BR-06`). |
 | FR-SA-05 | View and download (export) the recap of ALL registered classes. |
+| FR-SA-06 | View a 30-day operational dashboard with user and class KPIs, activity trend, operational alerts, and recent activity. |
 
 ### 5.3 Guru (`FR-GR-*`)
 
@@ -158,6 +159,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-GR-10 | View and manage the grade recap of all students in owned classes. |
 | FR-GR-11 | Calculate students' final grades from quiz results and other components. |
 | FR-GR-12 | Define final-grade component format and weights manually per class (`BR-03`). |
+| FR-GR-13 | View a 30-day dashboard for owned classes with KPIs, teacher activity trend, operational alerts, and recent teacher activity. |
 
 ### 5.4 Siswa (`FR-SW-*`)
 
