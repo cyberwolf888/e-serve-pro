@@ -2,7 +2,6 @@
 
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
-use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\MonitoringController as AdminMonitoringController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -92,8 +91,27 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
     Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04
-    Route::resource('classes.materials', AdminMaterialController::class)->except(['show']);
+    // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04 / ADMIN_CLASS_ACCESS_PLAN
+    Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
+
+    // FR-SA-03 / FR-GR-06 / FR-GR-07 / FR-GR-08
+    Route::resource('classes.meetings', GuruMeetingController::class);
+    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
+        ->name('classes.meetings.share');
+    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
+        ->name('classes.meetings.attendance.edit');
+    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
+        ->name('classes.meetings.attendance.store');
+
+    // FR-SA-03 / FR-GR-09
+    Route::resource('classes.quizzes', GuruQuizController::class);
+    Route::patch('classes/{class}/quizzes/{quiz}/publish', [GuruQuizController::class, 'publish'])->name('classes.quizzes.publish');
+    Route::patch('classes/{class}/quizzes/{quiz}/unpublish', [GuruQuizController::class, 'unpublish'])->name('classes.quizzes.unpublish');
+    Route::resource('classes.quizzes.questions', GuruQuizQuestionController::class)
+        ->except(['index', 'show']);
+
+    Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
+
     Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
     Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
 });

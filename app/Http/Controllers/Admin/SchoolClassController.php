@@ -53,9 +53,10 @@ class SchoolClassController extends Controller
     {
         $this->authorize('view', $class);
 
-        return view('admin.classes.show', [
+        return view('guru.classes.show', [
             'class' => $class->load('guru'),
             'members' => $this->repo->paginatedMembers($class),
+            'routePrefix' => 'admin',
         ]);
     }
 

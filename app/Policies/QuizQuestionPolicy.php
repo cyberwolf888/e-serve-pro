@@ -29,13 +29,26 @@ class QuizQuestionPolicy
     /**
      * Quiz must be unpublished and never attempted to edit its questions/options.
      * Content lock: once any attempt is submitted, questions/options are immutable forever.
+     * Super Admin bypasses class-active/owner-active guards but NOT integrity locks.
      */
     private function writable(User $user, Quiz $quiz): bool
     {
-        return ! $quiz->is_published
-            && ! $quiz->attempts()->exists()
-            && $quiz->schoolClass->is_active
-            && ReadOnlyGuard::isOwnerActive($quiz->schoolClass->guru)
-            && ($user->hasRole('super_admin') || ($user->hasRole('guru') && $quiz->schoolClass->guru_id === $user->id));
+        $class = $quiz->schoolClass;
+        $isOwner = $user->hasRole('guru') && $class->guru_id === $user->id;
+
+        if (! $user->hasRole('super_admin') && ! $isOwner) {
+            return false;
+        }
+
+        $writable = ! $quiz->is_published
+            && ! $quiz->attempts()->exists();
+
+        if ($user->hasRole('super_admin')) {
+            return $writable;
+        }
+
+        return $writable
+            && $class->is_active
+            && ReadOnlyGuard::isOwnerActive($class->guru);
     }
 }

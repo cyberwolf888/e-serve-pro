@@ -184,7 +184,7 @@
 - [x] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? *(decided: linked quiz component auto-fills/backfills scores; manual overrides persist)* `[§13]`
 - [x] **Q3** Recap export format — CSV / XLSX / PDF? *(decided: XLSX)* `[§13]`
 - [ ] **Q4** Extra required `siswa` fields (e.g. NIS / student ID)? `[§13]`
-- [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(decided: deferred — Guru+Siswa only this milestone; MaterialPolicy/MeetingPolicy already grant super_admin ✅ per §3.2, so a future Admin\* controller can reuse them without policy changes)*
+- [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(implemented via ADMIN_CLASS_ACCESS_PLAN: Super Admin reuses guru controllers/views under `/admin` with role-aware route prefix; policies grant true all-class access while quiz integrity locks remain)*
 
 ---
 

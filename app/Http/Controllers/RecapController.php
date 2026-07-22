@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-10 / FR-SA-05 / FR-SW-06 / §3.2 / M6
+// FR-GR-10 / FR-SA-05 / FR-SW-06 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers;
 
@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RecapController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(private GradeRepository $repo) {}
 
     public function classRecap(SchoolClass $class): View
@@ -23,7 +25,7 @@ class RecapController extends Controller
 
         return view('grades.recap.class', [
             'class' => $this->repo->recap($class),
-            'routePrefix' => auth()->user()?->hasRole('super_admin') ? 'admin' : 'guru',
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 

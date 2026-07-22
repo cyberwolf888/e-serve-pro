@@ -3,7 +3,7 @@
 @section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas', 'url' => route($routePrefix.'.classes.show', $class)], ['label' => $class->name], ['label' => 'Nilai']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
-    @if($routePrefix === 'guru')@include('guru.classes._tabs', ['class' => $class])@endif
+    @include('guru.classes._tabs', ['class' => $class, 'routePrefix' => $routePrefix])
     <div class="flex items-center justify-between gap-3"><h1 class="text-xl font-medium text-mono">Komponen Nilai — {{ $class->name }}</h1><a href="{{ route($routePrefix.'.classes.recap', $class) }}" class="kt-btn kt-btn-outline kt-btn-primary"><i class="ki-filled ki-chart"></i>Rekap Nilai</a></div>
     @if(session('success'))<div data-kt-toast data-variant="success" data-message="{{ session('success') }}" style="display:none"></div>@endif
     @if(session('error'))<div data-kt-toast data-variant="destructive" data-message="{{ session('error') }}" style="display:none"></div>@endif

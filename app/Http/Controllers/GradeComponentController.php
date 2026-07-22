@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-11 / FR-GR-12 / BR-03 / §3.2 / M6
+// FR-GR-11 / FR-GR-12 / BR-03 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers;
 
@@ -16,6 +16,8 @@ use Illuminate\View\View;
 
 class GradeComponentController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(
         private GradeRepository $repo,
         private GradeService $service,
@@ -29,7 +31,7 @@ class GradeComponentController extends Controller
             'class' => $class,
             'components' => $this->repo->components($class),
             'quizzes' => $class->quizzes()->orderBy('title')->get(),
-            'routePrefix' => $this->prefix(),
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -37,7 +39,7 @@ class GradeComponentController extends Controller
     {
         $this->service->createComponent($class, $request->validated());
 
-        return to_route($this->prefix().'.classes.grade-components.index', $class)
+        return to_route($this->routePrefix().'.classes.grade-components.index', $class)
             ->with('success', 'Komponen nilai berhasil ditambahkan.');
     }
 
@@ -46,7 +48,7 @@ class GradeComponentController extends Controller
         abort_unless($gradeComponent->class_id === $class->id, 404);
         $this->service->updateComponent($gradeComponent, $request->validated());
 
-        return to_route($this->prefix().'.classes.grade-components.index', $class)
+        return to_route($this->routePrefix().'.classes.grade-components.index', $class)
             ->with('success', 'Komponen nilai berhasil diperbarui.');
     }
 
@@ -56,7 +58,7 @@ class GradeComponentController extends Controller
         $this->authorize('delete', $gradeComponent);
         $this->service->deleteComponent($gradeComponent);
 
-        return to_route($this->prefix().'.classes.grade-components.index', $class)
+        return to_route($this->routePrefix().'.classes.grade-components.index', $class)
             ->with('success', 'Komponen nilai berhasil dihapus.');
     }
 
@@ -70,7 +72,7 @@ class GradeComponentController extends Controller
             'component' => $gradeComponent->load('scores'),
             'componentTitle' => $gradeComponent->name,
             'members' => $this->repo->members($class),
-            'routePrefix' => $this->prefix(),
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -79,12 +81,7 @@ class GradeComponentController extends Controller
         abort_unless($gradeComponent->class_id === $class->id, 404);
         $this->service->recordScores($gradeComponent, $request->validated('scores'));
 
-        return to_route($this->prefix().'.classes.grade-components.scores', [$class, $gradeComponent])
+        return to_route($this->routePrefix().'.classes.grade-components.scores', [$class, $gradeComponent])
             ->with('success', 'Nilai berhasil disimpan.');
-    }
-
-    private function prefix(): string
-    {
-        return auth()->user()?->hasRole('super_admin') ? 'admin' : 'guru';
     }
 }

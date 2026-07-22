@@ -1,16 +1,17 @@
-{{-- guru/meetings/index.blade.php — FR-GR-06 / NFR-08 / M4 --}}
+{{-- guru/meetings/index.blade.php — FR-GR-06 / FR-SA-03 / NFR-08 / M4 / ADMIN_CLASS_ACCESS_PLAN --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Pertemuan']]" />@endsection
+@php($indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya')
+@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Pertemuan']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
-    @include('guru.classes._tabs', ['class' => $class])
+    @include('guru.classes._tabs', ['class' => $class, 'routePrefix' => $routePrefix])
     <div class="flex items-center justify-between gap-3">
         <h1 class="text-xl font-medium text-mono">Pertemuan — {{ $class->name }}</h1>
-        @if($class->is_active)
-        <a href="{{ route('guru.classes.meetings.create', $class) }}" class="kt-btn kt-btn-primary">
+        @can('create', [App\Models\Meeting::class, $class])
+        <a href="{{ route($routePrefix.'.classes.meetings.create', $class) }}" class="kt-btn kt-btn-primary">
             <i class="ki-filled ki-plus me-1.5"></i>Tambah Pertemuan
         </a>
-        @endif
+        @endcan
     </div>
     @if(session('success'))<div class="kt-alert kt-alert-success">{{ session('success') }}</div>@endif
     <div class="kt-card">
@@ -28,19 +29,21 @@
                 <tbody>
                     @forelse($meetings as $meeting)
                     <tr>
-                        <td><a class="font-semibold text-primary hover:text-primary-active" href="{{ route('guru.classes.meetings.show', [$class, $meeting]) }}">{{ $meeting->title }}</a></td>
+                        <td><a class="font-semibold text-primary hover:text-primary-active" href="{{ route($routePrefix.'.classes.meetings.show', [$class, $meeting]) }}">{{ $meeting->title }}</a></td>
                         <td>{{ $meeting->scheduled_at->translatedFormat('d M Y H:i') }}</td>
                         <td>{{ $meeting->materials_count }}</td>
                         <td>{{ $meeting->attendances_count }}</td>
                         <td>
                             <div class="flex gap-1.5">
-                                @if($class->is_active)
-                                <a href="{{ route('guru.classes.meetings.edit', [$class, $meeting]) }}" class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost"><i class="ki-filled ki-pencil"></i></a>
-                                <form method="POST" action="{{ route('guru.classes.meetings.destroy', [$class, $meeting]) }}" onsubmit="return confirm('Hapus pertemuan {{ $meeting->title }}?')">
+                                @can('update', $meeting)
+                                <a href="{{ route($routePrefix.'.classes.meetings.edit', [$class, $meeting]) }}" class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost"><i class="ki-filled ki-pencil"></i></a>
+                                @endcan
+                                @can('delete', $meeting)
+                                <form method="POST" action="{{ route($routePrefix.'.classes.meetings.destroy', [$class, $meeting]) }}" onsubmit="return confirm('Hapus pertemuan {{ $meeting->title }}?')">
                                     @csrf @method('DELETE')
                                     <button class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost text-destructive"><i class="ki-filled ki-trash"></i></button>
                                 </form>
-                                @endif
+                                @endcan
                             </div>
                         </td>
                     </tr>

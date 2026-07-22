@@ -1,10 +1,11 @@
 <?php
 
-// FR-GR-09 / DATA-09 / DATA-10 / §3.2 / M5
+// FR-GR-09 / DATA-09 / DATA-10 / §3.2 / M5 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HasRoutePrefix;
 use App\Http\Requests\StoreQuizQuestionRequest;
 use App\Http\Requests\UpdateQuizQuestionRequest;
 use App\Models\Quiz;
@@ -16,20 +17,27 @@ use Illuminate\View\View;
 
 class QuizQuestionController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(private QuizQuestionService $service) {}
 
     public function create(SchoolClass $class, Quiz $quiz): View
     {
         $this->authorize('create', [QuizQuestion::class, $quiz]);
 
-        return view('guru.quiz-questions.create', ['class' => $class, 'quiz' => $quiz]);
+        return view('guru.quiz-questions.create', [
+            'class' => $class,
+            'quiz' => $quiz,
+            'routePrefix' => $this->routePrefix(),
+        ]);
     }
 
     public function store(StoreQuizQuestionRequest $request, SchoolClass $class, Quiz $quiz): RedirectResponse
     {
         $this->service->create($quiz, $request->validated());
 
-        return to_route('guru.classes.quizzes.show', [$class, $quiz])->with('success', 'Soal berhasil ditambahkan.');
+        return to_route($this->routePrefix().'.classes.quizzes.show', [$class, $quiz])
+            ->with('success', 'Soal berhasil ditambahkan.');
     }
 
     public function edit(SchoolClass $class, Quiz $quiz, QuizQuestion $question): View
@@ -40,6 +48,7 @@ class QuizQuestionController extends Controller
             'class' => $class,
             'quiz' => $quiz,
             'question' => $question->load('options'),
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -47,7 +56,8 @@ class QuizQuestionController extends Controller
     {
         $this->service->update($question, $request->validated());
 
-        return to_route('guru.classes.quizzes.show', [$class, $quiz])->with('success', 'Soal berhasil diperbarui.');
+        return to_route($this->routePrefix().'.classes.quizzes.show', [$class, $quiz])
+            ->with('success', 'Soal berhasil diperbarui.');
     }
 
     public function destroy(SchoolClass $class, Quiz $quiz, QuizQuestion $question): RedirectResponse
@@ -55,6 +65,7 @@ class QuizQuestionController extends Controller
         $this->authorize('delete', $question);
         $this->service->delete($question);
 
-        return to_route('guru.classes.quizzes.show', [$class, $quiz])->with('success', 'Soal berhasil dihapus.');
+        return to_route($this->routePrefix().'.classes.quizzes.show', [$class, $quiz])
+            ->with('success', 'Soal berhasil dihapus.');
     }
 }
