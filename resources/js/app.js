@@ -1,7 +1,30 @@
 // NFR-08 — initialise KTUI components
 import KTCore from '@keenthemes/ktui';
-import { KTModal } from '@keenthemes/ktui';
+import { KTModal, KTToast } from '@keenthemes/ktui';
 KTCore.init();
+
+// NFR-08 — flash notifications as KTUI Toasts on every page
+const toastIcon = (variant) => ({
+    success: '<i class="ki-filled ki-check-circle"></i>',
+    destructive: '<i class="ki-filled ki-cross-circle"></i>',
+    error: '<i class="ki-filled ki-cross-circle"></i>',
+    warning: '<i class="ki-filled ki-warning"></i>',
+    info: '<i class="ki-filled ki-information-2"></i>',
+}[variant] ?? '<i class="ki-filled ki-notification"></i>');
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-kt-toast]').forEach((el) => {
+        const variant = el.dataset.variant ?? 'primary';
+        KTToast.show({
+            message: el.dataset.message ?? el.textContent ?? '',
+            variant,
+            icon: toastIcon(variant),
+            duration: Number(el.dataset.duration ?? 4000),
+            position: el.dataset.position ?? 'top-end',
+        });
+        el.remove();
+    });
+});
 
 // FR-GR-02 / FR-SA-03 — populate the shared activate/deactivate confirm modal
 // from the clicked row action's data-* attributes before it opens.

@@ -67,6 +67,18 @@ class GradingTest extends TestCase
         $this->actingAs($other)->get(route('guru.classes.grade-components.index', $class))->assertForbidden();
     }
 
+    public function test_guru_can_delete_component_and_other_guru_cannot(): void
+    {
+        $guru = $this->user('guru');
+        $other = $this->user('guru');
+        $class = $this->schoolClass($guru);
+        $component = GradeComponent::create(['class_id' => $class->id, 'name' => 'Tugas', 'weight' => 25]);
+
+        $this->actingAs($other)->delete(route('guru.classes.grade-components.destroy', [$class, $component]))->assertForbidden();
+        $this->actingAs($guru)->delete(route('guru.classes.grade-components.destroy', [$class, $component]))->assertRedirect();
+        $this->assertModelMissing($component);
+    }
+
     public function test_quiz_component_backfills_attempt_and_keeps_manual_override(): void
     {
         $guru = $this->user('guru');

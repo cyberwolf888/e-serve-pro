@@ -68,6 +68,7 @@ class GradeComponentController extends Controller
         return view('grades.components.scores', [
             'class' => $class,
             'component' => $gradeComponent->load('scores'),
+            'componentTitle' => $gradeComponent->name,
             'members' => $this->repo->members($class),
             'routePrefix' => $this->prefix(),
         ]);
