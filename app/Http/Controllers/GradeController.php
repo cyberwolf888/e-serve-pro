@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-11 / §3.2 / M6
+// FR-GR-11 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers;
 
@@ -11,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 
 class GradeController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(private GradeService $service) {}
 
     public function calculate(SchoolClass $class): RedirectResponse
@@ -18,8 +20,6 @@ class GradeController extends Controller
         $this->authorize('calculate', [GradeComponent::class, $class]);
         $this->service->calculate($class);
 
-        $prefix = auth()->user()?->hasRole('super_admin') ? 'admin' : 'guru';
-
-        return to_route($prefix.'.classes.recap', $class)->with('success', 'Nilai akhir berhasil dihitung.');
+        return to_route($this->routePrefix().'.classes.recap', $class)->with('success', 'Nilai akhir berhasil dihitung.');
     }
 }

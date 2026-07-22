@@ -2,7 +2,8 @@
 
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
-use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\MonitoringController as AdminMonitoringController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\GradeComponentController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
+use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
 use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
@@ -73,10 +75,14 @@ Route::get('/materials/{material}/download', MaterialDownloadController::class)
 
 // ─── Super Admin ──────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
+    // FR-SA-06
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
     Route::resource('users', AdminUserController::class)->except(['destroy']);
+
+    // FR-SA-04 — activity logs monitoring
+    Route::get('monitoring', [AdminMonitoringController::class, 'index'])->name('monitoring');
     Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
     Route::resource('classes', AdminSchoolClassController::class);
     Route::patch('classes/{class}/activate', [AdminSchoolClassController::class, 'activate'])->name('classes.activate');
@@ -88,15 +94,35 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
     Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04
-    Route::resource('classes.materials', AdminMaterialController::class)->except(['show']);
+    // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04 / ADMIN_CLASS_ACCESS_PLAN
+    Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
+
+    // FR-SA-03 / FR-GR-06 / FR-GR-07 / FR-GR-08
+    Route::resource('classes.meetings', GuruMeetingController::class);
+    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
+        ->name('classes.meetings.share');
+    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
+        ->name('classes.meetings.attendance.edit');
+    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
+        ->name('classes.meetings.attendance.store');
+
+    // FR-SA-03 / FR-GR-09
+    Route::resource('classes.quizzes', GuruQuizController::class);
+    Route::patch('classes/{class}/quizzes/{quiz}/publish', [GuruQuizController::class, 'publish'])->name('classes.quizzes.publish');
+    Route::patch('classes/{class}/quizzes/{quiz}/unpublish', [GuruQuizController::class, 'unpublish'])->name('classes.quizzes.unpublish');
+    Route::resource('classes.quizzes.questions', GuruQuizQuestionController::class)
+        ->except(['index', 'show']);
+
+    Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
+
     Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
     Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
 });
 
 // ─── Guru ─────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
-    Route::get('/dashboard', fn () => view('guru.dashboard'))->name('dashboard');
+    // FR-GR-13
+    Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::resource('classes', GuruSchoolClassController::class);
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');

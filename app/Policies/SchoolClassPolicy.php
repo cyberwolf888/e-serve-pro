@@ -29,9 +29,14 @@ class SchoolClassPolicy
 
     public function update(User $user, SchoolClass $class): bool
     {
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+
         return $class->is_active
             && ReadOnlyGuard::isOwnerActive($class->guru)
-            && ($user->hasRole('super_admin') || ($user->hasRole('guru') && $class->guru_id === $user->id));
+            && $user->hasRole('guru')
+            && $class->guru_id === $user->id;
     }
 
     public function deactivate(User $user, SchoolClass $class): bool
@@ -41,9 +46,14 @@ class SchoolClassPolicy
 
     public function activate(User $user, SchoolClass $class): bool
     {
+        if ($user->hasRole('super_admin')) {
+            return ! $class->is_active;
+        }
+
         return ! $class->is_active
             && ReadOnlyGuard::isOwnerActive($class->guru)
-            && ($user->hasRole('super_admin') || ($user->hasRole('guru') && $class->guru_id === $user->id));
+            && $user->hasRole('guru')
+            && $class->guru_id === $user->id;
     }
 
     public function addStudent(User $user, SchoolClass $class): bool

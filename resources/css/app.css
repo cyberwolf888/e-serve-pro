@@ -16,3 +16,21 @@
 /* Scan Blade templates so custom utility classes are not purged */
 @source '../../resources/views/**/*.blade.php';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+.dashboard-kpi-success {
+    background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 55%, transparent 100%);
+}
+
+.dashboard-kpi-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 55%, transparent 100%);
+}
+
+.dashboard-kpi-success-icon {
+    background-color: #bbf7d0;
+    color: #15803d;
+}
+
+.dashboard-kpi-warning-icon {
+    background-color: #fde68a;
+    color: #b45309;
+}

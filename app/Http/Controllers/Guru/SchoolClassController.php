@@ -1,10 +1,11 @@
 <?php
 
-// FR-GR-02 / FR-GR-03 / BR-05 / §3.2 / M3
+// FR-GR-02 / FR-GR-03 / BR-05 / §3.2 / M3 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HasRoutePrefix;
 use App\Http\Requests\AddClassStudentRequest;
 use App\Http\Requests\StoreSchoolClassRequest;
 use App\Http\Requests\UpdateSchoolClassRequest;
@@ -18,6 +19,8 @@ use Illuminate\View\View;
 
 class SchoolClassController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(
         private SchoolClassRepository $repo,
         private SchoolClassService $service,
@@ -57,6 +60,7 @@ class SchoolClassController extends Controller
         return view('guru.classes.show', [
             'class' => $class,
             'members' => $this->repo->paginatedMembers($class),
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -92,6 +96,8 @@ class SchoolClassController extends Controller
 
     public function addStudent(AddClassStudentRequest $request, SchoolClass $class): RedirectResponse
     {
+        $this->authorize('addStudent', $class);
+
         $student = User::role('siswa')->where('is_active', true)->where('email', $request->string('email')->toString())->first();
 
         if (! $student) {
@@ -100,6 +106,6 @@ class SchoolClassController extends Controller
 
         $this->service->addStudent($class, $student);
 
-        return to_route('guru.classes.show', $class)->with('success', 'Siswa berhasil ditambahkan.');
+        return to_route($this->routePrefix().'.classes.show', $class)->with('success', 'Siswa berhasil ditambahkan.');
     }
 }

@@ -53,8 +53,15 @@ class GradeComponentPolicy
 
     private function writable(User $user, SchoolClass $class): bool
     {
+        if (! $this->readable($user, $class)) {
+            return false;
+        }
+
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+
         return $class->is_active
-            && ReadOnlyGuard::isOwnerActive($class->guru)
-            && $this->readable($user, $class);
+            && ReadOnlyGuard::isOwnerActive($class->guru);
     }
 }

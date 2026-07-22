@@ -1,6 +1,6 @@
 {{-- DATA-15 / FR-GR-11 / NFR-08 / M6 --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Nilai', 'url' => route($routePrefix.'.classes.grade-components.index', $class)], ['label' => $component->name]]" />@endsection
+@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Nilai', 'url' => route($routePrefix.'.classes.grade-components.index', $class)], ['label' => $componentTitle]]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     <div class="flex items-center justify-between"><h1 class="text-xl font-medium text-mono">Nilai {{ $component->name }}</h1><a href="{{ route($routePrefix.'.classes.grade-components.index', $class) }}" class="kt-btn kt-btn-outline">Kembali</a></div>

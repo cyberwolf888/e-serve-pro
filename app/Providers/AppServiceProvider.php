@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ActivityLog;
 use App\Models\FinalGrade;
 use App\Models\GradeComponent;
 use App\Models\Material;
@@ -10,6 +11,7 @@ use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Policies\ActivityLogPolicy;
 use App\Policies\FinalGradePolicy;
 use App\Policies\GradeComponentPolicy;
 use App\Policies\MaterialPolicy;
@@ -29,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // §3.2 — UserPolicy
         Gate::policy(User::class, UserPolicy::class);
+
+        // M7
+        Gate::policy(ActivityLog::class, ActivityLogPolicy::class);
         Gate::policy(SchoolClass::class, SchoolClassPolicy::class);
         // M4
         Gate::policy(Material::class, MaterialPolicy::class);

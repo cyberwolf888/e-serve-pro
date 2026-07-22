@@ -1,11 +1,12 @@
-{{-- guru/materials/edit.blade.php — FR-GR-04 / FR-GR-05 / NFR-08 / M4 --}}
+{{-- guru/materials/edit.blade.php — FR-GR-04 / FR-GR-05 / FR-SA-03 / NFR-08 / M4 / ADMIN_CLASS_ACCESS_PLAN --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Materi', 'url' => route('guru.classes.materials.index', $class)], ['label' => $material->title]]" />@endsection
+@php($indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya')
+@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Materi', 'url' => route($routePrefix.'.classes.materials.index', $class)], ['label' => $material->title]]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5 py-6 xl:w-[38.75rem] mx-auto">
-    <div class="flex items-center gap-3"><a href="{{ route('guru.classes.materials.index', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a><h1 class="text-xl font-semibold text-mono">{{ $material->title }}</h1></div>
+    <div class="flex items-center gap-3"><a href="{{ route($routePrefix.'.classes.materials.index', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a><h1 class="text-xl font-semibold text-mono">{{ $material->title }}</h1></div>
     <div class="kt-card">
-        <form method="POST" action="{{ route('guru.classes.materials.update', [$class, $material]) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route($routePrefix.'.classes.materials.update', [$class, $material]) }}" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="kt-card-content grid gap-5 p-7.5">
                 @include('guru.materials._form')

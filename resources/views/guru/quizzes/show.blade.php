@@ -1,11 +1,12 @@
-{{-- guru/quizzes/show.blade.php — FR-GR-09 / NFR-08 / M5 --}}
+{{-- guru/quizzes/show.blade.php — FR-GR-09 / FR-SA-03 / NFR-08 / M5 / ADMIN_CLASS_ACCESS_PLAN --}}
 @extends('layouts.app')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('guru.classes.index')], ['label' => $class->name, 'url' => route('guru.classes.show', $class)], ['label' => 'Kuis', 'url' => route('guru.classes.quizzes.index', $class)], ['label' => $quiz->title]]" />@endsection
+@php($indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya')
+@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Kuis', 'url' => route($routePrefix.'.classes.quizzes.index', $class)], ['label' => $quiz->title]]" />@endsection
 @section('content')
 @php($locked = $quiz->is_published || $quiz->attempts_count > 0)
 <div class="grid gap-5 lg:gap-7.5 py-6 xl:w-[46rem] mx-auto">
     <div class="flex items-center gap-3">
-        <a href="{{ route('guru.classes.quizzes.index', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a>
+        <a href="{{ route($routePrefix.'.classes.quizzes.index', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a>
         <h1 class="text-xl font-semibold text-mono grow">{{ $quiz->title }}</h1>
         @if($quiz->is_published)
             <span class="kt-badge kt-badge-success kt-badge-outline">Terbit</span>
@@ -24,33 +25,33 @@
                 Dibuka: {{ $quiz->opens_at?->translatedFormat('d M Y H:i') ?? 'Segera setelah dipublikasikan' }} &middot;
                 Ditutup: {{ $quiz->closes_at?->translatedFormat('d M Y H:i') ?? 'Tanpa batas waktu' }}
             </p>
-            @if($class->is_active)
+            @can('update', $quiz)
             <div class="flex gap-2.5">
-                <a href="{{ route('guru.classes.quizzes.edit', [$class, $quiz]) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-pencil me-1.5"></i>Ubah Detail</a>
+                <a href="{{ route($routePrefix.'.classes.quizzes.edit', [$class, $quiz]) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-pencil me-1.5"></i>Ubah Detail</a>
                 @if($quiz->is_published)
-                <form method="POST" action="{{ route('guru.classes.quizzes.unpublish', [$class, $quiz]) }}">
+                <form method="POST" action="{{ route($routePrefix.'.classes.quizzes.unpublish', [$class, $quiz]) }}">
                     @csrf @method('PATCH')
                     <button class="kt-btn kt-btn-outline">Batalkan Publikasi</button>
                 </form>
                 @else
-                <form method="POST" action="{{ route('guru.classes.quizzes.publish', [$class, $quiz]) }}">
+                <form method="POST" action="{{ route($routePrefix.'.classes.quizzes.publish', [$class, $quiz]) }}">
                     @csrf @method('PATCH')
                     <button class="kt-btn kt-btn-primary">Publikasikan</button>
                 </form>
                 @endif
             </div>
-            @endif
+            @endcan
         </div>
     </div>
 
     <div class="kt-card">
         <div class="kt-card-header flex items-center justify-between">
             <h3 class="kt-card-title text-sm">Soal</h3>
-            @if($class->is_active && ! $locked)
-            <a href="{{ route('guru.classes.quizzes.questions.create', [$class, $quiz]) }}" class="kt-btn kt-btn-sm kt-btn-primary">
+            @can('create', [App\Models\QuizQuestion::class, $quiz])
+            <a href="{{ route($routePrefix.'.classes.quizzes.questions.create', [$class, $quiz]) }}" class="kt-btn kt-btn-sm kt-btn-primary">
                 <i class="ki-filled ki-plus me-1"></i>Tambah Soal
             </a>
-            @endif
+            @endcan
         </div>
         <div class="kt-card-content grid gap-5 p-7.5">
             @if($locked)
@@ -60,15 +61,15 @@
                 <div class="grid gap-2">
                     <div class="flex items-start justify-between gap-3">
                         <p class="font-medium">{{ $index + 1 }}. {{ $question->question_text }}</p>
-                        @if($class->is_active && ! $locked)
+                        @can('update', $question)
                         <div class="flex gap-1.5 shrink-0">
-                            <a href="{{ route('guru.classes.quizzes.questions.edit', [$class, $quiz, $question]) }}" class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost"><i class="ki-filled ki-pencil"></i></a>
-                            <form method="POST" action="{{ route('guru.classes.quizzes.questions.destroy', [$class, $quiz, $question]) }}" onsubmit="return confirm('Hapus soal ini?')">
+                            <a href="{{ route($routePrefix.'.classes.quizzes.questions.edit', [$class, $quiz, $question]) }}" class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost"><i class="ki-filled ki-pencil"></i></a>
+                            <form method="POST" action="{{ route($routePrefix.'.classes.quizzes.questions.destroy', [$class, $quiz, $question]) }}" onsubmit="return confirm('Hapus soal ini?')">
                                 @csrf @method('DELETE')
                                 <button class="kt-btn kt-btn-sm kt-btn-icon kt-btn-ghost text-destructive"><i class="ki-filled ki-trash"></i></button>
                             </form>
                         </div>
-                        @endif
+                        @endcan
                     </div>
                     <ul class="grid gap-1 ps-4 text-sm">
                         @foreach($question->options as $option)

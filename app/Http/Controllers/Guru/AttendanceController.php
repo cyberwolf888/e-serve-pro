@@ -1,10 +1,11 @@
 <?php
 
-// FR-GR-07 / BR-06 / §3.2 / M4
+// FR-GR-07 / BR-06 / §3.2 / M4 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HasRoutePrefix;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Models\Meeting;
 use App\Models\SchoolClass;
@@ -15,6 +16,8 @@ use Illuminate\View\View;
 
 class AttendanceController extends Controller
 {
+    use HasRoutePrefix;
+
     public function __construct(
         private AttendanceRepository $repo,
         private AttendanceService $service,
@@ -29,6 +32,7 @@ class AttendanceController extends Controller
             'meeting' => $meeting,
             'members' => $class->members()->with('student')->get(),
             'existing' => $this->repo->forMeeting($meeting),
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -36,7 +40,7 @@ class AttendanceController extends Controller
     {
         $this->service->record($meeting, $request->validated('statuses'), $request);
 
-        return to_route('guru.classes.meetings.attendance.edit', [$class, $meeting])
+        return to_route($this->routePrefix().'.classes.meetings.attendance.edit', [$class, $meeting])
             ->with('success', 'Absensi berhasil dicatat.');
     }
 }

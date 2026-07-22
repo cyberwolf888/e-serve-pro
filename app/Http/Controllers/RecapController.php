@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-10 / FR-SA-05 / FR-SW-06 / §3.2 / M6
+// FR-GR-10 / FR-SA-05 / FR-SW-06 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers;
 
@@ -8,6 +8,7 @@ use App\Models\FinalGrade;
 use App\Models\GradeComponent;
 use App\Models\SchoolClass;
 use App\Repositories\GradeRepository;
+use App\Services\SiswaDashboardService;
 use Illuminate\View\View;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -15,7 +16,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RecapController extends Controller
 {
-    public function __construct(private GradeRepository $repo) {}
+    use HasRoutePrefix;
+
+    public function __construct(
+        private GradeRepository $repo,
+        private SiswaDashboardService $siswaDashboard,
+    ) {}
 
     public function classRecap(SchoolClass $class): View
     {
@@ -23,7 +29,7 @@ class RecapController extends Controller
 
         return view('grades.recap.class', [
             'class' => $this->repo->recap($class),
-            'routePrefix' => auth()->user()?->hasRole('super_admin') ? 'admin' : 'guru',
+            'routePrefix' => $this->routePrefix(),
         ]);
     }
 
@@ -45,7 +51,7 @@ class RecapController extends Controller
     {
         $this->authorize('viewAny', FinalGrade::class);
 
-        return view('siswa.dashboard', ['grades' => $this->repo->gradesForStudent(auth()->user())->take(3)]);
+        return view('siswa.dashboard', ['dashboard' => $this->siswaDashboard->data(auth()->user())]);
     }
 
     public function exportClass(SchoolClass $class): StreamedResponse

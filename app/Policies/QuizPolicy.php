@@ -66,8 +66,13 @@ class QuizPolicy
     /** super_admin all / guru OWN active class of an active guru. §3.2 / BR-05 */
     private function writable(User $user, SchoolClass $class): bool
     {
+        if ($user->hasRole('super_admin')) {
+            return $this->viewAny($user, $class);
+        }
+
         return $class->is_active
             && ReadOnlyGuard::isOwnerActive($class->guru)
-            && ($user->hasRole('super_admin') || ($user->hasRole('guru') && $class->guru_id === $user->id));
+            && $user->hasRole('guru')
+            && $class->guru_id === $user->id;
     }
 }
