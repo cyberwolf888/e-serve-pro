@@ -3,6 +3,7 @@
 // §8 — Route map / M1 Auth & RBAC / M2 Users Admin
 
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
+use App\Http\Controllers\Admin\MonitoringController as AdminMonitoringController;
 use App\Http\Controllers\Admin\SchoolClassController as AdminSchoolClassController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -77,6 +78,9 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     // FR-SA-02 / §8 — Users CRUD (no destroy = deactivation via status route)
     Route::resource('users', AdminUserController::class)->except(['destroy']);
+
+    // FR-SA-04 — activity logs monitoring
+    Route::get('monitoring', [AdminMonitoringController::class, 'index'])->name('monitoring');
     Route::patch('users/{user}/status', [AdminUserController::class, 'toggleStatus'])->name('users.status');
     Route::resource('classes', AdminSchoolClassController::class);
     Route::patch('classes/{class}/activate', [AdminSchoolClassController::class, 'activate'])->name('classes.activate');

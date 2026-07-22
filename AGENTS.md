@@ -43,3 +43,23 @@ Open this project using the URL defined in the `.env` file (e.g. `APP_URL`). Do 
 2. Validation enforced per PRD §9.
 3. Feature test covers happy path **and** failure path — both green.
 4. `./vendor/bin/pint` clean; the matching `@todos.md` checkbox is ticked.
+
+# context-mode Routing Rules
+
+## Do Not Use Direct Fetching In Shell
+- Never use shell `curl`, `wget`, inline `fetch('http')`, `requests.get/post`, `http.get`, or `http.request`; they are blocked.
+- Use `context-mode_ctx_fetch_and_index(url, source)` for web pages, then `context-mode_ctx_search(queries)`.
+- Use `context-mode_ctx_execute(language: "javascript", code: "...")` for HTTP API calls; print only summaries.
+
+## Route Large Output Through context-mode
+- Use shell only for short-output commands such as git writes/status, `mkdir`, `rm`, `mv`, `ls`, installs, and navigation.
+- For commands that may exceed 20 lines, use `context-mode_ctx_batch_execute` or `context-mode_ctx_execute`.
+- For file analysis/summaries, use `context-mode_ctx_execute_file`; read files normally only when edit context is needed.
+- For large search/grep output, use `context-mode_ctx_execute` and print summarized results.
+
+## Tool Priority
+- Gather: `context-mode_ctx_batch_execute(commands, queries)`.
+- Follow up: `context-mode_ctx_search(queries)`.
+- Process: `context-mode_ctx_execute` or `context-mode_ctx_execute_file`.
+- Web: `context-mode_ctx_fetch_and_index` then `context-mode_ctx_search`.
+- Index reusable docs/content with `context-mode_ctx_index`.

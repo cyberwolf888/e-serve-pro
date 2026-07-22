@@ -84,7 +84,7 @@
                         </span>
                     </a>
                 </div>
-                <div class="kt-menu-item {{ request()->routeIs('admin.classes.*') ? 'active' : '' }}">
+                <div class="kt-menu-item {{ request()->routeIs('admin.classes.*') && ! request()->routeIs('admin.classes.recap*') ? 'active' : '' }}">
                     <a class="kt-menu-link border border-transparent items-center grow
                               kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
                               hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
@@ -99,8 +99,35 @@
                         </span>
                     </a>
                 </div>
-                <div class="kt-menu-item {{ request()->routeIs('admin.recap.*') ? 'active' : '' }}">
-                    <a class="kt-menu-link border border-transparent items-center grow hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]" href="{{ route('admin.recap.index') }}"><span class="kt-menu-icon w-[20px]"><i class="ki-filled ki-chart-line text-lg"></i></span><span class="kt-menu-title text-sm font-medium text-foreground">Rekap Nilai</span></a>
+                <div class="kt-menu-item {{ request()->routeIs('admin.recap.*', 'admin.classes.recap', 'admin.classes.recap.export') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('admin.recap.index') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            <i class="ki-filled ki-chart-line text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Rekap Nilai
+                        </span>
+                    </a>
+                </div>
+                <div class="kt-menu-item {{ request()->routeIs('admin.monitoring') ? 'active' : '' }}">
+                    <a class="kt-menu-link border border-transparent items-center grow
+                              kt-menu-item-active:bg-accent/60 kt-menu-item-active:rounded-lg
+                              hover:bg-accent/60 hover:rounded-lg gap-[10px] ps-[10px] pe-[10px] py-[8px]"
+                       href="{{ route('admin.monitoring') }}">
+                        <span class="kt-menu-icon items-start text-muted-foreground w-[20px]
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            <i class="ki-filled ki-status text-lg"></i>
+                        </span>
+                        <span class="kt-menu-title text-sm font-medium text-foreground
+                                     kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
+                            Monitoring
+                        </span>
+                    </a>
                 </div>
                 @endrole
 

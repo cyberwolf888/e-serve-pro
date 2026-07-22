@@ -129,11 +129,11 @@
 
 ## M7 — Monitoring
 
-- [ ] Super Admin monitoring UI over `activity_logs`. `[FR-SA-04, BR-06]`
-- [ ] Filters: by user, event_type, date range. `[BR-06]`
-- [ ] Confirm login, quiz_attempt, attendance events all recorded from M1/M5/M4. `[BR-06]`
-- [ ] Paginate logs. `[NFR-02]`
-- [ ] **Gate M7:** all event types visible & filterable by super_admin. `[§11 Monitoring scenario]`
+- [x] Super Admin monitoring UI over `activity_logs`. `[FR-SA-04, BR-06]`
+- [x] Filters: by user, event_type, date range. `[BR-06]`
+- [x] Confirm login, quiz_attempt, attendance events all recorded from M1/M5/M4. `[BR-06]`
+- [x] Paginate logs. `[NFR-02]`
+- [x] **Gate M7:** all event types visible & filterable by super_admin. `[§11 Monitoring scenario]`
 
 ---
 
