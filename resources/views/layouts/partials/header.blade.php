@@ -53,6 +53,12 @@
                     <ul class="kt-dropdown-menu-sub">
                         <li><div class="kt-dropdown-menu-separator"></div></li>
                         <li>
+                            <a class="kt-dropdown-menu-link" href="{{ route('profile.show') }}">
+                                <i class="ki-filled ki-user"></i>
+                                Profil Saya
+                            </a>
+                        </li>
+                        <li>
                             <form method="POST" action="{{ route('auth.logout') }}">
                                 @csrf
                                 <button type="submit" class="kt-dropdown-menu-link w-full text-left">

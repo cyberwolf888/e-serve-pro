@@ -160,6 +160,18 @@
 
 ---
 
+## M7.7 — Profile Page (all roles)
+
+- [x] Single shared `/profile` route for all authenticated roles. `[FR-AUTH-01]`
+- [x] ProfileController: show + update (name, email, password change), block inactive users. `[FR-AUTH-01 / FR-AUTH-05 / FR-AUTH-06 / BR-05]`
+- [x] UpdateProfileRequest validation with current-password check and unique email. `[§9]`
+- [x] Metronic profile view with role badge, status badge, form disabled for inactive users. `[NFR-08]`
+- [x] Header user dropdown link to profile. `[FR-AUTH-01]`
+- [x] Feature tests: view + update for super_admin/guru/siswa; failure paths (wrong password, duplicate email, inactive user, validation). `[§11]`
+- [x] Pint clean; tests green.
+
+---
+
 ## M8 — Hardening & Octane
 
 - [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`
