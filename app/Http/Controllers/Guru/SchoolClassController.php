@@ -11,6 +11,7 @@ use App\Http\Requests\StoreSchoolClassRequest;
 use App\Http\Requests\UpdateSchoolClassRequest;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Notifications\AddedToClass;
 use App\Repositories\SchoolClassRepository;
 use App\Services\SchoolClassService;
 use Illuminate\Http\RedirectResponse;
@@ -104,7 +105,7 @@ class SchoolClassController extends Controller
             return back()->withErrors(['email' => 'Siswa aktif dengan email tersebut tidak ditemukan.']);
         }
 
-        $this->service->addStudent($class, $student);
+        $this->service->addStudent($class, $student, 'email', AddedToClass::REASON_ADDED);
 
         return to_route($this->routePrefix().'.classes.show', $class)->with('success', 'Siswa berhasil ditambahkan.');
     }
