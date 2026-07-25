@@ -21,6 +21,7 @@ use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionControll
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MaterialDownloadController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
@@ -55,6 +56,12 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->name('auth.logout');
 // ponytail: GET fallback for stray reload/back-button hits on /logout, avoids 405
 Route::get('/logout', fn () => redirect()->route('auth.login.show'))->middleware('auth');
+
+// FR-AUTH-01 — shared profile page for all roles
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 // FR-AUTH-01 — role-aware dashboard redirect so generic /dashboard link never 404s
 Route::get('/dashboard', function () {
