@@ -15,6 +15,11 @@ Web-based Indonesian-language learning platform aligned with *Kurikulum Merdeka*
 - **Caveman mode always on.** All responses must be terse, ultra-compressed, token-efficient. No preamble, no summary, no filler.
 - **Ponytail (YAGNI) for every code change.** Climb the ladder: delete > stdlib > native > already-installed dep > one-liner > minimal code. No speculative abstractions, no scaffolding "for later," no interface with one impl. Shortest diff that works.
 
+## Workspace Discipline
+
+- **Never discard or revert the user's unrelated work.** When keeping a diff focused, do not `git checkout`, `git reset`, `git clean`, or `git stash pop` away files that are not part of the current task. If unsure whether a changed file belongs to the task, ask before touching it.
+- **Check `git status` and `git diff --stat` before any destructive operation.** Untracked files and unstaged changes are the user's work — preserve them.
+
 ## Code Standards
 
 - Code, identifiers, comments, commits = **English**. UI copy = **Bahasa Indonesia**.

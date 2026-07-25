@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\ClassMember;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Notifications\AddedToClass;
 use App\Repositories\SchoolClassRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -47,14 +48,18 @@ class SchoolClassService
         return $this->repo->activate($class);
     }
 
-    public function addStudent(SchoolClass $class, User $student, string $errorField = 'email'): ClassMember
+    public function addStudent(SchoolClass $class, User $student, string $errorField = 'email', string $reason = AddedToClass::REASON_ADDED): ClassMember
     {
-        return DB::transaction(function () use ($class, $student, $errorField) {
+        return DB::transaction(function () use ($class, $student, $errorField, $reason) {
             if (ClassMember::where('class_id', $class->id)->where('student_id', $student->id)->exists()) {
                 throw ValidationException::withMessages([$errorField => 'Siswa sudah tergabung di kelas ini.']);
             }
 
-            return $this->repo->addMember($class, $student);
+            $member = $this->repo->addMember($class, $student);
+
+            $student->notify(new AddedToClass($class, $reason));
+
+            return $member;
         });
     }
 }

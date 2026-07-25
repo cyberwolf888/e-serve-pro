@@ -5,18 +5,21 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'is_active', 'created_by'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
@@ -64,5 +67,30 @@ class User extends Authenticatable
     public function finalGrades(): HasMany
     {
         return $this->hasMany(FinalGrade::class, 'student_id');
+    }
+
+    /** Indonesian locale for all notifications. FR-AUTH-04 */
+    public function preferredLocale(): string
+    {
+        return 'id';
+    }
+
+    /** Send Indonesian password reset notification. FR-AUTH-04 / BR-02 */
+    public function sendPasswordResetNotification($token): void
+    {
+        $notification = new ResetPasswordNotification($token);
+        $notification->toMailUsing(
+            fn ($notifiable, $token) => (new MailMessage)
+                ->subject('Atur Ulang Kata Sandi')
+                ->line('Anda menerima email ini karena ada permintaan pengaturan ulang kata sandi untuk akun Anda.')
+                ->action('Atur Ulang Kata Sandi', url(route('auth.reset.show', [
+                    'token' => $token,
+                    'email' => $notifiable->getEmailForPasswordReset(),
+                ], false)))
+                ->line('Tautan pengaturan ulang kata sandi ini akan kedaluwarsa dalam '.config('auth.passwords.'.config('auth.defaults.passwords').'.expire').' menit.')
+                ->line('Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan email ini.')
+        );
+
+        $this->notify($notification);
     }
 }

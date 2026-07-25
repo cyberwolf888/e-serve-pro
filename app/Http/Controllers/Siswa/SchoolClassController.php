@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Siswa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JoinSchoolClassRequest;
 use App\Models\SchoolClass;
+use App\Notifications\AddedToClass;
 use App\Repositories\MeetingRepository;
 use App\Repositories\QuizRepository;
 use App\Repositories\SchoolClassRepository;
@@ -33,7 +34,7 @@ class SchoolClassController extends Controller
     public function join(JoinSchoolClassRequest $request): RedirectResponse
     {
         $class = $this->repo->findByCode($request->string('class_code')->upper()->toString());
-        $this->service->addStudent($class, $request->user(), 'class_code');
+        $this->service->addStudent($class, $request->user(), 'class_code', AddedToClass::REASON_JOINED);
 
         return to_route('siswa.classes.index')->with('success', 'Berhasil bergabung ke kelas.');
     }

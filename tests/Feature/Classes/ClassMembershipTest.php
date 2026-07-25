@@ -7,8 +7,10 @@ namespace Tests\Feature\Classes;
 use App\Models\ClassMember;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Notifications\AddedToClass;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ClassMembershipTest extends TestCase
@@ -97,13 +99,18 @@ class ClassMembershipTest extends TestCase
         $student = $this->user('siswa');
         $class = $this->schoolClass($guru);
 
+        Notification::fake();
+
         $this->actingAs($guru)->post(route('guru.classes.students.store', $class), ['email' => $student->email])
             ->assertRedirect(route('guru.classes.show', $class));
 
         $this->assertDatabaseHas('class_members', ['class_id' => $class->id, 'student_id' => $student->id]);
+        Notification::assertSentTo($student, AddedToClass::class, fn ($n) => $n->reason === AddedToClass::REASON_ADDED);
 
         $this->actingAs($guru)->post(route('guru.classes.students.store', $class), ['email' => $student->email])
             ->assertSessionHasErrors('email');
+
+        Notification::assertSentToTimes($student, AddedToClass::class, 1);
     }
 
     public function test_siswa_joins_by_code_immediately_without_approval_and_duplicate_is_rejected(): void
@@ -112,13 +119,18 @@ class ClassMembershipTest extends TestCase
         $student = $this->user('siswa');
         $class = $this->schoolClass($guru, ['class_code' => 'JOIN2026']);
 
+        Notification::fake();
+
         $this->actingAs($student)->post(route('siswa.classes.join'), ['class_code' => 'join2026'])
             ->assertRedirect(route('siswa.classes.index'));
 
         $this->assertDatabaseHas('class_members', ['class_id' => $class->id, 'student_id' => $student->id]);
+        Notification::assertSentTo($student, AddedToClass::class, fn ($n) => $n->reason === AddedToClass::REASON_JOINED);
 
         $this->actingAs($student)->post(route('siswa.classes.join'), ['class_code' => 'JOIN2026'])
             ->assertSessionHasErrors('class_code');
+
+        Notification::assertSentToTimes($student, AddedToClass::class, 1);
     }
 
     public function test_siswa_sees_only_joined_classes_including_inactive_read_only_class(): void
