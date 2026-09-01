@@ -172,6 +172,18 @@
 
 ---
 
+## M7.8 — Class Discussions
+
+- [x] Add `discussion_topics` and `discussion_comments` schema and models. `[DATA-23, DATA-24]`
+- [x] Guru creates topics and comments in owned classes. `[FR-GR-14]`
+- [x] Siswa views and comments in joined classes. `[FR-SW-07]`
+- [x] Guru and Super Admin moderate comments; inactive data remains read-only. `[FR-SA-07, FR-GR-14, BR-05]`
+- [x] Metronic discussion list, create, detail, comments, empty state, and pagination. `[NFR-02, NFR-08]`
+- [x] Feature tests cover happy paths, validation, access scoping, moderation, and read-only failures. `[§11]`
+- [!] **Gate M7.8:** feature checks, Pint, frontend build, and responsive browser smoke checks pass; full suite has 3 unrelated baseline failures.
+
+---
+
 ## M8 — Hardening & Octane
 
 - [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`

@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\DiscussionCommentController;
+use App\Http\Controllers\DiscussionTopicController;
 use App\Http\Controllers\GradeComponentController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
@@ -101,6 +103,11 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
     Route::resource('classes.grade-components', GradeComponentController::class)->only(['index', 'store', 'update', 'destroy']);
 
+    // FR-SA-07 / M7.8
+    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
+        ->scopeBindings()->name('classes.discussions.comments.destroy');
+
     // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04 / ADMIN_CLASS_ACCESS_PLAN
     Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
 
@@ -161,6 +168,13 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::post('classes/{class}/grades/calculate', [GradeController::class, 'calculate'])->name('classes.grades.calculate');
     Route::get('classes/{class}/recap', [RecapController::class, 'classRecap'])->name('classes.recap');
     Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
+
+    // FR-GR-14 / M7.8
+    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'create', 'store', 'show'])->scoped();
+    Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
+        ->scopeBindings()->name('classes.discussions.comments.store');
+    Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
+        ->scopeBindings()->name('classes.discussions.comments.destroy');
 });
 
 // ─── Siswa ────────────────────────────────────────────────────────────────────
@@ -169,6 +183,11 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::post('/classes/join', [SiswaSchoolClassController::class, 'join'])->name('classes.join');
     Route::get('/classes', [SiswaSchoolClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{class}', [SiswaSchoolClassController::class, 'show'])->name('classes.show');
+
+    // FR-SW-07 / M7.8
+    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
+        ->scopeBindings()->name('classes.discussions.comments.store');
 
     // FR-SW-05
     Route::get('/quizzes/{quiz}', [SiswaQuizController::class, 'show'])->name('quizzes.show');
