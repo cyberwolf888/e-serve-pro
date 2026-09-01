@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
+        // Demo fixtures: 10 guru (incl. guru@mail.com), 50 siswa (incl. siswa@mail.com),
+        // 5 kelas/guru, 25 siswa/kelas, 10 pertemuan/kelas + materi/kuis.
+        $this->call(DemoDataSeeder::class);
+
         $superAdmin = User::updateOrCreate([
             'email' => 'superadmin@mail.com',
         ], [
@@ -28,9 +32,5 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $superAdmin->syncRoles(['super_admin']);
-
-        // Demo fixtures: 10 guru (incl. guru@mail.com), 50 siswa (incl. siswa@mail.com),
-        // 5 kelas/guru, 25 siswa/kelas, 10 pertemuan/kelas + materi/kuis.
-        $this->call(DemoDataSeeder::class);
     }
 }

@@ -26,13 +26,12 @@ Web-based Indonesian-language learning platform aligned with *Kurikulum Merdeka*
 - PSR-12; run `./vendor/bin/pint` before committing.
 - Follow Laravel conventions (Eloquent, form requests, resourceful controllers) while using the **repository + services** pattern.
 - Keep controllers thin: HTTP in controllers, business logic in services, persistence/query logic in repositories.
-- Tag every model/migration/controller/test with the PRD ID it implements, e.g. `// FR-GR-05 / BR-04`.
 - Prefer framework features over custom code (validation rules, policies, password broker).
 - Flag any assumption with `// ASSUMPTION:` and log it in `todos.md` Open Questions.
 
 ## Metronic Reference (before building views)
 
-Before creating any Blade components or views, inspect the Metronic demo HTML at `/Users/master/Projects/HTML-Templates/metronic-tailwind-html-demos/dist/html/demo1/`. Browse the relevant page or partial in the demo to match Metronic's exact markup, component classes, and layout structure — then replicate it in Blade. Do not guess Metronic HTML patterns; use the demo as the source of truth.
+Before creating any Blade components or views, inspect the Metronic demo HTML at `/Users/master/Projects/HTML-Templates/metronic-tailwind-html-demos/dist/html/demo2/`. Browse the relevant page or partial in the demo to match Metronic's exact markup, component classes, and layout structure — then replicate it in Blade. Do not guess Metronic HTML patterns; use the demo as the source of truth.
 
 ## KTUI Reference (before building interactive components)
 

@@ -1,4 +1,4 @@
-{{-- layouts/partials/head.blade.php — NFR-08 M0 scaffold --}}
+{{-- NFR-08 — shared Metronic document head --}}
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
 <meta content="" name="description"/>
@@ -16,7 +16,7 @@
 {{-- KeenIcons --}}
 <link href="{{ asset('assets/vendors/keenicons/styles.bundle.css') }}" rel="stylesheet"/>
 
-{{-- Vite: Metronic source CSS (config.ktui + KTUI + components + demo1) + Tailwind utilities --}}
+{{-- Vite: Metronic source CSS, KTUI, components, and Tailwind utilities --}}
 @vite('resources/css/app.css')
 
 @stack('styles')

@@ -10,9 +10,6 @@
 /* Metronic component overrides (apexcharts, menu, scrollable, etc.) */
 @import '@metronic/css/components/index.css';
 
-/* Demo1 layout (sidebar + header dimensions, transitions) */
-@import '@metronic/css/demos/demo1.css';
-
 /* Scan Blade templates so custom utility classes are not purged */
 @source '../../resources/views/**/*.blade.php';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

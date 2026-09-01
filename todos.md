@@ -24,7 +24,7 @@
 - [x] Create new Laravel 13.x app (`composer create-project`), confirm PHP 8.3+. `[§4]`
 - [x] Configure MariaDB connection in `.env`; charset `utf8mb4`, collation `utf8mb4_unicode_ci`. `[§4]`
 - [x] Install & configure Tailwind CSS via Vite. `[§4]`
-- [x] Integrate Metronic 9.5.0 (Tailwind edition): assets, base layout, sidebar/topbar shell. `[NFR-08]`
+- [x] Integrate Metronic 9.5.0 (Tailwind edition): assets and Demo 2 header/horizontal-navigation shell. `[NFR-08]`
 - [x] Build a shared authenticated layout using Metronic components (no ad-hoc styling). `[NFR-08]`
 - [x] Verify `npm run build` / `vite` compiles cleanly. `[§4]`
 - [x] Set up testing (PHPUnit/Pest), CI-friendly `phpunit.xml`, a `smoke` test that boots the app.
