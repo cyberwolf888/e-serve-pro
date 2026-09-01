@@ -8,8 +8,8 @@
 
         {{-- Mobile Logo + Menu Toggle --}}
         <div class="flex gap-2.5 lg:hidden items-center -ms-1">
-            <a class="shrink-0" href="{{ url('/') }}">
-                <img class="max-h-[25px] w-full" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="{{ config('app.name') }}"/>
+            <a class="shrink-0" href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
+                <x-brand-logo icon-class="size-7" text-class="text-sm"/>
             </a>
             <div class="flex items-center">
                 <button class="kt-btn kt-btn-icon kt-btn-ghost" data-kt-drawer-toggle="#sidebar">

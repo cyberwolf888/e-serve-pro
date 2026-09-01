@@ -1,8 +1,8 @@
-# Panduan Pengguna PRO-BI SMART
+# Panduan Pengguna E-SERVEPro
 
 ## 1. Tentang Aplikasi
 
-PRO-BI SMART adalah platform pembelajaran online berbasis web yang mendukung pembelajaran sesuai Kurikulum Merdeka. Fitur yang tersedia meliputi:
+E-SERVEPro adalah platform pembelajaran online berbasis web yang mendukung pembelajaran sesuai Kurikulum Merdeka. Fitur yang tersedia meliputi:
 
 - Manajemen akun berdasarkan peran.
 - Manajemen kelas dan anggota kelas.

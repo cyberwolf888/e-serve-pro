@@ -1,11 +1,11 @@
-# Laporan Kemajuan PRO-BI SMART
+# Laporan Kemajuan E-SERVEPro
 
 **Tanggal:** 18 Juli 2026  
 **Status:** M0-M6 selesai; M7 belum dimulai; M8 sebagian selesai.
 
 ## 1. Ringkasan
 
-PRO-BI SMART telah memiliki fondasi aplikasi Laravel 13 untuk pembelajaran Online berbasis Kurikulum Merdeka. Fitur utama untuk autentikasi, manajemen pengguna, kelas, materi, pertemuan, absensi, kuis, penilaian, dan rekap telah diimplementasikan.
+E-SERVEPro telah memiliki fondasi aplikasi Laravel 13 untuk pembelajaran Online berbasis Kurikulum Merdeka. Fitur utama untuk autentikasi, manajemen pengguna, kelas, materi, pertemuan, absensi, kuis, penilaian, dan rekap telah diimplementasikan.
 
 ## 2. Pekerjaan Selesai
 

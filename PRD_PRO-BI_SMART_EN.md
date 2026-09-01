@@ -1,7 +1,7 @@
-# PRD — PRO-BI SMART
+# PRD — E-SERVEPro
 
 > **Product Requirements Document, optimized for AI coding agents.**
-> This document is the single source of truth for building PRO-BI SMART. It is written to be parsed and executed by an AI agent. Every requirement has a stable ID. Do not invent features outside this document. When a detail is ambiguous, follow the `BR-*` (Business Rules) and `DATA-*` (Schema) sections first, then ask.
+> This document is the single source of truth for building E-SERVEPro. It is written to be parsed and executed by an AI agent. Every requirement has a stable ID. Do not invent features outside this document. When a detail is ambiguous, follow the `BR-*` (Business Rules) and `DATA-*` (Schema) sections first, then ask.
 
 ---
 
@@ -20,7 +20,7 @@
 
 ## 1. Product Summary
 
-PRO-BI SMART is a **web-based Indonesian-language learning platform** aligned with the *Kurikulum Merdeka*. It unifies visual learning material, class sessions, attendance, multiple-choice quizzes, grading, and progress recap into one system. There are three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, and **Siswa (Student)**.
+E-SERVEPro is a **web-based Indonesian-language learning platform** aligned with the *Kurikulum Merdeka*. It unifies visual learning material, class sessions, attendance, multiple-choice quizzes, grading, and progress recap into one system. There are three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, and **Siswa (Student)**.
 
 **Core capabilities**
 1. Role-based user & access management.
@@ -594,7 +594,7 @@ Build in order. Each milestone must pass its acceptance criteria (§11) before t
 
 ## 14. Traceability Note
 
-Every `FR-*` and `BR-*` maps directly to the agreed *Lampiran Spesifikasi dan Proses Bisnis Sistem PRO-BI SMART*. Keep IDs stable; if the business spec changes, update this PRD's IDs rather than diverging silently.
+Every `FR-*` and `BR-*` maps directly to the agreed *Lampiran Spesifikasi dan Proses Bisnis Sistem E-SERVEPro*. Keep IDs stable; if the business spec changes, update this PRD's IDs rather than diverging silently.
 
 ---
 

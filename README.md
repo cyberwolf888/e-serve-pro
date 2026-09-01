@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="260" alt="Laravel Logo">
 </p>
 
-<h1 align="center">PRO-BI SMART</h1>
+<h1 align="center">E-SERVEPro</h1>
 
 <p align="center">
   <strong>Platform Pembelajaran Bahasa Indonesia Berbasis Web</strong><br>
@@ -19,9 +19,9 @@
 
 ---
 
-## ✨ Tentang PRO-BI SMART
+## ✨ Tentang E-SERVEPro
 
-**PRO-BI SMART** adalah platform pembelajaran Bahasa Indonesia berbasis web yang dirancang untuk mendukung pembelajaran sesuai dengan *Kurikulum Merdeka*. Platform ini mengintegrasikan materi visual, kelas, pertemuan, absensi, kuis pilihan ganda, penilaian, dan rekap progres dalam satu sistem yang terpadu.
+**E-SERVEPro** adalah platform pembelajaran Bahasa Indonesia berbasis web yang dirancang untuk mendukung pembelajaran sesuai dengan *Kurikulum Merdeka*. Platform ini mengintegrasikan materi visual, kelas, pertemuan, absensi, kuis pilihan ganda, penilaian, dan rekap progres dalam satu sistem yang terpadu.
 
 ### 🎯 Tiga Peran Utama
 

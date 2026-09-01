@@ -6,13 +6,9 @@
 
     {{-- Sidebar Header: Logo + Collapse Toggle --}}
     <div class="kt-sidebar-header hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0" id="sidebar_header">
-        <a class="dark:hidden" href="{{ url('/') }}">
-            <img class="default-logo min-h-[22px] max-w-[200px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-            <img class="small-logo min-h-[22px] max-w-[32px]" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="{{ config('app.name') }}"/>
-        </a>
-        <a class="hidden dark:block" href="{{ url('/') }}">
-            <img class="default-logo min-h-[22px] max-w-[200px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
-            <img class="small-logo min-h-[22px] max-w-[32px]" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="{{ config('app.name') }}"/>
+        <a href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
+            <x-brand-logo class="default-logo" icon-class="size-8" text-class="text-lg"/>
+            <x-brand-logo class="small-logo" icon-class="size-8" :show-text="false"/>
         </a>
         <button class="kt-btn kt-btn-outline kt-btn-icon size-[30px] absolute start-full top-2/4 -translate-x-2/4 -translate-y-2/4 rtl:translate-x-2/4"
                 data-kt-toggle="body"

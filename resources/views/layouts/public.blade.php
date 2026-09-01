@@ -34,9 +34,8 @@
             data-kt-sticky-offset="10"
             data-kt-sticky-class="fixed top-0 inset-x-0 z-50 shadow-md"
         >
-            <a href="{{ url('/') }}">
-                <img class="dark:hidden max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-                <img class="hidden dark:block max-h-[40px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+            <a href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
+                <x-brand-logo/>
             </a>
             <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-secondary-foreground">
                 <a href="#" class="text-primary font-semibold underline underline-offset-8">Beranda</a>
@@ -59,8 +58,7 @@
     <footer id="kontak" class="border-t border-border px-6 lg:px-16 py-8">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-secondary-foreground">
             <div class="flex items-center gap-2.5">
-                <img class="dark:hidden max-h-[28px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-                <img class="hidden dark:block max-h-[28px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+                <x-brand-logo icon-class="size-7" text-class="text-base"/>
             </div>
             {{-- ASSUMPTION: placeholder institution/contact info, no real value supplied yet --}}
             <div>Program Riset Kurikulum Merdeka &middot; kontak@probismart.id</div>
