@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: publish-pro-bi-smart-base-image
+  group: publish-e-serve-pro-base-image
   cancel-in-progress: false
+
+env:
+  IMAGE_NAME: xyndr0me/e-serve-pro-base
 
 jobs:
   publish:
@@ -27,11 +30,10 @@ jobs:
 
       - name: Refuse existing version
         env:
-          IMAGE: xyndr0me/pro-bi-smart-base
           VERSION: ${{ steps.version.outputs.value }}
         run: |
-          if docker manifest inspect "$IMAGE:$VERSION" >/dev/null 2>&1; then
-            echo "Base image $IMAGE:$VERSION already exists. Bump .docker/baseimage/VERSION."
+          if docker manifest inspect "$IMAGE_NAME:$VERSION" >/dev/null 2>&1; then
+            echo "Base image $IMAGE_NAME:$VERSION already exists. Bump .docker/baseimage/VERSION."
             exit 1
           fi
 
@@ -43,5 +45,5 @@ jobs:
           context: .docker/baseimage
           push: true
           tags: |
-            xyndr0me/pro-bi-smart-base:${{ steps.version.outputs.value }}
-            xyndr0me/pro-bi-smart-base:latest
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.value }}
+            ${{ env.IMAGE_NAME }}:latest
