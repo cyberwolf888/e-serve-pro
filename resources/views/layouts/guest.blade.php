@@ -29,9 +29,8 @@
         <div class="w-full max-w-md px-6 py-8">
 
             <div class="flex justify-center mb-6">
-                <a href="{{ url('/') }}">
-                    <img class="dark:hidden max-h-[64px]" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-                    <img class="hidden dark:block max-h-[64px]" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+                <a href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
+                    <x-brand-logo icon-class="size-14" text-class="text-2xl"/>
                 </a>
             </div>
 

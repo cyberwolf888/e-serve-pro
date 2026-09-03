@@ -16,6 +16,11 @@
             @if (! $class->is_active)
                 <div class="kt-alert kt-alert-warning">Kelas nonaktif. Konten hanya dapat dibaca.</div>
             @endif
+            <div>
+                <a href="{{ route('siswa.classes.discussions.index', $class) }}" class="kt-btn kt-btn-primary">
+                    <i class="ki-filled ki-message-text"></i>Buka Diskusi Kelas
+                </a>
+            </div>
         </div>
     </div>
 

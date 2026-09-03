@@ -1,4 +1,4 @@
-# TODOs — PRO-BI SMART
+# TODOs — E-SERVEPro
 
 > **Execution checklist for the AI coding agent.** Work top to bottom. Do not start a milestone until the previous milestone's **Gate** is checked. Every task cites the PRD ID it satisfies — put that ID in the related migration/controller/test.
 > Source of truth: `PRD_PRO-BI_SMART_EN.md`. If a task conflicts with the PRD, the PRD wins (rule priority: `BR > DATA > FR > UI`).
@@ -24,7 +24,7 @@
 - [x] Create new Laravel 13.x app (`composer create-project`), confirm PHP 8.3+. `[§4]`
 - [x] Configure MariaDB connection in `.env`; charset `utf8mb4`, collation `utf8mb4_unicode_ci`. `[§4]`
 - [x] Install & configure Tailwind CSS via Vite. `[§4]`
-- [x] Integrate Metronic 9.5.0 (Tailwind edition): assets, base layout, sidebar/topbar shell. `[NFR-08]`
+- [x] Integrate Metronic 9.5.0 (Tailwind edition): assets and Demo 2 header/horizontal-navigation shell. `[NFR-08]`
 - [x] Build a shared authenticated layout using Metronic components (no ad-hoc styling). `[NFR-08]`
 - [x] Verify `npm run build` / `vite` compiles cleanly. `[§4]`
 - [x] Set up testing (PHPUnit/Pest), CI-friendly `phpunit.xml`, a `smoke` test that boots the app.
@@ -169,6 +169,18 @@
 - [x] Header user dropdown link to profile. `[FR-AUTH-01]`
 - [x] Feature tests: view + update for super_admin/guru/siswa; failure paths (wrong password, duplicate email, inactive user, validation). `[§11]`
 - [x] Pint clean; tests green.
+
+---
+
+## M7.8 — Class Discussions
+
+- [x] Add `discussion_topics` and `discussion_comments` schema and models. `[DATA-23, DATA-24]`
+- [x] Guru creates topics and comments in owned classes. `[FR-GR-14]`
+- [x] Siswa views and comments in joined classes. `[FR-SW-07]`
+- [x] Guru and Super Admin moderate comments; inactive data remains read-only. `[FR-SA-07, FR-GR-14, BR-05]`
+- [x] Metronic discussion list, create, detail, comments, empty state, and pagination. `[NFR-02, NFR-08]`
+- [x] Feature tests cover happy paths, validation, access scoping, moderation, and read-only failures. `[§11]`
+- [!] **Gate M7.8:** feature checks, Pint, frontend build, and responsive browser smoke checks pass; full suite has 3 unrelated baseline failures.
 
 ---
 

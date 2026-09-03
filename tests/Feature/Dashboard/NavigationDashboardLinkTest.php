@@ -1,7 +1,7 @@
 <?php
 
-// FR-AUTH-01 / §3.2 — sidebar dashboard link targets the correct role-specific dashboard
-// and generic /dashboard redirect prevents 404 for any authenticated role.
+// FR-AUTH-01 / §3.2 / NFR-08 — Demo 2 navigation targets the correct role dashboard,
+// hides links for other roles, and keeps the generic dashboard redirect available.
 
 namespace Tests\Feature\Dashboard;
 
@@ -10,7 +10,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class SidebarDashboardLinkTest extends TestCase
+class NavigationDashboardLinkTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -18,7 +18,7 @@ class SidebarDashboardLinkTest extends TestCase
 
     protected string $seeder = RoleSeeder::class;
 
-    public function test_super_admin_sidebar_links_to_admin_dashboard(): void
+    public function test_super_admin_navigation_shows_only_admin_links(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('super_admin');
@@ -26,10 +26,14 @@ class SidebarDashboardLinkTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.dashboard'))
             ->assertOk()
-            ->assertSee(route('admin.dashboard'), false);
+            ->assertSee(route('admin.dashboard'), false)
+            ->assertSee(route('admin.users.index'), false)
+            ->assertSee(route('admin.monitoring'), false)
+            ->assertDontSee(route('guru.classes.index'), false)
+            ->assertDontSee(route('siswa.classes.index'), false);
     }
 
-    public function test_guru_sidebar_links_to_guru_dashboard(): void
+    public function test_guru_navigation_shows_only_guru_links(): void
     {
         $guru = User::factory()->create();
         $guru->assignRole('guru');
@@ -37,10 +41,13 @@ class SidebarDashboardLinkTest extends TestCase
         $this->actingAs($guru)
             ->get(route('guru.dashboard'))
             ->assertOk()
-            ->assertSee(route('guru.dashboard'), false);
+            ->assertSee(route('guru.dashboard'), false)
+            ->assertSee(route('guru.classes.index'), false)
+            ->assertDontSee(route('admin.users.index'), false)
+            ->assertDontSee(route('siswa.classes.index'), false);
     }
 
-    public function test_siswa_sidebar_links_to_siswa_dashboard(): void
+    public function test_siswa_navigation_shows_only_siswa_links(): void
     {
         $siswa = User::factory()->create();
         $siswa->assignRole('siswa');
@@ -48,7 +55,11 @@ class SidebarDashboardLinkTest extends TestCase
         $this->actingAs($siswa)
             ->get(route('siswa.dashboard'))
             ->assertOk()
-            ->assertSee(route('siswa.dashboard'), false);
+            ->assertSee(route('siswa.dashboard'), false)
+            ->assertSee(route('siswa.classes.index'), false)
+            ->assertSee(route('siswa.grades.index'), false)
+            ->assertDontSee(route('admin.users.index'), false)
+            ->assertDontSee(route('guru.classes.index'), false);
     }
 
     public function test_generic_dashboard_redirects_super_admin(): void

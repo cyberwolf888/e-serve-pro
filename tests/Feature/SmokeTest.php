@@ -25,7 +25,7 @@ class SmokeTest extends TestCase
         $this->get('/')->assertOk()->assertSee('Kurikulum Merdeka');
     }
 
-    /** @test — happy path: authenticated siswa dashboard renders Metronic layout shell */
+    /** @test — happy path: authenticated siswa dashboard renders the Metronic Demo 2 shell */
     public function test_dashboard_route_renders_metronic_layout(): void
     {
         $siswa = User::factory()->create(['is_active' => true]);
@@ -34,8 +34,10 @@ class SmokeTest extends TestCase
         $this->actingAs($siswa)
             ->get(route('siswa.dashboard'))
             ->assertStatus(200)
-            ->assertSee('kt-sidebar', false)
-            ->assertSee('kt-header', false)
+            ->assertSee('data-kt-sticky-offset="200px"', false)
+            ->assertSee('id="primary_navigation"', false)
+            ->assertSee('kt-scrollable-x-auto', false)
+            ->assertDontSee('kt-sidebar', false)
             ->assertSee('core.bundle.js', false);
     }
 

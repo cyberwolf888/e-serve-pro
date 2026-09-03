@@ -45,6 +45,12 @@ class SchoolClass extends Model
         return $this->hasMany(Meeting::class, 'class_id');
     }
 
+    // DATA-23 / FR-GR-14 / FR-SW-07 / M7.8
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(DiscussionTopic::class, 'class_id');
+    }
+
     // DATA-08 / FR-GR-09 / M5
     public function quizzes(): HasMany
     {

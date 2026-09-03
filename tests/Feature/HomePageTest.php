@@ -27,6 +27,14 @@ class HomePageTest extends TestCase
             ->assertSee(route('auth.register.show'), false);
     }
 
+    public function test_landing_page_uses_e_serve_pro_branding(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('E-SERVEPro')
+            ->assertDontSee('PRO-BI SMART');
+    }
+
     public function test_super_admin_is_redirected_to_admin_dashboard(): void
     {
         $admin = User::factory()->create();

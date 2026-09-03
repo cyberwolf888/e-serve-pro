@@ -10,8 +10,8 @@ concurrency:
   group: application-deploy
   cancel-in-progress: true
 env:
-  CONTAINER_NAME: pro-bi-smart
-  CONTAINER_PORT: 8105
+  CONTAINER_NAME: e-serve-pro
+  CONTAINER_PORT: 8106
 
 jobs:
   build-image:

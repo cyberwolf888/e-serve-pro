@@ -32,7 +32,7 @@
             {{-- ASSUMPTION: picsum.photos placeholder per user direction; swap for a real product screenshot later --}}
             <img
                 src="{{ url('assets/media/images/600x400/siswa.jpg') }}"
-                alt="Pratinjau platform PRO-BI SMART"
+                alt="Pratinjau platform E-SERVEPro"
                 class="rounded-2xl shadow-xl w-full transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
         </div>
@@ -44,7 +44,7 @@
     <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-xl font-semibold text-mono mb-3">Selaras dengan Kurikulum Merdeka</h2>
         <p class="text-sm lg:text-base text-secondary-foreground">
-            PRO-BI SMART disusun mengikuti prinsip pembelajaran mandiri dan berdiferensiasi pada Kurikulum
+            E-SERVEPro disusun mengikuti prinsip pembelajaran mandiri dan berdiferensiasi pada Kurikulum
             Merdeka, memudahkan guru menyampaikan materi visual serta memantau perkembangan setiap siswa
             secara terukur.
         </p>

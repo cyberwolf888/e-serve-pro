@@ -113,9 +113,8 @@
         {{-- Branded background column --}}
         <div class="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-center bg-cover bg-no-repeat branded-bg">
             <div class="flex flex-col p-8 lg:p-16 gap-4">
-                <a href="{{ url('/') }}">
-                    <img class="h-[64px] max-w-none dark:hidden" src="{{ asset('assets/media/logo-pro-bi-smart-black.png') }}" alt="{{ config('app.name') }}"/>
-                    <img class="h-[64px] max-w-none hidden dark:block" src="{{ asset('assets/media/logo-pro-bi-smart-white.png') }}" alt="{{ config('app.name') }}"/>
+                <a href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
+                    <x-brand-logo icon-class="size-14" text-class="text-2xl"/>
                 </a>
                 <div class="flex flex-col gap-3">
                     <h3 class="text-2xl font-semibold text-mono">Portal Pembelajaran</h3>
