@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 env:
   CONTAINER_NAME: e-serve-pro
-  CONTAINER_PORT: 8106
+  CONTAINER_PORT: 8107
 
 jobs:
   build-image:
