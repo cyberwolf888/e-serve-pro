@@ -39,12 +39,12 @@
             </a>
             <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-secondary-foreground">
                 <a href="#" class="text-primary font-semibold underline underline-offset-8">Beranda</a>
-                <a href="#fitur" class="hover:text-primary">Fitur</a>
+                <a href="#fitur" class="hover:text-primary">Layanan</a>
                 <a href="#tentang" class="hover:text-primary">Tentang</a>
                 <a href="#kontak" class="hover:text-primary">Kontak</a>
             </nav>
             <a href="{{ route('auth.login.show') }}" class="kt-btn kt-btn-outline rounded-full">
-                <span>Masuk</span>
+                <span>Masuk Platform</span>
                 <i class="ki-outline ki-arrow-right"></i>
             </a>
         </header>
@@ -60,8 +60,7 @@
             <div class="flex items-center gap-2.5">
                 <x-brand-logo icon-class="size-7" text-class="text-base"/>
             </div>
-            {{-- ASSUMPTION: placeholder institution/contact info, no real value supplied yet --}}
-            <div>Program Riset Kurikulum Merdeka &middot; kontak@probismart.id</div>
+            <div>Dikembangkan oleh Universitas Pendidikan Ganesha (Undiksha)</div>
             <div>&copy; {{ now()->year }} {{ config('app.name') }}. Seluruh hak cipta dilindungi.</div>
         </div>
     </footer>

@@ -1,7 +1,7 @@
 {{-- NFR-08 — shared Metronic document head --}}
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<meta content="" name="description"/>
+<meta content="@yield('description')" name="description"/>
 <title>@yield('title', config('app.name'))</title>
 
 {{-- Favicon --}}

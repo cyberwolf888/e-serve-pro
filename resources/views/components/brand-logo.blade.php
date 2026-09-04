@@ -5,8 +5,10 @@
 ])
 
 <span {{ $attributes->class(['inline-flex items-center gap-2']) }}>
-    <img class="{{ $iconClass }} object-contain" src="{{ asset('assets/media/logo-pro-bi-smart.png') }}" alt="" aria-hidden="true"/>
     @if ($showText)
-        <span class="{{ $textClass }} font-semibold tracking-tight text-mono">{{ config('app.name') }}</span>
+        <img class="{{ $iconClass }} w-auto object-contain dark:hidden" src="{{ asset('assets/media/e-serve-pro-black.png') }}" alt="" aria-hidden="true"/>
+        <img class="{{ $iconClass }} hidden w-auto object-contain dark:block" src="{{ asset('assets/media/e-serve-pro-white.png') }}" alt="" aria-hidden="true"/>
+    @else
+        <img class="{{ $iconClass }} object-contain" src="{{ asset('assets/media/logo-e-serve-pro.png') }}" alt="" aria-hidden="true"/>
     @endif
 </span>

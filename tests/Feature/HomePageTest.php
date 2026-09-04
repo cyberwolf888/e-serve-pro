@@ -22,7 +22,9 @@ class HomePageTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Kurikulum Merdeka')
+            ->assertSee('Food and Beverage Service')
+            ->assertSee('Universitas Pendidikan Ganesha')
+            ->assertSee('TKT 6')
             ->assertSee(route('auth.login.show'), false)
             ->assertSee(route('auth.register.show'), false);
     }
