@@ -1,12 +1,12 @@
 {{-- auth/login.blade.php — FR-AUTH-01 / NFR-08 --}}
+@section('title', 'Masuk ke ' . config('app.name') . ' LEARNING')
+@section('description', 'Masuk ke E-SERVEPro LEARNING untuk mengikuti pembelajaran digital kolaboratif F&B Service dari Universitas Pendidikan Ganesha.')
 <!DOCTYPE html>
 <html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @include('layouts.partials.head')
-    <title>Masuk — {{ config('app.name') }}</title>
     <style>
-        .branded-bg { background-image: url('/assets/media/images/2600x1600/login.jpg'); }
-        .dark .branded-bg { background-image: url('/assets/media/images/2600x1600/login.jpg'); }
+        .branded-bg { background-image: linear-gradient(rgb(255 255 255 / 75%), rgb(255 255 255 / 75%)), url('/assets/media/login-bg.jpg'); }
     </style>
 </head>
 <body class="antialiased flex h-full text-base text-foreground bg-background">
@@ -38,10 +38,10 @@
                     @csrf
 
                     <div class="text-center mb-2.5">
-                        <h3 class="text-lg font-medium text-mono leading-none mb-2.5">Masuk</h3>
+                        <h3 class="text-lg font-medium text-mono leading-none mb-2.5">Masuk ke E-SERVEPro LEARNING</h3>
                         <div class="flex items-center justify-center font-medium">
-                            <span class="text-sm text-secondary-foreground me-1.5">Belum punya akun?</span>
-                            <a class="text-sm link" href="{{ route('auth.register.show') }}">Daftar</a>
+                            <span class="text-sm text-secondary-foreground me-1.5">Peserta baru?</span>
+                            <a class="text-sm link" href="{{ route('auth.register.show') }}">Buat akun</a>
                         </div>
                     </div>
 
@@ -104,7 +104,7 @@
                     </label>
 
                     <button type="submit" class="kt-btn kt-btn-primary flex justify-center grow">
-                        Masuk
+                        Masuk ke Ruang Belajar
                     </button>
                 </form>
             </div>
@@ -117,11 +117,11 @@
                     <x-brand-logo icon-class="size-14" text-class="text-2xl"/>
                 </a>
                 <div class="flex flex-col gap-3">
-                    <h3 class="text-2xl font-semibold text-mono">Portal Pembelajaran</h3>
+                    <h3 class="text-2xl font-semibold text-mono">Belajar F&amp;B Service Secara Aktif</h3>
                     <div class="text-base font-medium text-secondary-foreground">
-                        Platform pembelajaran Bahasa Indonesia<br/>
-                        berbasis <span class="text-mono font-semibold">Kurikulum Merdeka</span><br/>
-                        untuk guru dan siswa.
+                        Ekosistem pembelajaran digital kolaboratif<br/>
+                        berbasis layanan dari <span class="text-mono font-semibold">Universitas Pendidikan Ganesha</span><br/>
+                        untuk kompetensi hospitality berstandar industri.
                     </div>
                 </div>
             </div>

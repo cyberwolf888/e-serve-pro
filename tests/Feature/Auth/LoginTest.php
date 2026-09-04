@@ -8,6 +8,15 @@ use App\Models\User;
 
 class LoginTest extends AuthTestCase
 {
+    public function test_login_page_describes_the_f_and_b_learning_platform(): void
+    {
+        $this->get(route('auth.login.show'))
+            ->assertOk()
+            ->assertSee('E-SERVEPro LEARNING')
+            ->assertSee('F&amp;B Service', false)
+            ->assertSee('Universitas Pendidikan Ganesha');
+    }
+
     // NFR-03: HTTPS pages must not generate mixed-content asset or form URLs.
     public function test_login_page_generates_https_urls_behind_a_tls_proxy(): void
     {
@@ -17,7 +26,7 @@ class LoginTest extends AuthTestCase
             'X-Forwarded-Port' => '443',
         ])->get(route('auth.login.show', absolute: false))
             ->assertOk()
-            ->assertSee('https://bi-pro-smart.test/assets/css/styles.css', false)
+            ->assertSee('https://bi-pro-smart.test/build/assets/', false)
             ->assertSee('https://bi-pro-smart.test/assets/js/core.bundle.js', false)
             ->assertSee('https://bi-pro-smart.test/login', false);
     }

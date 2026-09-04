@@ -10,7 +10,8 @@
     <div class="kt-container-fixed flex justify-between items-center lg:gap-4" id="headerContainer">
         <div class="flex items-center gap-2 lg:gap-5 2xl:-ml-[60px]">
             <a href="{{ url('/') }}" aria-label="{{ config('app.name') }}">
-                <x-brand-logo icon-class="size-[42px]" text-class="text-base hidden sm:inline"/>
+                <x-brand-logo class="sm:hidden" icon-class="size-[42px]" :show-text="false"/>
+                <x-brand-logo class="hidden sm:inline-flex" icon-class="h-[42px]"/>
             </a>
             <div class="hidden md:flex items-center">
                 <span class="text-sm text-muted-foreground font-medium px-2.5">/</span>
