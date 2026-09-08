@@ -22,7 +22,6 @@ class SiswaDashboardService
         return [
             'kpis' => [
                 ['label' => 'Kelas Aktif', 'value' => $this->repo->countActiveClasses($student), 'route' => 'siswa.classes.index'],
-                ['label' => 'Pertemuan 30 Hari', 'value' => $this->repo->countUpcomingMeetings($student, $now, $now->copy()->addDays(30)->endOfDay()), 'route' => 'siswa.classes.index'],
                 ['label' => 'Kuis Tersedia', 'value' => $this->repo->countAvailableQuizzes($student, $now), 'route' => 'siswa.classes.index'],
                 ['label' => 'Nilai Akhir', 'value' => $this->repo->countFinalGrades($student), 'route' => 'siswa.grades.index'],
             ],

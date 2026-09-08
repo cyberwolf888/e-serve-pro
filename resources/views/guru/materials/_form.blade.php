@@ -12,6 +12,14 @@
 </div>
 
 <div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+    <label class="kt-form-label max-w-56" for="description">Deskripsi</label>
+    <div class="grow">
+        <textarea id="description" name="description" class="kt-textarea w-full @error('description') border-destructive @enderror" rows="4">{{ old('description', $material?->description) }}</textarea>
+        @error('description')<p class="text-destructive text-xs mt-1">{{ $message }}</p>@enderror
+    </div>
+</div>
+
+<div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
     <label class="kt-form-label max-w-56">Jenis Materi</label>
     <div class="grow flex gap-5">
         <label class="kt-form-label flex items-center gap-2.5">
@@ -22,6 +30,18 @@
             <input type="radio" name="type" value="file" class="kt-radio" onclick="document.getElementById('file_field').classList.remove('hidden');document.getElementById('figma_field').classList.add('hidden')" {{ old('type', $material?->type) === 'file' ? 'checked' : '' }} />
             <span>Unggah File</span>
         </label>
+    </div>
+</div>
+
+<div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+    <span class="kt-form-label max-w-56">Publikasi</span>
+    <div class="grow">
+        <input name="is_published" type="hidden" value="0" />
+        <label class="kt-label">
+            <input class="kt-checkbox kt-checkbox-sm" name="is_published" type="checkbox" value="1" @checked(old('is_published', $material?->is_published ?? false)) />
+            <span class="kt-checkbox-label">Terbitkan untuk mahasiswa</span>
+        </label>
+        @error('is_published')<p class="text-destructive text-xs mt-1">{{ $message }}</p>@enderror
     </div>
 </div>
 
@@ -40,10 +60,10 @@
 <div id="file_field" class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 {{ old('type', $material?->type) === 'file' ? '' : 'hidden' }}">
     <label class="kt-form-label max-w-56" for="file">Berkas PDF</label>
     <div class="grow">
-        <input id="file" name="file" type="file" accept=".pdf,.pptx,.docx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="kt-input w-full @error('file') border-destructive @enderror" />
+        <input id="file" name="file" type="file" accept=".pdf,application/pdf" class="kt-input w-full @error('file') border-destructive @enderror" />
         <div class="kt-alert kt-alert-light kt-alert-primary kt-alert-sm mt-2.5">
             <div class="kt-alert-icon"><i class="ki-filled ki-information-2 text-primary"></i></div>
-            <div class="kt-alert-description text-xs">Maks. 20 MB, format <span class="font-medium">PDF</span>, <span class="font-medium">PPTX</span>, atau <span class="font-medium">DOCX</span>. Kosongkan untuk mempertahankan berkas lama.</div>
+            <div class="kt-alert-description text-xs">Maks. 20 MB, format <span class="font-medium">PDF</span>. Kosongkan untuk mempertahankan berkas lama.</div>
         </div>
         @if($material?->file_path)
             <p class="text-secondary-foreground text-xs mt-1">Berkas saat ini: {{ $material->file_size_kb }} KB.</p>

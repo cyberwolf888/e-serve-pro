@@ -20,13 +20,13 @@
 
 ## 1. Product Summary
 
-E-SERVEPro is a **web-based Indonesian-language learning platform** aligned with the *Kurikulum Merdeka*. It unifies visual learning material, class sessions, attendance, multiple-choice quizzes, grading, and progress recap into one system. There are three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, and **Siswa (Student)**.
+E-SERVEPro is a **web-based Indonesian-language learning platform** aligned with the *Kurikulum Merdeka*. It unifies published visual learning material, classes, multiple-choice quizzes, grading, and progress recap into one system. There are three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, and **Siswa (Student)**.
 
 **Core capabilities**
 1. Role-based user & access management.
-2. Class, material, and meeting (session) management.
+2. Class and material management.
 3. Material delivery via Figma design links and PDF uploads.
-4. Attendance tracking per meeting.
+4. Draft/published material visibility for enrolled students.
 5. Multiple-choice quizzes with auto-scoring.
 6. Manual weighted final-grade calculation and recap.
 7. Full activity monitoring & audit logs for Super Admin.
@@ -40,8 +40,8 @@ E-SERVEPro is a **web-based Indonesian-language learning platform** aligned with
 | ID | Actor | Description | Registration |
 |----|-------|-------------|--------------|
 | ACT-SA | Super Admin (Peneliti) | Highest authority. Full control over all data, users, and configuration. | Seeded / created by system |
-| ACT-GR | Guru (Teacher) | Manages own classes, materials, meetings, quizzes, grading. | Created **only** by Super Admin |
-| ACT-SW | Siswa (Student) | Joins classes, attends meetings, takes quizzes, views own grades. | **Self-registration** |
+| ACT-GR | Guru (Teacher) | Manages own classes, materials, quizzes, grading. | Created **only** by Super Admin |
+| ACT-SW | Siswa (Student) | Joins classes, accesses published materials, takes quizzes, views own grades. | **Self-registration** |
 
 ---
 
@@ -66,8 +66,7 @@ Roles are fixed names: `super_admin`, `guru`, `siswa`. Implement RBAC with **spa
 | Add students to a class | ✅ | OWN | — |
 | Join class via class code | — | — | ✅ |
 | Create/manage materials | ✅ | OWN | ❌ |
-| View materials | ✅ | ✅ | OWN classes |
-| Create meetings & record attendance | ✅ | OWN | ❌ |
+| View materials | ✅ | ✅ | OWN classes, published only |
 | Create/manage quizzes | ✅ | OWN | ❌ |
 | Take quizzes | ❌ | ❌ | ✅ |
 | Define grade weights (manual) | ✅ | OWN | ❌ |
@@ -77,6 +76,12 @@ Roles are fixed names: `super_admin`, `guru`, `siswa`. Implement RBAC with **spa
 | View OWN grades only | — | — | ✅ |
 | Monitoring & activity logs (all users) | ✅ | ❌ | ❌ |
 | Download recap/export | ✅ (all) | OWN | ❌ |
+| View discussions | ✅ | OWN | OWN classes; linked material published only |
+| Start material discussion | ❌ | OWN; published material only | OWN classes; published material only |
+| Comment on discussion | ❌ | OWN | OWN classes; linked material published only |
+| Moderate discussion comments | ✅ | OWN | ❌ |
+| Create/manage LKM, roles, and assignments | ✅ | OWN active classes | ❌ |
+| Submit assigned LKM proof and SOP reflection | ❌ | ❌ | OWN classes, published assigned LKM only |
 
 > **Agent note:** Protect role-based route groups with Spatie `role` middleware. Implement one Policy per model for record-level checks, and every controller action must call `authorize()` against the matching Policy method. `OWN` checks compare `record.user_id`/`class.guru_id` to `auth()->id()`.
 
@@ -142,6 +147,8 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SA-04 | Monitor all user activity via a monitoring view backed by activity logs (`BR-06`). |
 | FR-SA-05 | View and download (export) the recap of ALL registered classes. |
 | FR-SA-06 | View a 30-day operational dashboard with user and class KPIs, activity trend, operational alerts, and recent activity. |
+| FR-SA-07 | Read all general and material-based discussions and moderate their comments. |
+| FR-SA-08 | Manage LKM, roles, student assignments, publication, and submitted-work corrections in every class. |
 
 ### 5.3 Guru (`FR-GR-*`)
 
@@ -150,16 +157,18 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-GR-01 | Login with an account created by Super Admin. |
 | FR-GR-02 | Create and manage classes, including setting the class name. |
 | FR-GR-03 | Add students to owned classes. |
-| FR-GR-04 | Create/manage materials via a Figma design link. |
+| FR-GR-04 | Create/manage materials with optional descriptions and draft/published status via a Figma design link. |
 | FR-GR-05 | Upload material files (PDF only, ≤ 20 MB — see `BR-04`). |
-| FR-GR-06 | Create meeting sessions (schedule) for a class. |
-| FR-GR-07 | Record student attendance per meeting. |
-| FR-GR-08 | Share materials on each meeting. |
+| FR-GR-06 | **LEGACY/RETIRED.** Meeting runtime is disabled; existing data remains retained. |
+| FR-GR-07 | **LEGACY/RETIRED.** Attendance recording is disabled; existing data and logs remain retained. |
+| FR-GR-08 | **LEGACY/RETIRED.** Meeting-material sharing is disabled; existing pivot data remains retained. |
 | FR-GR-09 | Create/manage multiple-choice quizzes per class. |
 | FR-GR-10 | View and manage the grade recap of all students in owned classes. |
 | FR-GR-11 | Calculate students' final grades from quiz results and other components. |
 | FR-GR-12 | Define final-grade component format and weights manually per class (`BR-03`). |
 | FR-GR-13 | View a 30-day dashboard for owned classes with KPIs, teacher activity trend, operational alerts, and recent teacher activity. |
+| FR-GR-14 | View general discussions and create material-based topics/comments in owned active classes. New topics require a published material; deleting a material preserves its topics as general discussions. |
+| FR-GR-15 | Manage class-scoped LKM, roles, SOP points, balanced initial role assignments, publication, reassignment, and submitted-work corrections in owned active classes. |
 
 ### 5.4 Siswa (`FR-SW-*`)
 
@@ -168,9 +177,11 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SW-01 | Self-register an account. |
 | FR-SW-02 | Login with the registered account. |
 | FR-SW-03 | Join a class using a class code — no teacher approval (`BR-01`). |
-| FR-SW-04 | Attend meetings and access shared materials of joined classes. |
+| FR-SW-04 | Access only published materials, including descriptions and Figma/PDF links, in joined classes. |
 | FR-SW-05 | Take multiple-choice quizzes in joined classes. |
 | FR-SW-06 | View own grades via a student dashboard. |
+| FR-SW-07 | View general discussions and create material-based topics/comments in joined active classes. Linked topics require a published material and become hidden when that material is unpublished. |
+| FR-SW-08 | View assigned published LKM, submit one approved HTTPS proof URL, then submit one checkbox-based SOP reflection. |
 
 ---
 
@@ -182,10 +193,11 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | BR-02 | Password reset is done **via email** for every role. | Laravel password broker + SMTP mailer + queued mail. |
 | BR-03 | Final-grade components & weights are **entered manually by the Guru** per class. | `grade_components(class_id, name, weight)`; weights should sum to 100 (validate, warn if not). |
 | BR-04 | Uploaded material files are **PDF only, max 20 MB per file**. | Validation: `mimes:pdf`, `max:20480` (KB). Reject otherwise with clear error. |
-| BR-05 | Deactivating a guru/siswa **does not hard-delete**; all related data (classes, grades, meeting history) becomes **read-only**. | Use `users.is_active=false` (or soft delete) + a global read-only guard/policy that blocks writes on records linked to inactive users. Do NOT cascade-delete. |
-| BR-06 | Super Admin monitoring shows **all activity logs**: login, quiz attempts, attendance. | Central `activity_logs` table written on those events. |
+| BR-05 | Deactivating a guru/siswa **does not hard-delete**; all related data, including historical meetings and attendance, becomes **read-only**. | Use `users.is_active=false` (or soft delete) + a global read-only guard/policy that blocks writes on records linked to inactive users. Do NOT cascade-delete. |
+| BR-06 | Super Admin monitoring shows **all activity logs**, including retained historical attendance events. | Central `activity_logs` table stores current and historical events. |
 | BR-07 | **No limit** on students per class or classes per guru. | Do not add artificial caps in validation or schema. |
 | BR-08 | User data privacy handled per applicable **personal-data-protection regulation**. | Hash passwords, encrypt sensitive fields if added, restrict PII access by role, log access. |
+| BR-09 | LKM is class-scoped. Creation requires at least one role and one SOP point per role; existing members are shuffled and assigned round-robin. Role structure locks after first proof. Student proof and reflection are one-time submissions; instructor corrections preserve timestamps. | Transactions, unique constraints, scoped bindings, policies, approved proof hosts, and row locks enforce workflow integrity. |
 
 > **Conflict resolution priority:** `BR-*` > `DATA-*` > `FR-*` > UI copy. If two rules appear to conflict, the higher-priority section wins; flag it.
 
@@ -234,12 +246,14 @@ Conventions: all tables InnoDB / `utf8mb4_unicode_ci`; PK `id` BIGINT UNSIGNED a
 | id | bigint unsigned | PK |
 | class_id | bigint unsigned | not null, FK→classes.id |
 | title | varchar(255) | not null |
+| description | text | nullable |
 | type | enum('figma','file') | not null |
 | figma_url | varchar(1024) | nullable (required if type='figma') |
 | file_path | varchar(1024) | nullable (required if type='file') |
 | file_size_kb | int unsigned | nullable (≤ 20480) |
+| is_published | tinyint(1) | not null, default 0, indexed |
 
-### DATA-05 `meetings`
+### DATA-05 `meetings` — LEGACY/RETIRED, retained read-only
 | Column | Type | Constraints |
 |---|---|---|
 | id | bigint unsigned | PK |
@@ -248,7 +262,7 @@ Conventions: all tables InnoDB / `utf8mb4_unicode_ci`; PK `id` BIGINT UNSIGNED a
 | scheduled_at | datetime | not null |
 | notes | text | nullable |
 
-### DATA-06 `meeting_materials` (meeting ↔ material shared, N:N)
+### DATA-06 `meeting_materials` — LEGACY/RETIRED, retained read-only
 | Column | Type | Constraints |
 |---|---|---|
 | id | bigint unsigned | PK |
@@ -256,7 +270,7 @@ Conventions: all tables InnoDB / `utf8mb4_unicode_ci`; PK `id` BIGINT UNSIGNED a
 | material_id | bigint unsigned | not null, FK→materials.id |
 | — | — | UNIQUE(meeting_id, material_id) |
 
-### DATA-07 `attendances`
+### DATA-07 `attendances` — LEGACY/RETIRED, retained read-only
 | Column | Type | Constraints |
 |---|---|---|
 | id | bigint unsigned | PK |
@@ -378,6 +392,7 @@ Package-default pivot connecting roles to permissions.
 |---|---|---|
 | id | BIGINT UNSIGNED | PK, auto-increment |
 | class_id | BIGINT UNSIGNED | FK → classes.id, cascade delete, indexed |
+| material_id | BIGINT UNSIGNED | nullable FK → materials.id, null on delete; composite index with created_at |
 | author_id | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed |
 | title | VARCHAR(255) | required |
 | body | TEXT | required |
@@ -392,21 +407,61 @@ Package-default pivot connecting roles to permissions.
 | body | TEXT | required |
 | created_at / updated_at | TIMESTAMP | Laravel timestamps |
 
+### DATA-25 `lkms`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| class_id | BIGINT UNSIGNED | FK → classes.id, cascade delete, indexed |
+| created_by | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed; audit metadata only |
+| title | VARCHAR(255) | required |
+| description | TEXT | required |
+| is_published | TINYINT(1) | required, default 0, indexed |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+
+### DATA-26 `lkm_roles`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| lkm_id | BIGINT UNSIGNED | FK → lkms.id, cascade delete, indexed |
+| name | VARCHAR(255) | required; UNIQUE(lkm_id, name) |
+| instructions | TEXT | required |
+| description | TEXT | required |
+| sop_items | JSON | required ordered strings; minimum one item |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+
+### DATA-27 `lkm_assignments`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| lkm_id | BIGINT UNSIGNED | FK → lkms.id, cascade delete, indexed |
+| lkm_role_id | BIGINT UNSIGNED | FK → lkm_roles.id, restrict delete, indexed |
+| student_id | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed |
+| proof_url | VARCHAR(1024) | nullable |
+| proof_submitted_at | TIMESTAMP | nullable, indexed |
+| sop_checks | JSON | nullable checked SOP indexes |
+| reflection_submitted_at | TIMESTAMP | nullable, indexed |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+| — | — | UNIQUE(lkm_id, student_id) |
+
 ### Entity Relationship (text)
 ```
 users(1)───<(N)classes            [guru_id]
 users(N)>──<(N)classes            via class_members [student_id]
 classes(1)──<(N)materials
-classes(1)──<(N)meetings
-meetings(N)>──<(N)materials        via meeting_materials
-meetings(1)──<(N)attendances──>(1)users
+classes(1)──<(N)meetings            [legacy/retained]
+meetings(N)>──<(N)materials         via meeting_materials [legacy/retained]
+meetings(1)──<(N)attendances──>(1)users [legacy/retained]
 classes(1)──<(N)quizzes──<(N)quiz_questions──<(N)quiz_options
 quizzes(1)──<(N)quiz_attempts──<(N)quiz_answers
 classes(1)──<(N)grade_components──<(N)component_scores──>(1)users
 classes(1)──<(N)final_grades──>(1)users
 users(1)──<(N)activity_logs
 classes(1)──<(N)discussion_topics──<(N)discussion_comments
+materials(1)──<(N)discussion_topics [material_id nullable; null = general]
 users(1)──<(N)discussion_topics / discussion_comments [author_id]
+classes(1)──<(N)lkms──<(N)lkm_roles
+lkms(1)──<(N)lkm_assignments──>(1)users [student_id]
+lkm_roles(1)──<(N)lkm_assignments
 ```
 
 ---
@@ -437,25 +492,33 @@ GET   /admin/recap                  admin.recap.index         FR-SA-05
 GET   /admin/recap/export           admin.recap.export        FR-SA-05
 GET   /admin/classes/{class}/discussions admin.classes.discussions.index FR-SA-07
 GET   /admin/classes/{class}/discussions/{discussion} admin.classes.discussions.show FR-SA-07
+GET   /admin/classes/{class}/materials/{material}/discussions admin.classes.materials.discussions.index FR-SA-07
 DELETE /admin/classes/{class}/discussions/{discussion}/comments/{comment} admin.classes.discussions.comments.destroy FR-SA-07
+resource /admin/classes/{class}/lkms   admin.classes.lkms      FR-SA-08 / BR-09 (except destroy)
+POST/PUT/DELETE /admin/classes/{class}/lkms/{lkm}/roles[...] admin.classes.lkms.roles FR-SA-08 / BR-09
+POST/PATCH /admin/classes/{class}/lkms/{lkm}/assignments[...] admin.classes.lkms.assignments FR-SA-08 / BR-09
+GET/PUT /admin/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] admin.classes.lkms.submissions FR-SA-08 / BR-09
 
 # Guru  (middleware: role:guru)
 GET   /guru/dashboard               guru.dashboard
 resource /guru/classes              guru.classes              FR-GR-02
 POST  /guru/classes/{class}/students  guru.classes.addStudent FR-GR-03
 resource /guru/classes/{class}/materials  guru.materials      FR-GR-04/05
-resource /guru/classes/{class}/meetings   guru.meetings       FR-GR-06
-POST  /guru/meetings/{meeting}/attendance guru.attendance.store FR-GR-07
-POST  /guru/meetings/{meeting}/materials   guru.meetings.share  FR-GR-08
 resource /guru/classes/{class}/quizzes     guru.quizzes        FR-GR-09
 resource /guru/classes/{class}/grade-components guru.gradeComponents FR-GR-12/BR-03
 POST  /guru/classes/{class}/grades/calculate    guru.grades.calculate FR-GR-11
 GET   /guru/classes/{class}/recap                guru.recap    FR-GR-10
-GET|POST /guru/classes/{class}/discussions       guru.classes.discussions FR-GR-14
-GET   /guru/classes/{class}/discussions/create   guru.classes.discussions.create FR-GR-14
+GET   /guru/classes/{class}/discussions       guru.classes.discussions.index FR-GR-14
+GET   /guru/classes/{class}/materials/{material}/discussions guru.classes.materials.discussions.index FR-GR-14
+GET   /guru/classes/{class}/materials/{material}/discussions/create guru.classes.materials.discussions.create FR-GR-14
+POST  /guru/classes/{class}/materials/{material}/discussions guru.classes.materials.discussions.store FR-GR-14
 GET   /guru/classes/{class}/discussions/{discussion} guru.classes.discussions.show FR-GR-14
 POST  /guru/classes/{class}/discussions/{discussion}/comments guru.classes.discussions.comments.store FR-GR-14
 DELETE /guru/classes/{class}/discussions/{discussion}/comments/{comment} guru.classes.discussions.comments.destroy FR-GR-14
+resource /guru/classes/{class}/lkms    guru.classes.lkms       FR-GR-15 / BR-09 (except destroy)
+POST/PUT/DELETE /guru/classes/{class}/lkms/{lkm}/roles[...] guru.classes.lkms.roles FR-GR-15 / BR-09
+POST/PATCH /guru/classes/{class}/lkms/{lkm}/assignments[...] guru.classes.lkms.assignments FR-GR-15 / BR-09
+GET/PUT /guru/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] guru.classes.lkms.submissions FR-GR-15 / BR-09
 
 # Siswa  (middleware: role:siswa)
 GET   /siswa/dashboard              siswa.dashboard           FR-SW-06
@@ -466,8 +529,14 @@ GET   /siswa/quizzes/{quiz}         siswa.quizzes.show        FR-SW-05
 POST  /siswa/quizzes/{quiz}/submit  siswa.quizzes.submit      FR-SW-05
 GET   /siswa/grades                 siswa.grades.index        FR-SW-06
 GET   /siswa/classes/{class}/discussions siswa.classes.discussions.index FR-SW-07
+GET   /siswa/classes/{class}/materials/{material}/discussions siswa.classes.materials.discussions.index FR-SW-07
+GET   /siswa/classes/{class}/materials/{material}/discussions/create siswa.classes.materials.discussions.create FR-SW-07
+POST  /siswa/classes/{class}/materials/{material}/discussions siswa.classes.materials.discussions.store FR-SW-07
 GET   /siswa/classes/{class}/discussions/{discussion} siswa.classes.discussions.show FR-SW-07
 POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.discussions.comments.store FR-SW-07
+GET   /siswa/classes/{class}/lkms/{lkm} siswa.classes.lkms.show FR-SW-08 / BR-09
+POST  /siswa/classes/{class}/lkms/{lkm}/proof siswa.classes.lkms.proof.store FR-SW-08 / BR-09
+POST  /siswa/classes/{class}/lkms/{lkm}/reflection siswa.classes.lkms.reflection.store FR-SW-08 / BR-09
 ```
 
 ---
@@ -479,15 +548,17 @@ POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.dis
 | register (siswa) | name: required|string|max:255; email: required|email|unique:users; password: required|min:8|confirmed |
 | admin.users.store (guru) | name required; email required|email|unique:users; password required|min:8; assign role `guru` server-side |
 | classes.store | name: required|string|max:255; class_code auto-generated unique 6–8 chars |
-| materials.store | title required; type in [figma,file]; figma_url required_if type=figma|url; file required_if type=file|**mimes:pdf|max:20480** (BR-04) |
-| meetings.store | title required; scheduled_at required|date |
-| attendance.store | per student: status in [hadir,izin,sakit,alfa] |
+| materials.store/update | title required; description nullable|string; is_published required|boolean; type in [figma,file]; figma_url required_if type=figma|url; file required_if type=file|**mimes:pdf|max:20480** (BR-04) |
 | quizzes.store | title required; questions[].question_text required; each question exactly 1 correct option |
 | classes.join (siswa) | class_code: required|exists:classes,class_code; reject if already a member (BR-01, no approval) |
 | quizzes.submit | attempt open (opens_at/closes_at window); one attempt per student; answers map to valid options |
 | grade-components.store | name required; weight: required|numeric|0–100; warn if class total ≠ 100 (BR-03) |
-| discussions.store | title: required|string|max:255; body: required|string|max:10000; guru-owned active class only |
-| discussion-comments.store | body: required|string|max:10000; guru owner or joined siswa; active class/author only |
+| material-discussions.store | title: required|string|max:255; body: required|string|max:10000; class/material IDs derived server-side; published material in an active class; active owning guru or joined siswa only |
+| discussion-comments.store | body: required|string|max:10000; owning guru or joined siswa; active class/author only; linked topics require a published material for siswa |
+| lkms.store | title and description required; roles required|array|min:1; role names required and unique per LKM; instructions and descriptions required; every sop_items required|array|min:1 |
+| lkms.update | title and description required; is_published required|boolean; role structure excluded and remains editable only through role endpoints before first proof |
+| lkm proof submit/correction | one required HTTPS URL, max 1024 chars; exact host in drive.google.com, docs.google.com, youtube.com, www.youtube.com, m.youtube.com, youtu.be |
+| lkm reflection submit/correction | sop_checks present|array; each value integer|distinct and valid for assigned role; empty array allowed |
 
 **Read-only guard (BR-05):** any write targeting a record owned by an inactive user must be rejected (403) by a shared policy/middleware.
 
@@ -502,7 +573,7 @@ POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.dis
 | NFR-03 | Security | HTTPS; hashed passwords; CSRF, XSS, SQLi protections (framework defaults); `spatie/laravel-permission` RBAC enforced server-side. |
 | NFR-04 | Privacy | PII access restricted by role; comply with applicable data-protection regulation (BR-08). |
 | NFR-05 | Availability | Target ≥ 99% during operational hours. |
-| NFR-06 | Auditability | Login, quiz attempts, attendance logged and reviewable by Super Admin (BR-06). |
+| NFR-06 | Auditability | Login, quiz attempts, and retained historical attendance events are reviewable by Super Admin (BR-06). |
 | NFR-07 | Compatibility | Responsive; works on current Chrome, Firefox, Edge, Safari (desktop + mobile web). |
 | NFR-08 | UX consistency | Use Metronic 9.5.0 components/tokens throughout; no ad-hoc component styling. |
 | NFR-09 | Data integrity | Inactive-user data is read-only, never hard-deleted (BR-05). |
@@ -559,6 +630,12 @@ Feature: Materials upload (BR-04)
     When they upload a PDF ≤ 20 MB
     Then the material is saved with type "file"
 
+  Scenario: Published material visibility
+    Given published and draft materials in a joined class
+    When the student opens the class
+    Then only published materials and their descriptions are visible
+    And direct access to a draft PDF is rejected (403)
+
 Feature: Quizzes
   Scenario: Auto-score on submit
     Given a published quiz with correct options defined
@@ -577,13 +654,13 @@ Feature: Grading (BR-03)
 Feature: Deactivation (BR-05)
   Scenario: Deactivated data becomes read-only
     Given a guru is deactivated by super_admin
-    Then their classes/grades/meetings are retained
+    Then their classes, grades, and historical meeting/attendance data are retained
     And any write to those records is rejected (403)
     And nothing is hard-deleted
 
 Feature: Monitoring (BR-06)
   Scenario: Super Admin sees all logs
-    Given login, quiz, and attendance events have occurred
+    Given login, quiz, and historical attendance events exist
     When the super_admin opens monitoring
     Then all corresponding activity_logs are visible and filterable
 
@@ -592,10 +669,21 @@ Feature: Limits (BR-07)
     Then a class accepts unlimited students and a guru owns unlimited classes
 
 Feature: Class discussions
-  Scenario: Guru creates a topic
-    Given an authenticated active guru with an active owned class
-    When they submit a valid discussion title and body
-    Then the topic is visible to the guru and joined students
+  Scenario: Class participant creates a material topic
+    Given a published material in an active class
+    When its active owning guru or an active joined siswa submits a valid title and body
+    Then the topic stores the server-derived class, material, and author
+    And the latest three topics appear directly beneath that material
+
+  Scenario: Draft material discussions are student-inaccessible
+    Given a material-linked topic becomes a draft
+    Then joined students cannot list, view, comment on, or preview that topic
+    And the owning guru and super_admin retain read access
+
+  Scenario: Deleted-material discussions are retained
+    Given a material with topics and comments is deleted
+    Then its topics remain under Diskusi Umum
+    And its comments remain intact
 
   Scenario: Class participants comment
     Given a discussion topic in an active class
@@ -607,6 +695,25 @@ Feature: Class discussions
     Then non-members cannot view or comment
     And the owning guru and super_admin can delete comments
     And inactive classes and inactive users cannot write
+
+Feature: LKM workflow (BR-09)
+  Scenario: Balanced initial role assignment
+    Given an active class, valid LKM roles, and existing students
+    When its guru or super_admin creates the LKM
+    Then roles and assignments are saved atomically
+    And shuffled round-robin role counts differ by at most one
+
+  Scenario: Student completes one-time LKM workflow
+    Given an active student assigned to a published LKM in a joined active class
+    When they submit an approved HTTPS proof URL and then any subset of SOP checks
+    Then original proof and reflection timestamps are stored
+    And both stages become read-only for the student
+
+  Scenario: LKM structure and assignment integrity
+    Given any student has submitted proof
+    Then role names, descriptions, instructions, and SOP points are locked
+    And that student's role cannot be reassigned
+    But the instructor may correct submitted URL and checks without changing timestamps
 ```
 
 ---
@@ -619,11 +726,12 @@ Build in order. Each milestone must pass its acceptance criteria (§11) before t
 - **M1 — Auth & RBAC.** `users`, Spatie permission tables, login/logout, siswa self-register (`FR-AUTH-02/03`), password reset via email (`BR-02`), fixed role/permission seeding, Spatie role middleware + Policies scaffolded, `activity_logs` + login/logout logging.
 - **M2 — Users admin.** Super Admin user CRUD + deactivate; read-only guard for inactive users (`BR-05`).
 - **M3 — Classes & membership.** `classes` (+ unique `class_code`), guru class CRUD, siswa join-by-code (`BR-01`, `FR-SW-03`), add-student by guru.
-- **M4 — Materials & meetings.** Figma-link + PDF upload (`BR-04`), meetings, attendance (`FR-GR-06/07`), share materials to meetings.
+- **M4 — Materials & publication.** Figma-link + PDF upload (`BR-04`), description and draft/published status (`DATA-04`, `FR-SW-04`). Legacy meeting/attendance tables remain retained with runtime routes disabled (`FR-GR-06/07/08`).
 - **M5 — Quizzes.** Quiz builder (questions + options, one correct), publish, siswa take + auto-score, quiz-attempt logging.
 - **M6 — Grading & recap.** `grade_components` manual weights (`BR-03`), `component_scores`, final-grade calculation, guru recap, siswa grade dashboard, Super Admin all-class recap + export (`FR-SA-05`).
 - **M7 — Monitoring.** Super Admin monitoring UI over `activity_logs` (`BR-06`) with filters.
-- **M7.8 — Class discussions.** Guru-created class topics, flat comments by the owning guru and joined students, and comment moderation by the owning guru and Super Admin (`FR-SA-07`, `FR-GR-14`, `FR-SW-07`).
+- **M7.8 — Material-based discussions.** Compact topic previews beneath each material; published-material topic creation by the owning guru and joined students; retained general topics; flat comments; comment moderation by the owning guru and Super Admin (`FR-SA-07`, `FR-GR-14`, `FR-SW-07`).
+- **M7.9 — LKM workflow.** Class-scoped LKM roles and SOP, balanced assignment, publication, one-time student proof/reflection, and timestamp-preserving instructor correction (`FR-SA-08`, `FR-GR-15`, `FR-SW-08`, `BR-09`, `DATA-25..27`).
 - **M8 — Hardening & Octane.** Enable Octane (FrankenPHP/Swoole), audit for shared-state leaks, perf pass (`NFR-01`), security review (`NFR-03`), full test suite green.
 
 ---
@@ -632,7 +740,7 @@ Build in order. Each milestone must pass its acceptance criteria (§11) before t
 
 **Assumptions** (flagged `// ASSUMPTION:` in code):
 - Quiz scoring is `(correct / total) * 100`; single attempt per student unless retakes are later specified.
-- Attendance statuses use Indonesian enum values (`hadir/izin/sakit/alfa`).
+- Legacy attendance statuses use Indonesian enum values (`hadir/izin/sakit/alfa`).
 - Grade weights are percentages that should total 100 (warn, don't hard-block, per manual-entry intent of `BR-03`).
 - `component_scores` capture non-quiz components; quiz-derived components may be auto-filled from `quiz_attempts` (confirm mapping with stakeholder).
 

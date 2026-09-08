@@ -18,6 +18,9 @@ class DiscussionCommentPolicy
         return $user->is_active
             && $class->is_active
             && ReadOnlyGuard::isOwnerActive($class->guru)
+            && (! $user->hasRole('siswa')
+                || ! $discussion->material_id
+                || $discussion->material->is_published)
             && (($user->hasRole('guru') && $class->guru_id === $user->id)
                 || ($user->hasRole('siswa') && $class->members()->where('student_id', $user->id)->exists()));
     }

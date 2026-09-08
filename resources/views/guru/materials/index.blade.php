@@ -14,13 +14,16 @@
         @endcan
     </div>
     @if(session('success'))<div class="kt-alert kt-alert-success">{{ session('success') }}</div>@endif
-    <div class="kt-card">
+    <div class="kt-card min-w-0">
         <div class="kt-card-content p-0">
+            <div class="kt-scrollable-x-auto">
             <table class="kt-table table-auto kt-table-border">
                 <thead>
                     <tr>
                         <th class="min-w-[240px]">Judul</th>
+                        <th class="min-w-[280px]">Deskripsi</th>
                         <th class="min-w-[100px]">Jenis</th>
+                        <th class="min-w-[100px]">Status</th>
                         <th class="w-[100px]"></th>
                     </tr>
                 </thead>
@@ -28,8 +31,12 @@
                     @forelse($materials as $material)
                     <tr>
                         <td><span class="font-semibold text-primary">{{ $material->title }}</span></td>
+                        <td class="text-sm text-secondary-foreground">{{ $material->description ?: '—' }}</td>
                         <td>
                             <span class="kt-badge kt-badge-outline">{{ $material->type === 'figma' ? 'Tautan' : 'PDF' }}</span>
+                        </td>
+                        <td>
+                            <span class="kt-badge {{ $material->is_published ? 'kt-badge-success' : 'kt-badge-outline' }}">{{ $material->is_published ? 'Terbit' : 'Draf' }}</span>
                         </td>
                         <td>
                             <div class="flex gap-1.5">
@@ -47,12 +54,23 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan="5" class="bg-muted/20 p-4">
+                            <x-material-discussions :school-class="$class" :material="$material" :route-prefix="$routePrefix" />
+                        </td>
+                    </tr>
                     @empty
-                    <tr><td colspan="3" class="py-8 text-center text-sm text-secondary-foreground">Belum ada materi.</td></tr>
+                    <tr><td colspan="5" class="py-8 text-center text-sm text-secondary-foreground">Belum ada materi.</td></tr>
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
+    </div>
+    <div>
+        <a href="{{ route($routePrefix.'.classes.discussions.index', $class) }}" class="kt-btn kt-btn-outline">
+            <i class="ki-filled ki-message-text"></i>Diskusi Umum
+        </a>
     </div>
 </div>
 @endsection

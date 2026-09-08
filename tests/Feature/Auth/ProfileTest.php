@@ -65,7 +65,7 @@ class ProfileTest extends AuthTestCase
         $this->actingAs($user)
             ->get(route('profile.show'))
             ->assertOk()
-            ->assertSee('Guru');
+            ->assertSee('Dosen');
 
         $this->actingAs($user)
             ->put(route('profile.update'), [
@@ -91,7 +91,7 @@ class ProfileTest extends AuthTestCase
         $this->actingAs($user)
             ->get(route('profile.show'))
             ->assertOk()
-            ->assertSee('Siswa');
+            ->assertSee('Mahasiswa');
 
         $this->actingAs($user)
             ->put(route('profile.update'), [

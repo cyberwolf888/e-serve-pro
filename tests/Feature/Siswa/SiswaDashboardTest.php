@@ -7,7 +7,6 @@ namespace Tests\Feature\Siswa;
 use App\Models\ActivityLog;
 use App\Models\ClassMember;
 use App\Models\FinalGrade;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\SchoolClass;
@@ -34,8 +33,6 @@ class SiswaDashboardTest extends TestCase
         $otherClass = $this->schoolClass($otherGuru);
         ClassMember::create(['class_id' => $class->id, 'student_id' => $student->id, 'joined_at' => now()]);
         ClassMember::create(['class_id' => $otherClass->id, 'student_id' => $otherStudent->id, 'joined_at' => now()]);
-        Meeting::create(['class_id' => $class->id, 'title' => 'Akan Datang', 'scheduled_at' => now()->addDay()]);
-        Meeting::create(['class_id' => $otherClass->id, 'title' => 'Kelas Lain', 'scheduled_at' => now()->addDay()]);
         $unattemptedQuiz = Quiz::create(['class_id' => $class->id, 'title' => 'Belum Dikerjakan', 'is_published' => true]);
         $attemptedQuiz = Quiz::create(['class_id' => $class->id, 'title' => 'Sudah Dikerjakan', 'is_published' => true]);
         QuizAttempt::create(['quiz_id' => $attemptedQuiz->id, 'student_id' => $student->id, 'started_at' => now()]);
@@ -49,9 +46,10 @@ class SiswaDashboardTest extends TestCase
         $dashboard = $response->viewData('dashboard');
 
         $response->assertOk()
-            ->assertSee('Dashboard Siswa')
-            ->assertSee('Ringkasan pembelajaran Anda dalam 30 hari terakhir');
-        $this->assertSame([1, 1, 2, 1], collect($dashboard['kpis'])->pluck('value')->all());
+            ->assertSee('Dashboard Mahasiswa')
+            ->assertSee('Ringkasan pembelajaran Anda dalam 30 hari terakhir')
+            ->assertDontSee('Pertemuan 30 Hari');
+        $this->assertSame([1, 2, 1], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertCount(30, $dashboard['chart']['categories']);
         $this->assertCount(30, $dashboard['chart']['data']);
         $this->assertSame(1, array_sum($dashboard['chart']['data']));
@@ -69,7 +67,7 @@ class SiswaDashboardTest extends TestCase
         $dashboard = $response->viewData('dashboard');
 
         $response->assertOk()->assertSee('Belum bergabung ke kelas')->assertSee('Tidak ada log aktivitas.');
-        $this->assertSame([0, 0, 0, 0], collect($dashboard['kpis'])->pluck('value')->all());
+        $this->assertSame([0, 0, 0], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertSame(['Belum bergabung ke kelas'], $dashboard['alerts']->pluck('label')->all());
     }
 

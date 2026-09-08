@@ -124,7 +124,7 @@
                     <div class="text-base font-medium text-secondary-foreground">
                         Platform pembelajaran Bahasa Indonesia<br/>
                         berbasis <span class="text-mono font-semibold">Kurikulum Merdeka</span><br/>
-                        untuk guru dan siswa.
+                        untuk dosen dan mahasiswa.
                     </div>
                 </div>
             </div>

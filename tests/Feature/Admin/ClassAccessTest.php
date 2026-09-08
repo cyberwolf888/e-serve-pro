@@ -1,13 +1,11 @@
 <?php
 
-// ADMIN_CLASS_ACCESS_PLAN / FR-SA-03 / FR-GR-02 / FR-GR-03 / FR-GR-04 / FR-GR-05 / FR-GR-06 / FR-GR-07 / FR-GR-08 / FR-GR-09 / FR-GR-10 / FR-GR-11 / FR-GR-12 / BR-04 / BR-05
+// ADMIN_CLASS_ACCESS_PLAN / FR-SA-03 / FR-GR-02 / FR-GR-03 / FR-GR-04 / FR-GR-05 / FR-GR-09 / FR-GR-10 / FR-GR-11 / FR-GR-12 / BR-04 / BR-05
 
 namespace Tests\Feature\Admin;
 
-use App\Models\ClassMember;
 use App\Models\GradeComponent;
 use App\Models\Material;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\QuizQuestion;
@@ -56,7 +54,6 @@ class ClassAccessTest extends TestCase
             ->assertSee($class->name)
             ->assertSee($guru->name)
             ->assertSee(route('admin.classes.materials.index', $class), false)
-            ->assertSee(route('admin.classes.meetings.index', $class), false)
             ->assertSee(route('admin.classes.quizzes.index', $class), false)
             ->assertSee(route('admin.classes.grade-components.index', $class), false);
     }
@@ -73,6 +70,7 @@ class ClassAccessTest extends TestCase
             'title' => 'Tautan Admin',
             'type' => 'figma',
             'figma_url' => 'https://figma.com/admin',
+            'is_published' => '0',
         ])->assertRedirect(route('admin.classes.materials.index', $activeClass));
 
         $this->assertDatabaseHas('materials', ['class_id' => $activeClass->id, 'title' => 'Tautan Admin']);
@@ -83,6 +81,7 @@ class ClassAccessTest extends TestCase
             'type' => 'file',
             'figma_url' => '',
             'file' => $file,
+            'is_published' => '0',
         ])->assertRedirect(route('admin.classes.materials.index', $inactiveClass));
 
         $this->assertDatabaseHas('materials', ['class_id' => $inactiveClass->id, 'title' => 'PDF Admin']);
@@ -94,15 +93,10 @@ class ClassAccessTest extends TestCase
         $other = $this->user('guru');
         $class = $this->schoolClass($owner);
         $material = Material::create(['class_id' => $class->id, 'title' => 'M', 'type' => 'figma', 'figma_url' => 'https://f']);
-        $meeting = Meeting::create(['class_id' => $class->id, 'title' => 'P1', 'scheduled_at' => now()]);
         $quiz = Quiz::create(['class_id' => $class->id, 'title' => 'Q1']);
 
         $this->actingAs($other)
-            ->post(route('guru.classes.materials.store', $class), ['title' => 'X', 'type' => 'figma', 'figma_url' => 'https://f'])
-            ->assertForbidden();
-
-        $this->actingAs($other)
-            ->post(route('guru.classes.meetings.store', $class), ['title' => 'P', 'scheduled_at' => now()->format('Y-m-d\TH:i')])
+            ->post(route('guru.classes.materials.store', $class), ['title' => 'X', 'type' => 'figma', 'figma_url' => 'https://f', 'is_published' => '0'])
             ->assertForbidden();
 
         $this->actingAs($other)
@@ -110,30 +104,7 @@ class ClassAccessTest extends TestCase
             ->assertForbidden();
 
         $this->actingAs($other)->delete(route('guru.classes.materials.destroy', [$class, $material]))->assertForbidden();
-        $this->actingAs($other)->delete(route('guru.classes.meetings.destroy', [$class, $meeting]))->assertForbidden();
         $this->actingAs($other)->delete(route('guru.classes.quizzes.destroy', [$class, $quiz]))->assertForbidden();
-    }
-
-    public function test_admin_manages_meetings_and_attendance_for_another_guru(): void
-    {
-        $admin = $this->user('super_admin');
-        $guru = $this->user('guru');
-        $student = $this->user('siswa');
-        $class = $this->schoolClass($guru);
-        ClassMember::create(['class_id' => $class->id, 'student_id' => $student->id, 'joined_at' => now()]);
-
-        $this->actingAs($admin)->post(route('admin.classes.meetings.store', $class), [
-            'title' => 'Pertemuan Admin',
-            'scheduled_at' => now()->format('Y-m-d\TH:i'),
-        ])->assertRedirect(route('admin.classes.meetings.index', $class));
-
-        $meeting = Meeting::where('title', 'Pertemuan Admin')->firstOrFail();
-
-        $this->actingAs($admin)->post(route('admin.classes.meetings.attendance.store', [$class, $meeting]), [
-            'statuses' => [$student->id => 'hadir'],
-        ])->assertRedirect(route('admin.classes.meetings.attendance.edit', [$class, $meeting]));
-
-        $this->assertDatabaseHas('attendances', ['meeting_id' => $meeting->id, 'student_id' => $student->id, 'status' => 'hadir']);
     }
 
     public function test_admin_manages_quizzes_and_questions_for_another_guru(): void

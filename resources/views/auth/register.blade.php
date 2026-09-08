@@ -6,7 +6,7 @@
     <div class="card-body p-8">
 
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-semibold text-foreground">Daftar Akun Siswa</h1>
+            <h1 class="text-2xl font-semibold text-foreground">Daftar Akun Mahasiswa</h1>
             <p class="text-sm text-secondary-foreground mt-1">Buat akun untuk bergabung dengan kelas</p>
         </div>
 

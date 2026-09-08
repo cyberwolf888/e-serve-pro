@@ -35,12 +35,12 @@ class AddedToClass extends Notification
 
         $line = $this->reason === self::REASON_JOINED
             ? "Anda telah bergabung ke kelas **{$this->class->name}**."
-            : "Anda telah ditambahkan ke kelas **{$this->class->name}** oleh guru.";
+            : "Anda telah ditambahkan ke kelas **{$this->class->name}** oleh dosen.";
 
         return (new MailMessage)
             ->subject($subject)
             ->line($line)
             ->action('Lihat Kelas', url(route('siswa.classes.show', $this->class)))
-            ->line('Silakan masuk ke portal untuk melihat materi, pertemuan, dan kuis yang tersedia.');
+            ->line('Silakan masuk ke portal untuk melihat materi dan kuis yang tersedia.');
     }
 }

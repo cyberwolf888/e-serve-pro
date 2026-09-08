@@ -1,11 +1,16 @@
 {{-- discussions/show.blade.php — FR-SA-07 / FR-GR-14 / FR-SW-07 / NFR-08 / M7.8 --}}
 @extends('layouts.app')
-@php($indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Diskusi', 'url' => route($routePrefix.'.classes.discussions.index', $class)], ['label' => $discussion->title]]" />@endsection
+@php
+    $indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya';
+    $discussionIndexRoute = $discussion->material
+        ? route($routePrefix.'.classes.materials.discussions.index', [$class, $discussion->material])
+        : route($routePrefix.'.classes.discussions.index', $class);
+@endphp
+@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => $discussion->material?->title ?? 'Diskusi Umum', 'url' => $discussionIndexRoute], ['label' => $discussion->title]]" />@endsection
 @section('content')
 <div class="mx-auto grid max-w-4xl gap-5 lg:gap-7.5">
     <div class="flex items-center gap-3">
-        <a href="{{ route($routePrefix.'.classes.discussions.index', $class) }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a>
+        <a href="{{ $discussionIndexRoute }}" class="kt-btn kt-btn-ghost kt-btn-icon"><i class="ki-filled ki-arrow-left text-lg"></i></a>
         <span class="text-sm font-medium text-secondary-foreground">Kembali ke Diskusi</span>
     </div>
 
@@ -23,6 +28,7 @@
             </div>
         </div>
         <div class="grid gap-4 p-5 lg:p-7.5">
+            <span class="kt-badge kt-badge-outline w-fit">{{ $discussion->material?->title ?? 'Diskusi Umum' }}</span>
             <h1 class="text-2xl font-semibold text-mono">{{ $discussion->title }}</h1>
             <p class="whitespace-pre-line text-sm leading-6 text-foreground">{{ $discussion->body }}</p>
         </div>
@@ -42,7 +48,7 @@
                         <div class="flex flex-wrap items-start justify-between gap-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                                 <span class="font-medium text-mono">{{ $comment->author->name }}</span>
-                                <span class="kt-badge kt-badge-sm kt-badge-outline">{{ $comment->author->hasRole('guru') ? 'Guru' : 'Siswa' }}</span>
+                                <span class="kt-badge kt-badge-sm kt-badge-outline">{{ $comment->author->hasRole('guru') ? 'Dosen' : 'Mahasiswa' }}</span>
                                 <time class="text-xs text-secondary-foreground" datetime="{{ $comment->created_at->toIso8601String() }}">{{ $comment->created_at->diffForHumans() }}</time>
                             </div>
                             @can('delete', $comment)

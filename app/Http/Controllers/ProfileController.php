@@ -56,8 +56,8 @@ class ProfileController extends Controller
     {
         return match (true) {
             $user->hasRole('super_admin') => 'Super Admin',
-            $user->hasRole('guru') => 'Guru',
-            default => 'Siswa',
+            $user->hasRole('guru') => 'Dosen',
+            default => 'Mahasiswa',
         };
     }
 }

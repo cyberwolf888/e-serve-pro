@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['class_id', 'author_id', 'title', 'body'])]
+#[Fillable(['class_id', 'material_id', 'author_id', 'title', 'body'])]
 class DiscussionTopic extends Model
 {
     public function schoolClass(): BelongsTo
@@ -20,6 +20,11 @@ class DiscussionTopic extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function material(): BelongsTo
+    {
+        return $this->belongsTo(Material::class);
     }
 
     public function comments(): HasMany

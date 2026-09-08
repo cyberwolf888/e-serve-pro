@@ -13,20 +13,18 @@
 <div class="grid gap-5 pb-7.5 lg:gap-7.5">
     <div class="flex flex-wrap items-end justify-between gap-5 pt-2">
         <div class="flex flex-col gap-2">
-            <h1 class="text-xl font-medium leading-none text-mono">Dashboard Guru</h1>
+            <h1 class="text-xl font-medium leading-none text-mono">Dashboard Dosen</h1>
             <p class="text-sm text-secondary-foreground">Ringkasan kelas Anda dalam 30 hari terakhir</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7.5 xl:grid-cols-3">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7.5 xl:grid-cols-4">
         @php
             $kpiStyles = [
                 ['icon' => 'ki-book-open', 'iconClass' => 'bg-primary/10 text-primary', 'palette' => 'bg-gradient-to-br from-primary/15 via-primary/5 to-transparent'],
                 ['icon' => 'ki-people', 'iconClass' => 'dashboard-kpi-success-icon', 'palette' => 'dashboard-kpi-success'],
-                ['icon' => 'ki-calendar', 'iconClass' => 'dashboard-kpi-warning-icon', 'palette' => 'dashboard-kpi-warning'],
-                ['icon' => 'ki-notepad', 'iconClass' => 'bg-destructive/10 text-destructive', 'palette' => 'bg-gradient-to-br from-destructive/15 via-destructive/5 to-transparent'],
-                ['icon' => 'ki-chart-line-up-2', 'iconClass' => 'bg-primary/10 text-primary', 'palette' => 'bg-gradient-to-br from-primary/15 via-primary/5 to-transparent'],
-                ['icon' => 'ki-file-added', 'iconClass' => 'dashboard-kpi-success-icon', 'palette' => 'dashboard-kpi-success'],
+                ['icon' => 'ki-notepad', 'iconClass' => 'dashboard-kpi-warning-icon', 'palette' => 'dashboard-kpi-warning'],
+                ['icon' => 'ki-file-added', 'iconClass' => 'bg-destructive/10 text-destructive', 'palette' => 'bg-gradient-to-br from-destructive/15 via-destructive/5 to-transparent'],
             ];
         @endphp
         @foreach ($dashboard['kpis'] as $kpi)

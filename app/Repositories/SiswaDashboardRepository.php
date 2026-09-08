@@ -6,7 +6,6 @@ namespace App\Repositories;
 
 use App\Models\ActivityLog;
 use App\Models\ClassMember;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\SchoolClass;
 use App\Models\User;
@@ -23,13 +22,6 @@ class SiswaDashboardRepository
     public function countClasses(User $student): int
     {
         return $this->classes($student)->count();
-    }
-
-    public function countUpcomingMeetings(User $student, CarbonInterface $start, CarbonInterface $end): int
-    {
-        return Meeting::whereIn('class_id', $this->activeClasses($student)->select('id'))
-            ->whereBetween('scheduled_at', [$start, $end])
-            ->count();
     }
 
     public function countAvailableQuizzes(User $student, CarbonInterface $now): int

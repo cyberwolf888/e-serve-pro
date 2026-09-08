@@ -102,11 +102,11 @@ class SchoolClassController extends Controller
         $student = User::role('siswa')->where('is_active', true)->where('email', $request->string('email')->toString())->first();
 
         if (! $student) {
-            return back()->withErrors(['email' => 'Siswa aktif dengan email tersebut tidak ditemukan.']);
+            return back()->withErrors(['email' => 'Mahasiswa aktif dengan email tersebut tidak ditemukan.']);
         }
 
         $this->service->addStudent($class, $student, 'email', AddedToClass::REASON_ADDED);
 
-        return to_route($this->routePrefix().'.classes.show', $class)->with('success', 'Siswa berhasil ditambahkan.');
+        return to_route($this->routePrefix().'.classes.show', $class)->with('success', 'Mahasiswa berhasil ditambahkan.');
     }
 }

@@ -44,15 +44,16 @@ class SuperAdminDashboardTest extends TestCase
         $dashboard = $response->viewData('dashboard');
 
         $response->assertOk()->assertSee('Dashboard Super Admin')->assertSee('Ringkasan operasional 30 hari terakhir');
+        $this->assertSame(['Total Dosen', 'Total Mahasiswa'], collect($dashboard['kpis'])->take(2)->pluck('label')->all());
         $this->assertSame([2, 2, 2, 1, 1, 13], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertCount(30, $dashboard['chart']['categories']);
         $this->assertCount(30, $dashboard['chart']['data']);
         $this->assertSame(0, $dashboard['chart']['data'][0]);
         $this->assertCount(10, $dashboard['recentActivities']);
         $this->assertSame([
-            'Guru nonaktif',
-            'Siswa nonaktif',
-            'Kelas aktif tanpa siswa',
+            'Dosen nonaktif',
+            'Mahasiswa nonaktif',
+            'Kelas aktif tanpa mahasiswa',
             'Kelas aktif tanpa materi',
             'Kelas aktif tanpa kuis terbit',
         ], $dashboard['alerts']->pluck('label')->all());

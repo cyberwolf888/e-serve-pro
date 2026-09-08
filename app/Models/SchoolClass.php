@@ -68,4 +68,10 @@ class SchoolClass extends Model
     {
         return $this->hasMany(FinalGrade::class, 'class_id');
     }
+
+    // DATA-25 / FR-GR-15 / M7.9
+    public function lkms(): HasMany
+    {
+        return $this->hasMany(Lkm::class, 'class_id');
+    }
 }

@@ -14,10 +14,9 @@ use App\Http\Controllers\DiscussionCommentController;
 use App\Http\Controllers\DiscussionTopicController;
 use App\Http\Controllers\GradeComponentController;
 use App\Http\Controllers\GradeController;
-use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
+use App\Http\Controllers\Guru\LkmController as GuruLkmController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
-use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
 use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
@@ -25,6 +24,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecapController;
+use App\Http\Controllers\Siswa\LkmController as SiswaLkmController;
 use App\Http\Controllers\Siswa\QuizController as SiswaQuizController;
 use App\Http\Controllers\Siswa\SchoolClassController as SiswaSchoolClassController;
 use App\Models\User;
@@ -105,20 +105,13 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     // FR-SA-07 / M7.8
     Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
     Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
         ->scopeBindings()->name('classes.discussions.comments.destroy');
 
     // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04 / ADMIN_CLASS_ACCESS_PLAN
     Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
-
-    // FR-SA-03 / FR-GR-06 / FR-GR-07 / FR-GR-08
-    Route::resource('classes.meetings', GuruMeetingController::class);
-    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
-        ->name('classes.meetings.share');
-    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
-        ->name('classes.meetings.attendance.edit');
-    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
-        ->name('classes.meetings.attendance.store');
 
     // FR-SA-03 / FR-GR-09
     Route::resource('classes.quizzes', GuruQuizController::class);
@@ -128,6 +121,16 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
         ->except(['index', 'show']);
 
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
+
+    // FR-SA-08 / BR-09 / M7.9
+    Route::resource('classes.lkms', GuruLkmController::class)->except(['destroy'])->scoped();
+    Route::post('classes/{class}/lkms/{lkm}/roles', [GuruLkmController::class, 'storeRole'])->scopeBindings()->name('classes.lkms.roles.store');
+    Route::put('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'updateRole'])->scopeBindings()->name('classes.lkms.roles.update');
+    Route::delete('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'destroyRole'])->scopeBindings()->name('classes.lkms.roles.destroy');
+    Route::post('classes/{class}/lkms/{lkm}/assignments', [GuruLkmController::class, 'storeAssignment'])->scopeBindings()->name('classes.lkms.assignments.store');
+    Route::patch('classes/{class}/lkms/{lkm}/assignments/{assignment}', [GuruLkmController::class, 'updateAssignment'])->scopeBindings()->name('classes.lkms.assignments.update');
+    Route::get('classes/{class}/lkms/{lkm}/submissions/{assignment}/edit', [GuruLkmController::class, 'editSubmission'])->scopeBindings()->name('classes.lkms.submissions.edit');
+    Route::put('classes/{class}/lkms/{lkm}/submissions/{assignment}', [GuruLkmController::class, 'updateSubmission'])->scopeBindings()->name('classes.lkms.submissions.update');
 
     Route::get('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'scores'])->name('classes.grade-components.scores');
     Route::post('classes/{class}/grade-components/{grade_component}/scores', [GradeComponentController::class, 'storeScores'])->name('classes.grade-components.scores.store');
@@ -141,19 +144,18 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
 
+    // FR-GR-15 / BR-09 / M7.9
+    Route::resource('classes.lkms', GuruLkmController::class)->except(['destroy'])->scoped();
+    Route::post('classes/{class}/lkms/{lkm}/roles', [GuruLkmController::class, 'storeRole'])->scopeBindings()->name('classes.lkms.roles.store');
+    Route::put('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'updateRole'])->scopeBindings()->name('classes.lkms.roles.update');
+    Route::delete('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'destroyRole'])->scopeBindings()->name('classes.lkms.roles.destroy');
+    Route::post('classes/{class}/lkms/{lkm}/assignments', [GuruLkmController::class, 'storeAssignment'])->scopeBindings()->name('classes.lkms.assignments.store');
+    Route::patch('classes/{class}/lkms/{lkm}/assignments/{assignment}', [GuruLkmController::class, 'updateAssignment'])->scopeBindings()->name('classes.lkms.assignments.update');
+    Route::get('classes/{class}/lkms/{lkm}/submissions/{assignment}/edit', [GuruLkmController::class, 'editSubmission'])->scopeBindings()->name('classes.lkms.submissions.edit');
+    Route::put('classes/{class}/lkms/{lkm}/submissions/{assignment}', [GuruLkmController::class, 'updateSubmission'])->scopeBindings()->name('classes.lkms.submissions.update');
+
     // FR-GR-04 / FR-GR-05 / BR-04
     Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
-
-    // FR-GR-06 / FR-GR-08
-    Route::resource('classes.meetings', GuruMeetingController::class);
-    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
-        ->name('classes.meetings.share');
-
-    // FR-GR-07
-    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
-        ->name('classes.meetings.attendance.edit');
-    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
-        ->name('classes.meetings.attendance.store');
 
     // FR-GR-09
     Route::resource('classes.quizzes', GuruQuizController::class);
@@ -170,7 +172,13 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
 
     // FR-GR-14 / M7.8
-    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'create', 'store', 'show'])->scoped();
+    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
+    Route::get('classes/{class}/materials/{material}/discussions/create', [DiscussionTopicController::class, 'create'])
+        ->scopeBindings()->name('classes.materials.discussions.create');
+    Route::post('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'store'])
+        ->scopeBindings()->name('classes.materials.discussions.store');
     Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
         ->scopeBindings()->name('classes.discussions.comments.store');
     Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
@@ -184,8 +192,19 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/classes', [SiswaSchoolClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{class}', [SiswaSchoolClassController::class, 'show'])->name('classes.show');
 
+    // FR-SW-08 / BR-09 / M7.9
+    Route::get('classes/{class}/lkms/{lkm}', [SiswaLkmController::class, 'show'])->scopeBindings()->name('classes.lkms.show');
+    Route::post('classes/{class}/lkms/{lkm}/proof', [SiswaLkmController::class, 'submitProof'])->scopeBindings()->name('classes.lkms.proof.store');
+    Route::post('classes/{class}/lkms/{lkm}/reflection', [SiswaLkmController::class, 'submitReflection'])->scopeBindings()->name('classes.lkms.reflection.store');
+
     // FR-SW-07 / M7.8
     Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
+    Route::get('classes/{class}/materials/{material}/discussions/create', [DiscussionTopicController::class, 'create'])
+        ->scopeBindings()->name('classes.materials.discussions.create');
+    Route::post('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'store'])
+        ->scopeBindings()->name('classes.materials.discussions.store');
     Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
         ->scopeBindings()->name('classes.discussions.comments.store');
 

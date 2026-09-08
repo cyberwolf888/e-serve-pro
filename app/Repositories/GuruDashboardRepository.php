@@ -6,7 +6,6 @@ namespace App\Repositories;
 
 use App\Models\ActivityLog;
 use App\Models\ClassMember;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\SchoolClass;
 use App\Models\User;
@@ -25,21 +24,6 @@ class GuruDashboardRepository
         return ClassMember::whereIn('class_id', $this->classes($guru)->select('id'))
             ->distinct('student_id')
             ->count('student_id');
-    }
-
-    public function countUpcomingMeetings(User $guru, CarbonInterface $start, CarbonInterface $end): int
-    {
-        return Meeting::whereIn('class_id', $this->classes($guru)->select('id'))
-            ->whereBetween('scheduled_at', [$start, $end])
-            ->count();
-    }
-
-    public function countUnrecordedAttendances(User $guru, CarbonInterface $now): int
-    {
-        return Meeting::whereIn('class_id', $this->classes($guru)->select('id'))
-            ->where('scheduled_at', '<', $now)
-            ->whereRaw('(SELECT COUNT(*) FROM attendances WHERE attendances.meeting_id = meetings.id) < (SELECT COUNT(*) FROM class_members WHERE class_members.class_id = meetings.class_id)')
-            ->count();
     }
 
     public function countActiveQuizzes(User $guru, CarbonInterface $now): int

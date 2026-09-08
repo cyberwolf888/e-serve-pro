@@ -47,11 +47,33 @@ class AdminMaterialManagementTest extends TestCase
 
         $this->actingAs($admin)->post(route('admin.classes.materials.store', $class), [
             'title' => 'Desain UI Admin',
+            'description' => 'Deskripsi admin',
             'type' => 'figma',
             'figma_url' => 'https://figma.com/file/admin',
+            'is_published' => '0',
         ])->assertRedirect(route('admin.classes.materials.index', $class));
 
-        $this->assertDatabaseHas('materials', ['class_id' => $class->id, 'type' => 'figma', 'figma_url' => 'https://figma.com/file/admin']);
+        $this->assertDatabaseHas('materials', [
+            'class_id' => $class->id,
+            'description' => 'Deskripsi admin',
+            'is_published' => false,
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.classes.materials.index', $class))
+            ->assertOk()
+            ->assertSee('Desain UI Admin')
+            ->assertSee('Draf');
+
+        $material = Material::firstOrFail();
+        $this->actingAs($admin)->put(route('admin.classes.materials.update', [$class, $material]), [
+            'title' => 'Desain UI Admin Diperbarui',
+            'description' => 'Deskripsi admin baru',
+            'type' => 'figma',
+            'figma_url' => 'https://figma.com/file/admin-new',
+            'is_published' => '0',
+        ])->assertRedirect(route('admin.classes.materials.index', $class));
+
+        $this->assertFalse($material->fresh()->is_published);
     }
 
     public function test_admin_uploads_valid_pdf_material(): void
@@ -67,6 +89,7 @@ class AdminMaterialManagementTest extends TestCase
             'type' => 'file',
             'figma_url' => '',
             'file' => $file,
+            'is_published' => '1',
         ])->assertRedirect(route('admin.classes.materials.index', $class));
 
         $material = Material::firstOrFail();
@@ -88,6 +111,7 @@ class AdminMaterialManagementTest extends TestCase
             'title' => 'PDF Gagal',
             'type' => 'file',
             'file' => $file,
+            'is_published' => '0',
         ])->assertSee('Periksa kembali data yang diisi.');
     }
 }

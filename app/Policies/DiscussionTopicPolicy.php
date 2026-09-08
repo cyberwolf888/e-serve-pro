@@ -5,6 +5,7 @@
 namespace App\Policies;
 
 use App\Models\DiscussionTopic;
+use App\Models\Material;
 use App\Models\SchoolClass;
 use App\Models\User;
 use App\Services\ReadOnlyGuard;
@@ -20,15 +21,20 @@ class DiscussionTopicPolicy
 
     public function view(User $user, DiscussionTopic $discussion): bool
     {
-        return $this->viewAny($user, $discussion->schoolClass);
+        return $this->viewAny($user, $discussion->schoolClass)
+            && (! $user->hasRole('siswa')
+                || ! $discussion->material_id
+                || $discussion->material->is_published);
     }
 
-    public function create(User $user, SchoolClass $class): bool
+    public function create(User $user, SchoolClass $class, Material $material): bool
     {
         return $user->is_active
             && $class->is_active
+            && $material->class_id === $class->id
+            && $material->is_published
             && ReadOnlyGuard::isOwnerActive($class->guru)
-            && $user->hasRole('guru')
-            && $class->guru_id === $user->id;
+            && (($user->hasRole('guru') && $class->guru_id === $user->id)
+                || ($user->hasRole('siswa') && $class->members()->where('student_id', $user->id)->exists()));
     }
 }

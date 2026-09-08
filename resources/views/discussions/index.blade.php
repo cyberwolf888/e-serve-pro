@@ -1,7 +1,14 @@
 {{-- discussions/index.blade.php — FR-SA-07 / FR-GR-14 / FR-SW-07 / NFR-08 / M7.8 --}}
 @extends('layouts.app')
-@php($indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya')
-@section('breadcrumb')<x-breadcrumb :items="[['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Diskusi']]" />@endsection
+@php
+    $indexLabel = $routePrefix === 'admin' ? 'Kelas' : 'Kelas Saya';
+    $materialsRoute = $routePrefix === 'siswa'
+        ? route('siswa.classes.show', $class)
+        : route($routePrefix.'.classes.materials.index', $class);
+@endphp
+@section('breadcrumb')<x-breadcrumb :items="$material
+    ? [['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Materi', 'url' => $materialsRoute], ['label' => $material->title]]
+    : [['label' => $indexLabel, 'url' => route($routePrefix.'.classes.index')], ['label' => $class->name, 'url' => route($routePrefix.'.classes.show', $class)], ['label' => 'Diskusi Umum']]" />@endsection
 @section('content')
 <div class="grid gap-5 lg:gap-7.5">
     @if($routePrefix !== 'siswa')
@@ -10,14 +17,16 @@
 
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="text-xl font-semibold text-mono">Diskusi Kelas</h1>
-            <p class="mt-1 text-sm text-secondary-foreground">{{ $class->name }}</p>
+            <h1 class="text-xl font-semibold text-mono">{{ $material ? 'Diskusi Materi' : 'Diskusi Umum' }}</h1>
+            <p class="mt-1 text-sm text-secondary-foreground">{{ $material?->title ?? $class->name }}</p>
         </div>
-        @can('create', [App\Models\DiscussionTopic::class, $class])
-            <a href="{{ route($routePrefix.'.classes.discussions.create', $class) }}" class="kt-btn kt-btn-primary">
+        @if($material)
+        @can('create', [App\Models\DiscussionTopic::class, $class, $material])
+            <a href="{{ route($routePrefix.'.classes.materials.discussions.create', [$class, $material]) }}" class="kt-btn kt-btn-primary">
                 <i class="ki-filled ki-plus"></i>Buat Topik
             </a>
         @endcan
+        @endif
     </div>
 
     @if(! $class->is_active)
@@ -36,6 +45,7 @@
                         <div class="flex flex-wrap items-start justify-between gap-2">
                             <div>
                                 <h2 class="font-semibold text-mono hover:text-primary">{{ $discussion->title }}</h2>
+                                <span class="kt-badge kt-badge-sm kt-badge-outline mt-1">{{ $material?->title ?? 'Diskusi Umum' }}</span>
                                 <p class="mt-1 text-sm text-secondary-foreground">
                                     {{ $discussion->author->name }} · {{ $discussion->created_at->diffForHumans() }}
                                 </p>
@@ -55,7 +65,7 @@
                         <i class="ki-filled ki-message-text-2 text-2xl"></i>
                     </div>
                     <h2 class="mt-4 font-semibold text-mono">Belum ada topik diskusi</h2>
-                    <p class="mt-1 text-sm text-secondary-foreground">Guru belum memulai diskusi untuk kelas ini.</p>
+                    <p class="mt-1 text-sm text-secondary-foreground">Belum ada topik pada bagian ini.</p>
                 </div>
             </div>
         @endforelse

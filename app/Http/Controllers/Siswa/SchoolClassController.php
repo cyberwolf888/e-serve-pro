@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JoinSchoolClassRequest;
 use App\Models\SchoolClass;
 use App\Notifications\AddedToClass;
-use App\Repositories\MeetingRepository;
+use App\Repositories\LkmRepository;
+use App\Repositories\MaterialRepository;
 use App\Repositories\QuizRepository;
 use App\Repositories\SchoolClassRepository;
 use App\Services\SchoolClassService;
@@ -20,8 +21,9 @@ class SchoolClassController extends Controller
     public function __construct(
         private SchoolClassRepository $repo,
         private SchoolClassService $service,
-        private MeetingRepository $meetingRepo,
+        private MaterialRepository $materialRepo,
         private QuizRepository $quizRepo,
+        private LkmRepository $lkmRepo,
     ) {}
 
     public function index(): View
@@ -43,12 +45,13 @@ class SchoolClassController extends Controller
     {
         $this->authorize('view', $class);
 
-        // FR-SW-04 — meetings + only the materials shared to them
+        // FR-SW-04 — published materials for enrolled students
         // FR-SW-05 — quizzes currently available to this student
         return view('siswa.classes.show', [
             'class' => $class,
-            'meetings' => $this->meetingRepo->forStudentClass($class),
+            'materials' => $this->materialRepo->publishedForClass($class),
             'quizzes' => $this->quizRepo->availableForStudent($class, auth()->user()),
+            'lkmAssignments' => $this->lkmRepo->studentAssignments($class, auth()->user()),
         ]);
     }
 }

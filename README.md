@@ -21,15 +21,15 @@
 
 ## ✨ Tentang E-SERVEPro
 
-**E-SERVEPro** adalah platform pembelajaran Bahasa Indonesia berbasis web yang dirancang untuk mendukung pembelajaran sesuai dengan *Kurikulum Merdeka*. Platform ini mengintegrasikan materi visual, kelas, pertemuan, absensi, kuis pilihan ganda, penilaian, dan rekap progres dalam satu sistem yang terpadu.
+**E-SERVEPro** adalah platform pembelajaran Bahasa Indonesia berbasis web yang dirancang untuk mendukung pembelajaran sesuai dengan *Kurikulum Merdeka*. Platform ini mengintegrasikan materi visual, kelas, kuis pilihan ganda, penilaian, dan rekap progres dalam satu sistem yang terpadu.
 
 ### 🎯 Tiga Peran Utama
 
 | Peran | Deskripsi |
 |-------|-----------|
 | 👨‍💼 **Super Admin (Peneliti)**** | Otoritas tertinggi. Mengelola semua data, pengguna, konfigurasi, dan log aktivitas. |
-| 👨‍🏫 **Guru** | Membuat dan mengelola kelas, materi, pertemuan, kuis, serta penilaian siswa. |
-| 🎓 **Siswa** | Bergabung ke kelas, mengikuti pertemuan, mengerjakan kuis, dan melihat nilai sendiri. |
+| 👨‍🏫 **Guru** | Membuat dan mengelola kelas, materi, kuis, serta penilaian siswa. |
+| 🎓 **Siswa** | Bergabung ke kelas, mengakses materi terbit, mengerjakan kuis, dan melihat nilai sendiri. |
 
 ---
 
@@ -37,11 +37,10 @@
 
 - 🔐 **Autentikasi & Peran** — Login berbasis sesi, siswa dapat mendaftar mandiri, guru dibuat oleh Super Admin, dan reset password via email.
 - 🏫 **Manajemen Kelas** — Guru membuat kelas dengan kode unik; siswa bergabung langsung tanpa persetujuan guru.
-- 📚 **Materi Pembelajaran** — Bagi materi melalui tautan Figma atau unggah file PDF (maks. 20 MB).
-- 📅 **Pertemuan & Absensi** — Jadwalkan pertemuan dan catat kehadiran siswa.
+- 📚 **Materi Pembelajaran** — Terbitkan materi melalui tautan Figma atau unggah file PDF (maks. 20 MB).
 - 📝 **Kuis Pilihan Ganda** — Buat kuis, terbitkan, dan siswa mengerjakannya dengan penilaian otomatis.
 - 📊 **Penilaian & Rekap** — Bobot komponen nilai diatur guru, perhitungan nilai akhir manual, dan rekap kelas dapat diunduh.
-- 📜 **Monitoring Aktivitas** — Super Admin dapat melihat log login, kuis, dan absensi.
+- 📜 **Monitoring Aktivitas** — Super Admin dapat melihat log aktivitas pengguna.
 
 ---
 
@@ -144,7 +143,7 @@ Kontribusi sangat terbuka! Pastikan:
 - RBAC diterapkan sepenuhnya di server melalui Policy + Spatie.
 - Password di-hash; gunakan HTTPS di produksi.
 - Data pengguna non-aktif menjadi hanya-baca tanpa penghapusan permanen.
-- Semua aktivitas login, kuis, dan absensi tercatat dalam log.
+- Aktivitas pengguna tercatat dalam log.
 
 ---
 

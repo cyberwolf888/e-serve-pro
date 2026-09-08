@@ -1,4 +1,4 @@
-{{-- siswa/classes/show.blade.php — FR-SW-04 / FR-SW-05 / NFR-08 / M3 / M4 --}}
+{{-- siswa/classes/show.blade.php — FR-SW-04 / FR-SW-05 / FR-SW-08 / NFR-08 / M3 / M4 / M7.9 --}}
 @extends('layouts.app')
 @section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('siswa.classes.index')], ['label' => $class->name]]" />@endsection
 @section('content')
@@ -8,7 +8,7 @@
             <h1 class="text-2xl font-semibold text-mono">{{ $class->name }}</h1>
             <div class="flex items-center gap-1.5 text-secondary-foreground">
                 <i class="ki-filled ki-user text-base"></i>
-                <span>Guru: {{ $class->guru->name }}</span>
+                <span>Dosen: {{ $class->guru->name }}</span>
             </div>
             @if ($class->description)
                 <p>{{ $class->description }}</p>
@@ -16,11 +16,6 @@
             @if (! $class->is_active)
                 <div class="kt-alert kt-alert-warning">Kelas nonaktif. Konten hanya dapat dibaca.</div>
             @endif
-            <div>
-                <a href="{{ route('siswa.classes.discussions.index', $class) }}" class="kt-btn kt-btn-primary">
-                    <i class="ki-filled ki-message-text"></i>Buka Diskusi Kelas
-                </a>
-            </div>
         </div>
     </div>
 
@@ -50,50 +45,49 @@
         <div class="lg:col-span-8 kt-card">
             <div class="kt-card-header">
                 <h3 class="kt-card-title flex items-center gap-2 text-xs font-semibold uppercase tracking-wide">
-                    <i class="ki-filled ki-calendar text-base text-primary"></i>Pertemuan
+                    <i class="ki-filled ki-book-open text-base text-primary"></i>Materi Terbit
                 </h3>
             </div>
-            <div class="kt-card-content p-7.5">
-                @forelse($meetings as $meeting)
-                    <div class="grid grid-cols-[auto_1fr] gap-4 md:gap-5">
-                        <div class="flex flex-col items-center">
-                            {{-- ASSUMPTION: no sequential meeting-number column (DATA-05); derived from desc-ordered position --}}
-                            <div class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 font-semibold {{ $loop->first ? 'border-primary text-primary' : 'border-border text-secondary-foreground' }}">
-                                {{ $meetings->count() - $loop->index }}
-                            </div>
-                            @if(! $loop->last)<div class="w-px grow bg-border"></div>@endif
-                        </div>
-                        <div class="kt-card {{ ! $loop->last ? 'mb-5' : '' }}">
-                            <div class="kt-card-content grid gap-3 p-5">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <span class="font-medium">{{ $meeting->title }}</span>
-                                    <span class="kt-badge bg-primary/10 text-primary border-0 gap-1.5">
-                                        <i class="ki-filled ki-time text-sm"></i>{{ $meeting->scheduled_at->translatedFormat('d M Y H:i') }}
-                                    </span>
-                                </div>
-                                @if($meeting->notes)<p class="text-sm text-secondary-foreground">{{ $meeting->notes }}</p>@endif
-                                @if($meeting->materials->isNotEmpty())
-                                    <div class="flex flex-wrap gap-2">
-                                        @foreach($meeting->materials as $material)
-                                            @if($material->type === 'figma')
-                                                <a href="{{ $material->figma_url }}" target="_blank" rel="noopener" class="kt-btn kt-btn-sm kt-btn-outline">
-                                                    <i class="ki-filled ki-share me-1"></i>{{ $material->title }}
-                                                </a>
-                                            @else
-                                                <a href="{{ route('materials.download', $material) }}" class="kt-btn kt-btn-sm kt-btn-outline">
-                                                    <i class="ki-filled ki-file-down me-1"></i>{{ $material->title }}
-                                                </a>
-                                            @endif
-                                        @endforeach
-                                    </div>
+            <div class="kt-card-content grid gap-4 p-7.5">
+                @forelse($materials as $material)
+                    <div class="kt-card">
+                        <div class="kt-card-content grid gap-3 p-5">
+                            <span class="font-medium">{{ $material->title }}</span>
+                            @if($material->description)<p class="text-sm text-secondary-foreground">{{ $material->description }}</p>@endif
+                            <div>
+                                @if($material->type === 'figma')
+                                    <a href="{{ $material->figma_url }}" target="_blank" rel="noopener" class="kt-btn kt-btn-sm kt-btn-outline">
+                                        <i class="ki-filled ki-share me-1"></i>Buka Materi
+                                    </a>
+                                @else
+                                    <a href="{{ route('materials.download', $material) }}" class="kt-btn kt-btn-sm kt-btn-outline">
+                                        <i class="ki-filled ki-file-down me-1"></i>Unduh Materi
+                                    </a>
                                 @endif
                             </div>
                         </div>
+                        <x-material-discussions :school-class="$class" :material="$material" route-prefix="siswa" class="mx-5 mb-5" />
                     </div>
                 @empty
-                    <p class="text-secondary-foreground text-sm">Belum ada pertemuan.</p>
+                    <p class="text-secondary-foreground text-sm">Belum ada materi yang diterbitkan.</p>
                 @endforelse
+                <div class="border-t border-dashed border-input pt-4">
+                    <a href="{{ route('siswa.classes.discussions.index', $class) }}" class="kt-btn kt-btn-sm kt-btn-outline">
+                        <i class="ki-filled ki-message-text"></i>Diskusi Umum
+                    </a>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div class="kt-card">
+        <div class="kt-card-header"><h3 class="kt-card-title flex items-center gap-2 text-xs font-semibold uppercase tracking-wide"><i class="ki-filled ki-people text-base text-primary"></i>LKM Saya</h3></div>
+        <div class="kt-card-content grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-7.5">
+            @forelse($lkmAssignments as $assignment)
+                <div class="kt-card"><div class="kt-card-content grid gap-3 p-5"><div class="flex items-start justify-between gap-2"><h4 class="font-semibold">{{ $assignment->lkm->title }}</h4>@if($assignment->reflection_submitted_at)<span class="kt-badge kt-badge-success kt-badge-outline">Selesai</span>@elseif($assignment->proof_submitted_at)<span class="kt-badge kt-badge-warning kt-badge-outline">Refleksi</span>@else<span class="kt-badge kt-badge-outline">Belum mulai</span>@endif</div><p class="text-sm text-secondary-foreground">Peran: {{ $assignment->role->name }}</p><a href="{{ route('siswa.classes.lkms.show', [$class, $assignment->lkm]) }}" class="kt-btn kt-btn-sm kt-btn-outline">Buka LKM</a></div></div>
+            @empty
+                <p class="text-sm text-secondary-foreground">Belum ada LKM terbit yang ditugaskan.</p>
+            @endforelse
         </div>
     </div>
 </div>

@@ -18,9 +18,9 @@
                 {{ $user->name }}
                 @php $role = $user->roles->first()?->name @endphp
                 @if ($role === 'guru')
-                    <span class="kt-badge kt-badge-outline kt-badge-info kt-badge-sm ms-1">Guru</span>
+                    <span class="kt-badge kt-badge-outline kt-badge-info kt-badge-sm ms-1">Dosen</span>
                 @elseif ($role === 'siswa')
-                    <span class="kt-badge kt-badge-outline kt-badge-secondary kt-badge-sm ms-1">Siswa</span>
+                    <span class="kt-badge kt-badge-outline kt-badge-secondary kt-badge-sm ms-1">Mahasiswa</span>
                 @endif
             </div>
         </div>

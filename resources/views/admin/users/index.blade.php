@@ -138,8 +138,8 @@
                                     </td>
                                     {{-- Peran: plain text --}}
                                     <td class="text-foreground font-normal">
-                                        @if ($role === 'guru') Guru
-                                        @elseif ($role === 'siswa') Siswa
+                                        @if ($role === 'guru') Dosen
+                                        @elseif ($role === 'siswa') Mahasiswa
                                         @else —
                                         @endif
                                     </td>
