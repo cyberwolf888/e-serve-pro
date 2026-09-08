@@ -18,7 +18,7 @@
                 <table class="kt-table table-auto kt-table-border">
                     <thead>
                         <tr>
-                            <th class="min-w-[220px]">Siswa</th>
+                            <th class="min-w-[220px]">Mahasiswa</th>
                             <th class="min-w-[160px]">Status</th>
                         </tr>
                     </thead>
@@ -36,7 +36,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="2" class="py-8 text-center text-sm text-secondary-foreground">Belum ada siswa di kelas ini.</td></tr>
+                        <tr><td colspan="2" class="py-8 text-center text-sm text-secondary-foreground">Belum ada mahasiswa di kelas ini.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

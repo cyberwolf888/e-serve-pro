@@ -8,7 +8,7 @@
             <h1 class="text-2xl font-semibold text-mono">{{ $class->name }}</h1>
             <div class="flex items-center gap-1.5 text-secondary-foreground">
                 <i class="ki-filled ki-user text-base"></i>
-                <span>Guru: {{ $class->guru->name }}</span>
+                <span>Dosen: {{ $class->guru->name }}</span>
             </div>
             @if ($class->description)
                 <p>{{ $class->description }}</p>

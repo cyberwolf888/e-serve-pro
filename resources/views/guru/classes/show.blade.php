@@ -44,7 +44,7 @@
                 </div>
                 @if($routePrefix === 'admin')
                 <div class="mt-5">
-                    <span class="block text-xs font-medium uppercase tracking-wide text-secondary-foreground mb-1">Guru</span>
+                    <span class="block text-xs font-medium uppercase tracking-wide text-secondary-foreground mb-1">Dosen</span>
                     <p class="text-sm text-foreground">{{ $class->guru->name }}</p>
                 </div>
                 @endif
@@ -65,11 +65,11 @@
 
         <div class="lg:col-span-8 kt-card">
             <div class="kt-card-header flex items-center justify-between gap-3">
-                <h3 class="kt-card-title text-sm">Siswa Terdaftar ({{ $members->total() }})</h3>
+                <h3 class="kt-card-title text-sm">Mahasiswa Terdaftar ({{ $members->total() }})</h3>
                 @can('addStudent', $class)
                 <form method="POST" action="{{ route($routePrefix.'.classes.students.store', $class) }}" class="flex items-start gap-2.5">
                     @csrf
-                    <input name="email" type="email" class="kt-input min-w-[16rem] @error('email') border-destructive @enderror" placeholder="email siswa" required />
+                    <input name="email" type="email" class="kt-input min-w-[16rem] @error('email') border-destructive @enderror" placeholder="email mahasiswa" required />
                     <button class="kt-btn kt-btn-outline kt-btn-primary shrink-0"><i class="ki-filled ki-plus"></i>Tambah</button>
                 </form>
                 @endcan
@@ -94,7 +94,7 @@
                             <td class="text-secondary-foreground">{{ $member->joined_at->translatedFormat('d M Y H:i') }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="3" class="py-8 text-center text-sm text-secondary-foreground">Belum ada siswa.</td></tr>
+                        <tr><td colspan="3" class="py-8 text-center text-sm text-secondary-foreground">Belum ada mahasiswa.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

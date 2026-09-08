@@ -48,7 +48,7 @@
                         <div class="flex flex-wrap items-start justify-between gap-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                                 <span class="font-medium text-mono">{{ $comment->author->name }}</span>
-                                <span class="kt-badge kt-badge-sm kt-badge-outline">{{ $comment->author->hasRole('guru') ? 'Guru' : 'Siswa' }}</span>
+                                <span class="kt-badge kt-badge-sm kt-badge-outline">{{ $comment->author->hasRole('guru') ? 'Dosen' : 'Mahasiswa' }}</span>
                                 <time class="text-xs text-secondary-foreground" datetime="{{ $comment->created_at->toIso8601String() }}">{{ $comment->created_at->diffForHumans() }}</time>
                             </div>
                             @can('delete', $comment)

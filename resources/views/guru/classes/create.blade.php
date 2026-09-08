@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
         <div class="flex flex-col justify-center gap-2">
             <h1 class="text-xl font-medium leading-none text-mono">Buat Kelas</h1>
-            <div class="flex items-center gap-2 text-sm font-normal text-secondary-foreground">Tambahkan kelas baru untuk siswa Anda</div>
+            <div class="flex items-center gap-2 text-sm font-normal text-secondary-foreground">Tambahkan kelas baru untuk mahasiswa Anda</div>
         </div>
         <a href="{{ route('guru.classes.index') }}" class="kt-btn kt-btn-outline">
             <i class="ki-filled ki-arrow-left"></i>

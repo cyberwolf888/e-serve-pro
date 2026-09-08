@@ -13,7 +13,7 @@
 <div class="grid gap-5 pb-7.5 lg:gap-7.5">
     <div class="flex flex-wrap items-end justify-between gap-5 pt-2">
         <div class="flex flex-col gap-2">
-            <h1 class="text-xl font-medium leading-none text-mono">Dashboard Siswa</h1>
+            <h1 class="text-xl font-medium leading-none text-mono">Dashboard Mahasiswa</h1>
             <p class="text-sm text-secondary-foreground">Ringkasan pembelajaran Anda dalam 30 hari terakhir</p>
         </div>
     </div>

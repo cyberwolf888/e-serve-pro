@@ -53,8 +53,8 @@
             required
         >
             <option value="">-- Pilih Peran --</option>
-            <option value="guru" {{ old('role') === 'guru' ? 'selected' : '' }}>Guru</option>
-            <option value="siswa" {{ old('role') === 'siswa' ? 'selected' : '' }}>Siswa</option>
+            <option value="guru" {{ old('role') === 'guru' ? 'selected' : '' }}>Dosen</option>
+            <option value="siswa" {{ old('role') === 'siswa' ? 'selected' : '' }}>Mahasiswa</option>
         </select>
         @error('role')
             <p class="text-destructive text-xs mt-1">{{ $message }}</p>

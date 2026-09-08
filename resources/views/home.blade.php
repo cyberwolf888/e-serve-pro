@@ -86,8 +86,8 @@
     <div class="grid sm:grid-cols-3 gap-5 max-w-5xl mx-auto">
         @foreach ([
             ['icon' => 'ki-shield-tick', 'title' => 'Super Admin (Peneliti)', 'desc' => 'Mengelola pengguna, memantau aktivitas pembelajaran, dan menganalisis rekap capaian lintas kelas.'],
-            ['icon' => 'ki-profile-circle', 'title' => 'Guru (Pengajar)', 'desc' => 'Merancang kelas F&B Service, menerbitkan materi, mengelola kuis, dan menilai capaian peserta.'],
-            ['icon' => 'ki-people', 'title' => 'Siswa (Peserta Didik)', 'desc' => 'Mengakses materi kontekstual, mengikuti aktivitas kelas, mengerjakan kuis, dan memantau hasil belajar.'],
+            ['icon' => 'ki-profile-circle', 'title' => 'Dosen (Pengajar)', 'desc' => 'Merancang kelas F&B Service, menerbitkan materi, mengelola kuis, dan menilai capaian peserta.'],
+            ['icon' => 'ki-people', 'title' => 'Mahasiswa (Peserta Didik)', 'desc' => 'Mengakses materi kontekstual, mengikuti aktivitas kelas, mengerjakan kuis, dan memantau hasil belajar.'],
         ] as $role)
             <div class="kt-card">
                 <div class="kt-card-body p-6 flex flex-col gap-3 text-center items-center">

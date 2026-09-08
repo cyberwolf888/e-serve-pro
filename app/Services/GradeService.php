@@ -57,7 +57,7 @@ class GradeService
 
                 $member = $members->get($studentId);
                 if (! $member) {
-                    throw ValidationException::withMessages(['scores' => 'Siswa tidak terdaftar di kelas ini.']);
+                    throw ValidationException::withMessages(['scores' => 'Mahasiswa tidak terdaftar di kelas ini.']);
                 }
 
                 $this->repo->scoreOverride($component, $member->student, (float) $score);

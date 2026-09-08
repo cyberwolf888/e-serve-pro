@@ -29,7 +29,7 @@ class UpdateSchoolClassRequest extends FormRequest
     {
         return [function (Validator $validator): void {
             if ($this->filled('guru_id') && ! $this->userModel()?->hasRole('guru')) {
-                $validator->errors()->add('guru_id', 'Pilih pengguna dengan peran guru.');
+                $validator->errors()->add('guru_id', 'Pilih pengguna dengan peran dosen.');
             }
         }];
     }

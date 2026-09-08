@@ -46,11 +46,12 @@ class GuruDashboardTest extends TestCase
         $dashboard = $response->viewData('dashboard');
 
         $response->assertOk()
-            ->assertSee('Dashboard Guru')
+            ->assertSee('Dashboard Dosen')
             ->assertSee('Ringkasan kelas Anda dalam 30 hari terakhir')
             ->assertDontSee('Pertemuan 30 Hari')
             ->assertDontSee('Absensi Belum Dicatat');
         $this->assertSame([1, 1, 1, 1], collect($dashboard['kpis'])->pluck('value')->all());
+        $this->assertSame('Total Mahasiswa', $dashboard['kpis'][1]['label']);
         $this->assertCount(30, $dashboard['chart']['categories']);
         $this->assertCount(30, $dashboard['chart']['data']);
         $this->assertCount(1, $dashboard['recentActivities']);

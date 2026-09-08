@@ -11,6 +11,10 @@ class RegistrationTest extends AuthTestCase
     // Happy path: siswa can self-register
     public function test_siswa_can_register(): void
     {
+        $this->get(route('auth.register.show'))
+            ->assertOk()
+            ->assertSee('Daftar Akun Mahasiswa');
+
         $response = $this->post(route('auth.register'), [
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',

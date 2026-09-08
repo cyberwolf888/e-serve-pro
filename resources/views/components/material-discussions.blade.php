@@ -3,8 +3,9 @@
 
 <section {{ $attributes->class(['kt-card shadow-none']) }} aria-label="Diskusi materi {{ $material->title }}">
     <div class="kt-card-header min-h-12 px-4">
-        <h3 class="kt-card-title text-sm">
-            <i class="ki-filled ki-message-text text-primary"></i>Diskusi Materi
+        <h3 class="kt-card-title flex items-center gap-2 text-sm">
+            <i class="ki-filled ki-message-text text-primary"></i>
+            <span>Diskusi Materi</span>
             <span class="kt-badge kt-badge-sm kt-badge-outline">{{ $material->discussions_count }} topik</span>
         </h3>
     </div>

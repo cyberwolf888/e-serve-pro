@@ -20,8 +20,8 @@ class AdminDashboardService
 
         return [
             'kpis' => [
-                ['label' => 'Total Guru', 'value' => $this->repo->countUsersByRole('guru'), 'route' => 'admin.users.index'],
-                ['label' => 'Total Siswa', 'value' => $this->repo->countUsersByRole('siswa'), 'route' => 'admin.users.index'],
+                ['label' => 'Total Dosen', 'value' => $this->repo->countUsersByRole('guru'), 'route' => 'admin.users.index'],
+                ['label' => 'Total Mahasiswa', 'value' => $this->repo->countUsersByRole('siswa'), 'route' => 'admin.users.index'],
                 ['label' => 'Kelas Aktif', 'value' => $this->repo->countActiveClasses(), 'route' => 'admin.classes.index'],
                 ['label' => 'Pengguna Aktif 30 Hari', 'value' => $this->repo->countActiveUsers($start, $end), 'route' => 'admin.monitoring'],
                 ['label' => 'Kuis Terbit', 'value' => $this->repo->countPublishedQuizzes(), 'route' => 'admin.classes.index'],
@@ -35,9 +35,9 @@ class AdminDashboardService
                     ->all(),
             ],
             'alerts' => collect([
-                ['label' => 'Guru nonaktif', 'count' => $alerts['inactive_guru'], 'route' => 'admin.users.index'],
-                ['label' => 'Siswa nonaktif', 'count' => $alerts['inactive_siswa'], 'route' => 'admin.users.index'],
-                ['label' => 'Kelas aktif tanpa siswa', 'count' => $alerts['classes_without_students'], 'route' => 'admin.classes.index'],
+                ['label' => 'Dosen nonaktif', 'count' => $alerts['inactive_guru'], 'route' => 'admin.users.index'],
+                ['label' => 'Mahasiswa nonaktif', 'count' => $alerts['inactive_siswa'], 'route' => 'admin.users.index'],
+                ['label' => 'Kelas aktif tanpa mahasiswa', 'count' => $alerts['classes_without_students'], 'route' => 'admin.classes.index'],
                 ['label' => 'Kelas aktif tanpa materi', 'count' => $alerts['classes_without_materials'], 'route' => 'admin.classes.index'],
                 ['label' => 'Kelas aktif tanpa kuis terbit', 'count' => $alerts['classes_without_published_quizzes'], 'route' => 'admin.classes.index'],
             ])->filter(fn ($alert) => $alert['count'] > 0)->values(),

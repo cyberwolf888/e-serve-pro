@@ -39,7 +39,7 @@
         <input name="is_published" type="hidden" value="0" />
         <label class="kt-label">
             <input class="kt-checkbox kt-checkbox-sm" name="is_published" type="checkbox" value="1" @checked(old('is_published', $material?->is_published ?? false)) />
-            <span class="kt-checkbox-label">Terbitkan untuk siswa</span>
+            <span class="kt-checkbox-label">Terbitkan untuk mahasiswa</span>
         </label>
         @error('is_published')<p class="text-destructive text-xs mt-1">{{ $message }}</p>@enderror
     </div>

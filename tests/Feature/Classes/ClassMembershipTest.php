@@ -75,6 +75,7 @@ class ClassMembershipTest extends TestCase
         $this->actingAs($owner)->get(route('guru.classes.show', $class))
             ->assertOk()
             ->assertSee($class->class_code)
+            ->assertSee('Mahasiswa Terdaftar')
             ->assertSee($student->name)
             ->assertSee($student->email);
 
@@ -105,10 +106,14 @@ class ClassMembershipTest extends TestCase
             ->assertRedirect(route('guru.classes.show', $class));
 
         $this->assertDatabaseHas('class_members', ['class_id' => $class->id, 'student_id' => $student->id]);
-        Notification::assertSentTo($student, AddedToClass::class, fn ($n) => $n->reason === AddedToClass::REASON_ADDED);
+        Notification::assertSentTo($student, AddedToClass::class, function ($notification) use ($student) {
+            $this->assertStringContainsString('oleh dosen', $notification->toMail($student)->introLines[0]);
+
+            return $notification->reason === AddedToClass::REASON_ADDED;
+        });
 
         $this->actingAs($guru)->post(route('guru.classes.students.store', $class), ['email' => $student->email])
-            ->assertSessionHasErrors('email');
+            ->assertSessionHasErrors(['email' => 'Mahasiswa sudah tergabung di kelas ini.']);
 
         Notification::assertSentToTimes($student, AddedToClass::class, 1);
     }
@@ -193,6 +198,12 @@ class ClassMembershipTest extends TestCase
         $admin = $this->user('super_admin');
         $firstGuru = $this->user('guru');
         $secondGuru = $this->user('guru');
+        $student = $this->user('siswa');
+
+        $this->actingAs($admin)->post(route('admin.classes.store'), [
+            'guru_id' => $student->id,
+            'name' => 'Kelas Salah',
+        ])->assertSessionHasErrors(['guru_id' => 'Pilih pengguna dengan peran dosen.']);
 
         $this->actingAs($admin)->post(route('admin.classes.store'), [
             'guru_id' => $firstGuru->id,
@@ -200,6 +211,11 @@ class ClassMembershipTest extends TestCase
         ])->assertRedirect(route('admin.classes.index'));
 
         $class = SchoolClass::firstOrFail();
+        $this->actingAs($admin)->put(route('admin.classes.update', $class), [
+            'guru_id' => $student->id,
+            'name' => 'Kelas Salah',
+        ])->assertSessionHasErrors(['guru_id' => 'Pilih pengguna dengan peran dosen.']);
+
         $this->actingAs($admin)->put(route('admin.classes.update', $class), [
             'guru_id' => $secondGuru->id,
             'name' => 'Kelas Pindah',
@@ -217,6 +233,8 @@ class ClassMembershipTest extends TestCase
             ->assertOk()
             ->assertSee('id="guru_id"', false)
             ->assertSee('data-kt-select-enable-search="true"', false)
+            ->assertSee('Cari dosen...')
+            ->assertSee('Pilih dosen')
             ->assertSee($guru->email);
 
         $this->actingAs($this->user('siswa'))->get(route('admin.classes.create'))->assertForbidden();

@@ -70,8 +70,12 @@ class UserManagementTest extends TestCase
     {
         $admin = $this->admin();
         $this->guru(); // create one guru
+        $this->siswa();
 
-        $this->actingAs($admin)->get(route('admin.users.index'))->assertOk();
+        $this->actingAs($admin)->get(route('admin.users.index'))
+            ->assertOk()
+            ->assertSee('Dosen')
+            ->assertSee('Mahasiswa');
     }
 
     // FR-SA-02: status filter and created date sorting apply server-side.

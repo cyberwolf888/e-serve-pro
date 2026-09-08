@@ -72,7 +72,7 @@ class RecapController extends Controller
     {
         $componentNames = collect($classes)->flatMap(fn (SchoolClass $class) => $class->gradeComponents)
             ->pluck('name')->unique()->values();
-        $rows = [['Kelas', 'Siswa', ...$componentNames->all(), 'Nilai Akhir']];
+        $rows = [['Kelas', 'Mahasiswa', ...$componentNames->all(), 'Nilai Akhir']];
 
         foreach ($classes as $class) {
             foreach ($class->members as $member) {

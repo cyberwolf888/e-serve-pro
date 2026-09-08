@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Services\GradeService;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Tests\TestCase;
 
 class GradingTest extends TestCase
@@ -83,6 +84,7 @@ class GradingTest extends TestCase
     {
         $guru = $this->user('guru');
         $student = $this->user('siswa');
+        $outsider = $this->user('siswa');
         $class = $this->schoolClass($guru);
         $this->member($class, $student);
         $quiz = Quiz::create(['class_id' => $class->id, 'title' => 'Kuis 1']);
@@ -91,6 +93,9 @@ class GradingTest extends TestCase
         $this->actingAs($guru)->post(route('guru.classes.grade-components.store', $class), ['name' => 'Kuis', 'weight' => 100, 'quiz_id' => $quiz->id]);
         $component = GradeComponent::firstOrFail();
         $this->assertDatabaseHas('component_scores', ['grade_component_id' => $component->id, 'student_id' => $student->id, 'score' => 80, 'is_manual_override' => false]);
+        $this->actingAs($guru)->post(route('guru.classes.grade-components.scores.store', [$class, $component]), [
+            'scores' => [$outsider->id => 50],
+        ])->assertSessionHasErrors(['scores' => 'Mahasiswa tidak terdaftar di kelas ini.']);
 
         app(GradeService::class)->recordScores($component, [$student->id => 95]);
         $attempt = $quiz->attempts()->firstOrFail();
@@ -136,10 +141,23 @@ class GradingTest extends TestCase
         $this->member($class, $student);
         FinalGrade::create(['class_id' => $class->id, 'student_id' => $student->id, 'final_score' => 90, 'calculated_at' => now()]);
 
-        $this->actingAs($guru)->get(route('guru.classes.recap', $class))->assertOk()->assertSee($student->name);
-        $this->actingAs($student)->get(route('siswa.grades.index'))->assertOk()->assertSee('90.00');
+        $this->actingAs($guru)->get(route('guru.classes.recap', $class))->assertOk()->assertSee('Mahasiswa')->assertSee($student->name);
+        $this->actingAs($student)->get(route('siswa.grades.index'))->assertOk()->assertSee('Dosen')->assertSee('90.00');
         $this->actingAs($student)->get(route('guru.classes.recap', $class))->assertForbidden();
-        $this->actingAs($admin)->get(route('admin.recap.index'))->assertOk()->assertSee($class->name);
-        $this->actingAs($admin)->get(route('admin.recap.export'))->assertOk()->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->actingAs($admin)->get(route('admin.recap.index'))->assertOk()->assertSee('Dosen')->assertSee('Mahasiswa')->assertSee($class->name);
+
+        $response = $this->actingAs($admin)->get(route('admin.recap.export'));
+        $response->assertOk()->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        $path = tempnam(sys_get_temp_dir(), 'recap-');
+        file_put_contents($path, $response->streamedContent());
+
+        try {
+            $spreadsheet = IOFactory::load($path);
+            $this->assertSame('Mahasiswa', $spreadsheet->getActiveSheet()->getCell('B1')->getValue());
+            $spreadsheet->disconnectWorksheets();
+        } finally {
+            unlink($path);
+        }
     }
 }

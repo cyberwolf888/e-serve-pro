@@ -88,7 +88,7 @@
                                 </th>
                                 <th class="min-w-[120px]">
                                     <span class="kt-table-col">
-                                        <span class="kt-table-col-label">Jumlah Siswa</span>
+                                        <span class="kt-table-col-label">Jumlah Mahasiswa</span>
                                         <span class="kt-table-col-sort"></span>
                                     </span>
                                 </th>

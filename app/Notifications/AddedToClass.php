@@ -35,7 +35,7 @@ class AddedToClass extends Notification
 
         $line = $this->reason === self::REASON_JOINED
             ? "Anda telah bergabung ke kelas **{$this->class->name}**."
-            : "Anda telah ditambahkan ke kelas **{$this->class->name}** oleh guru.";
+            : "Anda telah ditambahkan ke kelas **{$this->class->name}** oleh dosen.";
 
         return (new MailMessage)
             ->subject($subject)

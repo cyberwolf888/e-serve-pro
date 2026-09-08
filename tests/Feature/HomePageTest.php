@@ -25,6 +25,8 @@ class HomePageTest extends TestCase
             ->assertSee('Food and Beverage Service')
             ->assertSee('Universitas Pendidikan Ganesha')
             ->assertSee('TKT 6')
+            ->assertSee('Dosen (Pengajar)')
+            ->assertSee('Mahasiswa (Peserta Didik)')
             ->assertSee(route('auth.login.show'), false)
             ->assertSee(route('auth.register.show'), false);
     }

@@ -52,7 +52,7 @@ class SchoolClassService
     {
         return DB::transaction(function () use ($class, $student, $errorField, $reason) {
             if (ClassMember::where('class_id', $class->id)->where('student_id', $student->id)->exists()) {
-                throw ValidationException::withMessages([$errorField => 'Siswa sudah tergabung di kelas ini.']);
+                throw ValidationException::withMessages([$errorField => 'Mahasiswa sudah tergabung di kelas ini.']);
             }
 
             $member = $this->repo->addMember($class, $student);
