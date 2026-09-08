@@ -103,6 +103,8 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     // FR-SA-07 / M7.8
     Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
     Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
         ->scopeBindings()->name('classes.discussions.comments.destroy');
 
@@ -148,7 +150,13 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::get('classes/{class}/recap/export', [RecapController::class, 'exportClass'])->name('classes.recap.export');
 
     // FR-GR-14 / M7.8
-    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'create', 'store', 'show'])->scoped();
+    Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
+    Route::get('classes/{class}/materials/{material}/discussions/create', [DiscussionTopicController::class, 'create'])
+        ->scopeBindings()->name('classes.materials.discussions.create');
+    Route::post('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'store'])
+        ->scopeBindings()->name('classes.materials.discussions.store');
     Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
         ->scopeBindings()->name('classes.discussions.comments.store');
     Route::delete('classes/{class}/discussions/{discussion}/comments/{comment}', [DiscussionCommentController::class, 'destroy'])
@@ -164,6 +172,12 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
 
     // FR-SW-07 / M7.8
     Route::resource('classes.discussions', DiscussionTopicController::class)->only(['index', 'show'])->scoped();
+    Route::get('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'index'])
+        ->scopeBindings()->name('classes.materials.discussions.index');
+    Route::get('classes/{class}/materials/{material}/discussions/create', [DiscussionTopicController::class, 'create'])
+        ->scopeBindings()->name('classes.materials.discussions.create');
+    Route::post('classes/{class}/materials/{material}/discussions', [DiscussionTopicController::class, 'store'])
+        ->scopeBindings()->name('classes.materials.discussions.store');
     Route::post('classes/{class}/discussions/{discussion}/comments', [DiscussionCommentController::class, 'store'])
         ->scopeBindings()->name('classes.discussions.comments.store');
 

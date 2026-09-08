@@ -14,8 +14,9 @@
         @endcan
     </div>
     @if(session('success'))<div class="kt-alert kt-alert-success">{{ session('success') }}</div>@endif
-    <div class="kt-card">
+    <div class="kt-card min-w-0">
         <div class="kt-card-content p-0">
+            <div class="kt-scrollable-x-auto">
             <table class="kt-table table-auto kt-table-border">
                 <thead>
                     <tr>
@@ -53,12 +54,23 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan="5" class="bg-muted/20 p-4">
+                            <x-material-discussions :school-class="$class" :material="$material" :route-prefix="$routePrefix" />
+                        </td>
+                    </tr>
                     @empty
                     <tr><td colspan="5" class="py-8 text-center text-sm text-secondary-foreground">Belum ada materi.</td></tr>
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
+    </div>
+    <div>
+        <a href="{{ route($routePrefix.'.classes.discussions.index', $class) }}" class="kt-btn kt-btn-outline">
+            <i class="ki-filled ki-message-text"></i>Diskusi Umum
+        </a>
     </div>
 </div>
 @endsection

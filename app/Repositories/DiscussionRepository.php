@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\DiscussionComment;
 use App\Models\DiscussionTopic;
+use App\Models\Material;
 use App\Models\SchoolClass;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -14,6 +15,16 @@ class DiscussionRepository
     public function forClass(SchoolClass $class): LengthAwarePaginator
     {
         return $class->discussions()
+            ->whereNull('material_id')
+            ->with('author')
+            ->withCount('comments')
+            ->latest()
+            ->paginate(10);
+    }
+
+    public function forMaterial(Material $material): LengthAwarePaginator
+    {
+        return $material->discussions()
             ->with('author')
             ->withCount('comments')
             ->latest()

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['class_id', 'title', 'description', 'type', 'figma_url', 'file_path', 'file_size_kb', 'is_published'])]
 class Material extends Model
@@ -29,5 +30,11 @@ class Material extends Model
     public function meetings(): BelongsToMany
     {
         return $this->belongsToMany(Meeting::class, 'meeting_materials')->withTimestamps();
+    }
+
+    // DATA-23 / FR-GR-14 / FR-SW-07 / M7.8
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(DiscussionTopic::class);
     }
 }

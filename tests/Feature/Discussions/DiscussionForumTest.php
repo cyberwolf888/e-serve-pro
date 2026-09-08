@@ -7,6 +7,7 @@ namespace Tests\Feature\Discussions;
 use App\Models\ClassMember;
 use App\Models\DiscussionComment;
 use App\Models\DiscussionTopic;
+use App\Models\Material;
 use App\Models\SchoolClass;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -48,6 +49,17 @@ class DiscussionForumTest extends TestCase
         ]);
     }
 
+    private function material(SchoolClass $class, array $data = []): Material
+    {
+        return Material::create($data + [
+            'class_id' => $class->id,
+            'title' => 'Materi Teks Eksposisi',
+            'type' => 'figma',
+            'figma_url' => 'https://figma.com/file/exposition',
+            'is_published' => true,
+        ]);
+    }
+
     private function topic(SchoolClass $class, User $guru, array $data = []): DiscussionTopic
     {
         return DiscussionTopic::create($data + [
@@ -62,8 +74,9 @@ class DiscussionForumTest extends TestCase
     {
         $guru = $this->user('guru');
         $class = $this->schoolClass($guru);
+        $material = $this->material($class);
 
-        $response = $this->actingAs($guru)->post(route('guru.classes.discussions.store', $class), [
+        $response = $this->actingAs($guru)->post(route('guru.classes.materials.discussions.store', [$class, $material]), [
             'title' => 'Struktur Teks Eksposisi',
             'body' => 'Jelaskan tesis, argumentasi, dan penegasan ulang.',
         ]);
@@ -72,8 +85,30 @@ class DiscussionForumTest extends TestCase
         $response->assertRedirect(route('guru.classes.discussions.show', [$class, $discussion]));
         $this->assertDatabaseHas('discussion_topics', [
             'class_id' => $class->id,
+            'material_id' => $material->id,
             'author_id' => $guru->id,
             'title' => 'Struktur Teks Eksposisi',
+        ]);
+    }
+
+    public function test_enrolled_student_creates_topic_for_published_material(): void
+    {
+        $guru = $this->user('guru');
+        $student = $this->user('siswa');
+        $class = $this->schoolClass($guru);
+        $material = $this->material($class);
+        $this->join($class, $student);
+
+        $this->actingAs($student)->post(route('siswa.classes.materials.discussions.store', [$class, $material]), [
+            'title' => 'Pertanyaan Siswa',
+            'body' => 'Bagaimana membedakan fakta dan opini?',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('discussion_topics', [
+            'class_id' => $class->id,
+            'material_id' => $material->id,
+            'author_id' => $student->id,
+            'title' => 'Pertanyaan Siswa',
         ]);
     }
 
@@ -81,14 +116,22 @@ class DiscussionForumTest extends TestCase
     {
         $guru = $this->user('guru');
         $class = $this->schoolClass($guru);
+        $material = $this->material($class);
 
         $this->actingAs($guru)
-            ->from(route('guru.classes.discussions.create', $class))
-            ->post(route('guru.classes.discussions.store', $class), [
+            ->from(route('guru.classes.materials.discussions.create', [$class, $material]))
+            ->post(route('guru.classes.materials.discussions.store', [$class, $material]), [
                 'title' => '',
                 'body' => str_repeat('a', 10001),
             ])
-            ->assertRedirect(route('guru.classes.discussions.create', $class))
+            ->assertRedirect(route('guru.classes.materials.discussions.create', [$class, $material]))
+            ->assertSessionHasErrors(['title', 'body']);
+
+        $this->actingAs($guru)
+            ->post(route('guru.classes.materials.discussions.store', [$class, $material]), [
+                'title' => str_repeat('a', 256),
+                'body' => '',
+            ])
             ->assertSessionHasErrors(['title', 'body']);
 
         $this->assertDatabaseEmpty('discussion_topics');
@@ -150,6 +193,7 @@ class DiscussionForumTest extends TestCase
         $otherGuru = $this->user('guru');
         $outsider = $this->user('siswa');
         $class = $this->schoolClass($owner);
+        $material = $this->material($class);
         $discussion = $this->topic($class, $owner);
 
         $this->actingAs($outsider)
@@ -158,8 +202,11 @@ class DiscussionForumTest extends TestCase
         $this->actingAs($outsider)
             ->post(route('siswa.classes.discussions.comments.store', [$class, $discussion]), ['body' => 'Tidak boleh'])
             ->assertForbidden();
+        $this->actingAs($outsider)
+            ->post(route('siswa.classes.materials.discussions.store', [$class, $material]), ['title' => 'Tidak boleh', 'body' => 'Tidak boleh'])
+            ->assertForbidden();
         $this->actingAs($otherGuru)
-            ->post(route('guru.classes.discussions.store', $class), ['title' => 'Tidak boleh', 'body' => 'Tidak boleh'])
+            ->post(route('guru.classes.materials.discussions.store', [$class, $material]), ['title' => 'Tidak boleh', 'body' => 'Tidak boleh'])
             ->assertForbidden();
     }
 
@@ -168,6 +215,7 @@ class DiscussionForumTest extends TestCase
         $guru = $this->user('guru');
         $firstClass = $this->schoolClass($guru);
         $secondClass = $this->schoolClass($guru);
+        $secondMaterial = $this->material($secondClass);
         $firstTopic = $this->topic($firstClass, $guru);
         $secondTopic = $this->topic($secondClass, $guru, ['title' => 'Topik Kedua']);
         $comment = DiscussionComment::create([
@@ -181,6 +229,12 @@ class DiscussionForumTest extends TestCase
             ->assertNotFound();
         $this->actingAs($guru)
             ->delete(route('guru.classes.discussions.comments.destroy', [$firstClass, $firstTopic, $comment]))
+            ->assertNotFound();
+        $this->actingAs($guru)
+            ->post(route('guru.classes.materials.discussions.store', [$firstClass, $secondMaterial]), [
+                'title' => 'Lintas kelas',
+                'body' => 'Tidak boleh dibuat.',
+            ])
             ->assertNotFound();
 
         $this->assertDatabaseHas('discussion_comments', ['id' => $comment->id]);
@@ -235,6 +289,7 @@ class DiscussionForumTest extends TestCase
         $guru = $this->user('guru');
         $student = $this->user('siswa');
         $class = $this->schoolClass($guru);
+        $material = $this->material($class);
         $this->join($class, $student);
         $discussion = $this->topic($class, $guru);
         $class->update(['is_active' => false]);
@@ -246,15 +301,153 @@ class DiscussionForumTest extends TestCase
             ->post(route('siswa.classes.discussions.comments.store', [$class, $discussion]), ['body' => 'Tidak boleh'])
             ->assertForbidden();
         $this->actingAs($guru)
-            ->post(route('guru.classes.discussions.store', $class), ['title' => 'Tidak boleh', 'body' => 'Tidak boleh'])
+            ->post(route('guru.classes.materials.discussions.store', [$class, $material]), ['title' => 'Tidak boleh', 'body' => 'Tidak boleh'])
             ->assertForbidden();
 
         $class->update(['is_active' => true]);
         $student->update(['is_active' => false]);
         $this->actingAs($student)
+            ->post(route('siswa.classes.materials.discussions.store', [$class, $material]), ['title' => 'Tetap tidak boleh', 'body' => 'Tetap tidak boleh'])
+            ->assertForbidden();
+        $this->actingAs($student)
             ->post(route('siswa.classes.discussions.comments.store', [$class, $discussion]), ['body' => 'Tetap tidak boleh'])
             ->assertForbidden();
 
         $this->assertDatabaseEmpty('discussion_comments');
+    }
+
+    public function test_draft_material_blocks_new_topics_for_guru_and_student(): void
+    {
+        $guru = $this->user('guru');
+        $student = $this->user('siswa');
+        $class = $this->schoolClass($guru);
+        $material = $this->material($class, ['is_published' => false]);
+        $this->join($class, $student);
+
+        foreach ([[$guru, 'guru'], [$student, 'siswa']] as [$user, $prefix]) {
+            $this->actingAs($user)
+                ->post(route($prefix.'.classes.materials.discussions.store', [$class, $material]), [
+                    'title' => 'Topik Draf',
+                    'body' => 'Tidak boleh dibuat.',
+                ])
+                ->assertForbidden();
+        }
+
+        $this->assertDatabaseEmpty('discussion_topics');
+    }
+
+    public function test_unpublished_linked_topic_is_hidden_and_blocked_from_student_only(): void
+    {
+        $guru = $this->user('guru');
+        $student = $this->user('siswa');
+        $admin = $this->user('super_admin');
+        $class = $this->schoolClass($guru);
+        $material = $this->material($class);
+        $this->join($class, $student);
+        $discussion = $this->topic($class, $guru, [
+            'material_id' => $material->id,
+            'title' => 'Topik Materi Rahasia',
+        ]);
+
+        $this->actingAs($student)->get(route('siswa.classes.show', $class))
+            ->assertOk()
+            ->assertSee('Topik Materi Rahasia');
+
+        $material->update(['is_published' => false]);
+
+        $this->actingAs($student)->get(route('siswa.classes.show', $class))
+            ->assertOk()
+            ->assertDontSee('Topik Materi Rahasia');
+        $this->actingAs($student)
+            ->get(route('siswa.classes.materials.discussions.index', [$class, $material]))
+            ->assertForbidden();
+        $this->actingAs($student)
+            ->get(route('siswa.classes.discussions.show', [$class, $discussion]))
+            ->assertForbidden();
+        $this->actingAs($student)
+            ->post(route('siswa.classes.discussions.comments.store', [$class, $discussion]), ['body' => 'Tidak boleh'])
+            ->assertForbidden();
+
+        $this->actingAs($guru)
+            ->get(route('guru.classes.materials.discussions.index', [$class, $material]))
+            ->assertOk()
+            ->assertSee('Topik Materi Rahasia');
+        $this->actingAs($admin)
+            ->get(route('admin.classes.materials.discussions.index', [$class, $material]))
+            ->assertOk()
+            ->assertSee('Topik Materi Rahasia')
+            ->assertDontSee('Mulai Diskusi');
+        $this->actingAs($admin)
+            ->get(route('admin.classes.discussions.show', [$class, $discussion]))
+            ->assertOk()
+            ->assertSee('Topik Materi Rahasia');
+    }
+
+    public function test_material_preview_shows_latest_three_and_nested_index_is_paginated(): void
+    {
+        $guru = $this->user('guru');
+        $class = $this->schoolClass($guru);
+        $material = $this->material($class, ['title' => 'Materi Pertama']);
+        $otherMaterial = $this->material($class, ['title' => 'Materi Kedua']);
+
+        foreach (range(1, 12) as $number) {
+            $this->topic($class, $guru, [
+                'material_id' => $material->id,
+                'title' => 'Topik Nomor '.$number,
+                'created_at' => now()->addMinutes($number),
+            ]);
+        }
+        $this->topic($class, $guru, [
+            'material_id' => $otherMaterial->id,
+            'title' => 'Topik Materi Kedua',
+        ]);
+
+        $this->actingAs($guru)->get(route('guru.classes.materials.index', $class))
+            ->assertOk()
+            ->assertSeeInOrder(['Topik Nomor 12', 'Topik Nomor 11', 'Topik Nomor 10'])
+            ->assertDontSee('Topik Nomor 9')
+            ->assertSee('Topik Materi Kedua');
+
+        $this->actingAs($guru)
+            ->get(route('guru.classes.materials.discussions.index', [$class, $material]))
+            ->assertOk()
+            ->assertSee('Topik Nomor 12')
+            ->assertSee('Topik Nomor 3')
+            ->assertDontSee('Topik Nomor 2')
+            ->assertSee('Menampilkan 1–10 dari 12 topik');
+    }
+
+    public function test_deleted_material_topics_and_comments_become_general_discussions(): void
+    {
+        $guru = $this->user('guru');
+        $student = $this->user('siswa');
+        $class = $this->schoolClass($guru);
+        $material = $this->material($class);
+        $this->join($class, $student);
+        $discussion = $this->topic($class, $guru, [
+            'material_id' => $material->id,
+            'title' => 'Topik Materi Terhapus',
+        ]);
+        $comment = DiscussionComment::create([
+            'discussion_topic_id' => $discussion->id,
+            'author_id' => $student->id,
+            'body' => 'Komentar tetap tersimpan.',
+        ]);
+
+        $this->actingAs($guru)
+            ->delete(route('guru.classes.materials.destroy', [$class, $material]))
+            ->assertRedirect(route('guru.classes.materials.index', $class));
+
+        $this->assertNull($discussion->fresh()->material_id);
+        $this->assertModelExists($comment);
+        $this->actingAs($student)
+            ->get(route('siswa.classes.discussions.index', $class))
+            ->assertOk()
+            ->assertSee('Topik Materi Terhapus')
+            ->assertSee('Diskusi Umum');
+        $this->actingAs($student)
+            ->get(route('siswa.classes.discussions.show', [$class, $discussion]))
+            ->assertOk()
+            ->assertSee('Komentar tetap tersimpan.');
     }
 }

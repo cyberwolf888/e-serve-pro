@@ -16,11 +16,6 @@
             @if (! $class->is_active)
                 <div class="kt-alert kt-alert-warning">Kelas nonaktif. Konten hanya dapat dibaca.</div>
             @endif
-            <div>
-                <a href="{{ route('siswa.classes.discussions.index', $class) }}" class="kt-btn kt-btn-primary">
-                    <i class="ki-filled ki-message-text"></i>Buka Diskusi Kelas
-                </a>
-            </div>
         </div>
     </div>
 
@@ -71,10 +66,16 @@
                                 @endif
                             </div>
                         </div>
+                        <x-material-discussions :school-class="$class" :material="$material" route-prefix="siswa" class="mx-5 mb-5" />
                     </div>
                 @empty
                     <p class="text-secondary-foreground text-sm">Belum ada materi yang diterbitkan.</p>
                 @endforelse
+                <div class="border-t border-dashed border-input pt-4">
+                    <a href="{{ route('siswa.classes.discussions.index', $class) }}" class="kt-btn kt-btn-sm kt-btn-outline">
+                        <i class="ki-filled ki-message-text"></i>Diskusi Umum
+                    </a>
+                </div>
             </div>
         </div>
     </div>

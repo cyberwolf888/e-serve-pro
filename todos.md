@@ -174,13 +174,13 @@
 
 ## M7.8 — Class Discussions
 
-- [x] Add `discussion_topics` and `discussion_comments` schema and models. `[DATA-23, DATA-24]`
-- [x] Guru creates topics and comments in owned classes. `[FR-GR-14]`
-- [x] Siswa views and comments in joined classes. `[FR-SW-07]`
-- [x] Guru and Super Admin moderate comments; inactive data remains read-only. `[FR-SA-07, FR-GR-14, BR-05]`
-- [x] Metronic discussion list, create, detail, comments, empty state, and pagination. `[NFR-02, NFR-08]`
-- [x] Feature tests cover happy paths, validation, access scoping, moderation, and read-only failures. `[§11]`
-- [!] **Gate M7.8:** feature checks, Pint, frontend build, and responsive browser smoke checks pass; full suite has 3 unrelated baseline failures.
+- [x] Add nullable `discussion_topics.material_id`; material deletion detaches topics and preserves comments. `[DATA-23, DATA-24]`
+- [x] Guru and enrolled siswa create topics only for published materials; IDs derived server-side. `[FR-GR-14, FR-SW-07]`
+- [x] Hide linked topics from siswa after unpublish; Guru and Super Admin retain read access. `[FR-SA-07, FR-GR-14, FR-SW-07]`
+- [x] Show latest 3 topics beneath each material; full material discussion list paginated by 10. `[NFR-02, NFR-08]`
+- [x] Preserve old/deleted-material topics under `Diskusi Umum`; keep flat comments and moderation. `[FR-SA-07, FR-GR-14, FR-SW-07]`
+- [x] Feature tests cover creation, validation, draft/access scoping, previews, pagination, and deletion retention. `[§11]`
+- [!] **Gate M7.8:** feature checks, Pint, frontend build, and responsive browser smoke checks pass; full suite has 4 unrelated baseline test failures across 3 existing suites.
 
 ---
 

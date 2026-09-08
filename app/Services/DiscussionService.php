@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Models\DiscussionComment;
 use App\Models\DiscussionTopic;
-use App\Models\SchoolClass;
+use App\Models\Material;
 use App\Models\User;
 use App\Repositories\DiscussionRepository;
 
@@ -14,10 +14,11 @@ class DiscussionService
 {
     public function __construct(private DiscussionRepository $repo) {}
 
-    public function createTopic(SchoolClass $class, User $author, array $data): DiscussionTopic
+    public function createTopic(Material $material, User $author, array $data): DiscussionTopic
     {
         return $this->repo->createTopic($data + [
-            'class_id' => $class->id,
+            'class_id' => $material->class_id,
+            'material_id' => $material->id,
             'author_id' => $author->id,
         ]);
     }

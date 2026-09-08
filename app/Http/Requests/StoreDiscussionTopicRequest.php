@@ -11,7 +11,11 @@ class StoreDiscussionTopicRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', [DiscussionTopic::class, $this->route('class')]);
+        return $this->user()->can('create', [
+            DiscussionTopic::class,
+            $this->route('class'),
+            $this->route('material'),
+        ]);
     }
 
     public function rules(): array

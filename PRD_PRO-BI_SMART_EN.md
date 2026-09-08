@@ -76,6 +76,10 @@ Roles are fixed names: `super_admin`, `guru`, `siswa`. Implement RBAC with **spa
 | View OWN grades only | — | — | ✅ |
 | Monitoring & activity logs (all users) | ✅ | ❌ | ❌ |
 | Download recap/export | ✅ (all) | OWN | ❌ |
+| View discussions | ✅ | OWN | OWN classes; linked material published only |
+| Start material discussion | ❌ | OWN; published material only | OWN classes; published material only |
+| Comment on discussion | ❌ | OWN | OWN classes; linked material published only |
+| Moderate discussion comments | ✅ | OWN | ❌ |
 
 > **Agent note:** Protect role-based route groups with Spatie `role` middleware. Implement one Policy per model for record-level checks, and every controller action must call `authorize()` against the matching Policy method. `OWN` checks compare `record.user_id`/`class.guru_id` to `auth()->id()`.
 
@@ -141,6 +145,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SA-04 | Monitor all user activity via a monitoring view backed by activity logs (`BR-06`). |
 | FR-SA-05 | View and download (export) the recap of ALL registered classes. |
 | FR-SA-06 | View a 30-day operational dashboard with user and class KPIs, activity trend, operational alerts, and recent activity. |
+| FR-SA-07 | Read all general and material-based discussions and moderate their comments. |
 
 ### 5.3 Guru (`FR-GR-*`)
 
@@ -159,6 +164,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-GR-11 | Calculate students' final grades from quiz results and other components. |
 | FR-GR-12 | Define final-grade component format and weights manually per class (`BR-03`). |
 | FR-GR-13 | View a 30-day dashboard for owned classes with KPIs, teacher activity trend, operational alerts, and recent teacher activity. |
+| FR-GR-14 | View general discussions and create material-based topics/comments in owned active classes. New topics require a published material; deleting a material preserves its topics as general discussions. |
 
 ### 5.4 Siswa (`FR-SW-*`)
 
@@ -170,6 +176,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SW-04 | Access only published materials, including descriptions and Figma/PDF links, in joined classes. |
 | FR-SW-05 | Take multiple-choice quizzes in joined classes. |
 | FR-SW-06 | View own grades via a student dashboard. |
+| FR-SW-07 | View general discussions and create material-based topics/comments in joined active classes. Linked topics require a published material and become hidden when that material is unpublished. |
 
 ---
 
@@ -379,6 +386,7 @@ Package-default pivot connecting roles to permissions.
 |---|---|---|
 | id | BIGINT UNSIGNED | PK, auto-increment |
 | class_id | BIGINT UNSIGNED | FK → classes.id, cascade delete, indexed |
+| material_id | BIGINT UNSIGNED | nullable FK → materials.id, null on delete; composite index with created_at |
 | author_id | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed |
 | title | VARCHAR(255) | required |
 | body | TEXT | required |
@@ -407,6 +415,7 @@ classes(1)──<(N)grade_components──<(N)component_scores──>(1)users
 classes(1)──<(N)final_grades──>(1)users
 users(1)──<(N)activity_logs
 classes(1)──<(N)discussion_topics──<(N)discussion_comments
+materials(1)──<(N)discussion_topics [material_id nullable; null = general]
 users(1)──<(N)discussion_topics / discussion_comments [author_id]
 ```
 
@@ -438,6 +447,7 @@ GET   /admin/recap                  admin.recap.index         FR-SA-05
 GET   /admin/recap/export           admin.recap.export        FR-SA-05
 GET   /admin/classes/{class}/discussions admin.classes.discussions.index FR-SA-07
 GET   /admin/classes/{class}/discussions/{discussion} admin.classes.discussions.show FR-SA-07
+GET   /admin/classes/{class}/materials/{material}/discussions admin.classes.materials.discussions.index FR-SA-07
 DELETE /admin/classes/{class}/discussions/{discussion}/comments/{comment} admin.classes.discussions.comments.destroy FR-SA-07
 
 # Guru  (middleware: role:guru)
@@ -449,8 +459,10 @@ resource /guru/classes/{class}/quizzes     guru.quizzes        FR-GR-09
 resource /guru/classes/{class}/grade-components guru.gradeComponents FR-GR-12/BR-03
 POST  /guru/classes/{class}/grades/calculate    guru.grades.calculate FR-GR-11
 GET   /guru/classes/{class}/recap                guru.recap    FR-GR-10
-GET|POST /guru/classes/{class}/discussions       guru.classes.discussions FR-GR-14
-GET   /guru/classes/{class}/discussions/create   guru.classes.discussions.create FR-GR-14
+GET   /guru/classes/{class}/discussions       guru.classes.discussions.index FR-GR-14
+GET   /guru/classes/{class}/materials/{material}/discussions guru.classes.materials.discussions.index FR-GR-14
+GET   /guru/classes/{class}/materials/{material}/discussions/create guru.classes.materials.discussions.create FR-GR-14
+POST  /guru/classes/{class}/materials/{material}/discussions guru.classes.materials.discussions.store FR-GR-14
 GET   /guru/classes/{class}/discussions/{discussion} guru.classes.discussions.show FR-GR-14
 POST  /guru/classes/{class}/discussions/{discussion}/comments guru.classes.discussions.comments.store FR-GR-14
 DELETE /guru/classes/{class}/discussions/{discussion}/comments/{comment} guru.classes.discussions.comments.destroy FR-GR-14
@@ -464,6 +476,9 @@ GET   /siswa/quizzes/{quiz}         siswa.quizzes.show        FR-SW-05
 POST  /siswa/quizzes/{quiz}/submit  siswa.quizzes.submit      FR-SW-05
 GET   /siswa/grades                 siswa.grades.index        FR-SW-06
 GET   /siswa/classes/{class}/discussions siswa.classes.discussions.index FR-SW-07
+GET   /siswa/classes/{class}/materials/{material}/discussions siswa.classes.materials.discussions.index FR-SW-07
+GET   /siswa/classes/{class}/materials/{material}/discussions/create siswa.classes.materials.discussions.create FR-SW-07
+POST  /siswa/classes/{class}/materials/{material}/discussions siswa.classes.materials.discussions.store FR-SW-07
 GET   /siswa/classes/{class}/discussions/{discussion} siswa.classes.discussions.show FR-SW-07
 POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.discussions.comments.store FR-SW-07
 ```
@@ -482,8 +497,8 @@ POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.dis
 | classes.join (siswa) | class_code: required|exists:classes,class_code; reject if already a member (BR-01, no approval) |
 | quizzes.submit | attempt open (opens_at/closes_at window); one attempt per student; answers map to valid options |
 | grade-components.store | name required; weight: required|numeric|0–100; warn if class total ≠ 100 (BR-03) |
-| discussions.store | title: required|string|max:255; body: required|string|max:10000; guru-owned active class only |
-| discussion-comments.store | body: required|string|max:10000; guru owner or joined siswa; active class/author only |
+| material-discussions.store | title: required|string|max:255; body: required|string|max:10000; class/material IDs derived server-side; published material in an active class; active owning guru or joined siswa only |
+| discussion-comments.store | body: required|string|max:10000; owning guru or joined siswa; active class/author only; linked topics require a published material for siswa |
 
 **Read-only guard (BR-05):** any write targeting a record owned by an inactive user must be rejected (403) by a shared policy/middleware.
 
@@ -594,10 +609,21 @@ Feature: Limits (BR-07)
     Then a class accepts unlimited students and a guru owns unlimited classes
 
 Feature: Class discussions
-  Scenario: Guru creates a topic
-    Given an authenticated active guru with an active owned class
-    When they submit a valid discussion title and body
-    Then the topic is visible to the guru and joined students
+  Scenario: Class participant creates a material topic
+    Given a published material in an active class
+    When its active owning guru or an active joined siswa submits a valid title and body
+    Then the topic stores the server-derived class, material, and author
+    And the latest three topics appear directly beneath that material
+
+  Scenario: Draft material discussions are student-inaccessible
+    Given a material-linked topic becomes a draft
+    Then joined students cannot list, view, comment on, or preview that topic
+    And the owning guru and super_admin retain read access
+
+  Scenario: Deleted-material discussions are retained
+    Given a material with topics and comments is deleted
+    Then its topics remain under Diskusi Umum
+    And its comments remain intact
 
   Scenario: Class participants comment
     Given a discussion topic in an active class
@@ -625,7 +651,7 @@ Build in order. Each milestone must pass its acceptance criteria (§11) before t
 - **M5 — Quizzes.** Quiz builder (questions + options, one correct), publish, siswa take + auto-score, quiz-attempt logging.
 - **M6 — Grading & recap.** `grade_components` manual weights (`BR-03`), `component_scores`, final-grade calculation, guru recap, siswa grade dashboard, Super Admin all-class recap + export (`FR-SA-05`).
 - **M7 — Monitoring.** Super Admin monitoring UI over `activity_logs` (`BR-06`) with filters.
-- **M7.8 — Class discussions.** Guru-created class topics, flat comments by the owning guru and joined students, and comment moderation by the owning guru and Super Admin (`FR-SA-07`, `FR-GR-14`, `FR-SW-07`).
+- **M7.8 — Material-based discussions.** Compact topic previews beneath each material; published-material topic creation by the owning guru and joined students; retained general topics; flat comments; comment moderation by the owning guru and Super Admin (`FR-SA-07`, `FR-GR-14`, `FR-SW-07`).
 - **M8 — Hardening & Octane.** Enable Octane (FrankenPHP/Swoole), audit for shared-state leaks, perf pass (`NFR-01`), security review (`NFR-03`), full test suite green.
 
 ---
