@@ -69,6 +69,18 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasMany(FinalGrade::class, 'student_id');
     }
 
+    // DATA-25 / FR-GR-15 / M7.9
+    public function createdLkms(): HasMany
+    {
+        return $this->hasMany(Lkm::class, 'created_by');
+    }
+
+    // DATA-27 / FR-SW-08 / M7.9
+    public function lkmAssignments(): HasMany
+    {
+        return $this->hasMany(LkmAssignment::class, 'student_id');
+    }
+
     /** Indonesian locale for all notifications. FR-AUTH-04 */
     public function preferredLocale(): string
     {

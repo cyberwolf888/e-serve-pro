@@ -184,6 +184,19 @@
 
 ---
 
+## M7.9 — LKM Workflow
+
+- [x] Add `lkms`, `lkm_roles`, and `lkm_assignments` with scoped relationships, casts, FKs, indexes, and unique constraints. `[DATA-25..27]`
+- [x] Guru and Super Admin manage class LKM, roles, publication, assignments, and timestamp-preserving corrections. `[FR-SA-08, FR-GR-15, BR-09]`
+- [x] Initial members receive shuffled round-robin roles; late members require manual assignment. `[FR-GR-15, BR-09]`
+- [x] Mahasiswa sees only assigned published LKM, submits one approved HTTPS proof URL, then one SOP-checkbox reflection. `[FR-SW-08, BR-09, §9]`
+- [x] Role structure locks after first proof; submitted assignments cannot be reassigned; nested resource mismatches return 404. `[BR-09, §3.2]`
+- [x] Metronic instructor/student pages, class tab/cards, and native repeatable role/SOP form work responsively. `[NFR-07, NFR-08]`
+- [x] Feature tests cover management, validation, access, assignment balance, submission integrity, corrections, and inactive records. `[§11]`
+- [!] **Gate M7.9:** 19 LKM tests, Pint, frontend build, Blade cache, and desktop/mobile browser smoke checks pass; full suite retains 3 unrelated baseline failures across 2 existing suites.
+
+---
+
 ## M8 — Hardening & Octane
 
 - [x] Enable Laravel Octane (FrankenPHP or Swoole driver). `[§4]`
@@ -201,7 +214,7 @@
 ## Cross-Cutting Checklist (verify before final handover)
 
 - [ ] All 3 roles enforced on every route (matrix §3.2 fully covered).
-- [ ] `BR-01` … `BR-08` each have a passing test.
+- [ ] `BR-01` … `BR-09` each have a passing test.
 - [ ] Inactive-user data is read-only everywhere, never hard-deleted. `[BR-05]`
 - [ ] Every uploaded file is PDF ≤ 20 MB. `[BR-04]`
 - [ ] Activity logs cover login, quiz attempts, and retained historical attendance events. `[BR-06]`

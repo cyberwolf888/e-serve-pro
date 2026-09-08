@@ -80,6 +80,8 @@ Roles are fixed names: `super_admin`, `guru`, `siswa`. Implement RBAC with **spa
 | Start material discussion | ❌ | OWN; published material only | OWN classes; published material only |
 | Comment on discussion | ❌ | OWN | OWN classes; linked material published only |
 | Moderate discussion comments | ✅ | OWN | ❌ |
+| Create/manage LKM, roles, and assignments | ✅ | OWN active classes | ❌ |
+| Submit assigned LKM proof and SOP reflection | ❌ | ❌ | OWN classes, published assigned LKM only |
 
 > **Agent note:** Protect role-based route groups with Spatie `role` middleware. Implement one Policy per model for record-level checks, and every controller action must call `authorize()` against the matching Policy method. `OWN` checks compare `record.user_id`/`class.guru_id` to `auth()->id()`.
 
@@ -146,6 +148,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SA-05 | View and download (export) the recap of ALL registered classes. |
 | FR-SA-06 | View a 30-day operational dashboard with user and class KPIs, activity trend, operational alerts, and recent activity. |
 | FR-SA-07 | Read all general and material-based discussions and moderate their comments. |
+| FR-SA-08 | Manage LKM, roles, student assignments, publication, and submitted-work corrections in every class. |
 
 ### 5.3 Guru (`FR-GR-*`)
 
@@ -165,6 +168,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-GR-12 | Define final-grade component format and weights manually per class (`BR-03`). |
 | FR-GR-13 | View a 30-day dashboard for owned classes with KPIs, teacher activity trend, operational alerts, and recent teacher activity. |
 | FR-GR-14 | View general discussions and create material-based topics/comments in owned active classes. New topics require a published material; deleting a material preserves its topics as general discussions. |
+| FR-GR-15 | Manage class-scoped LKM, roles, SOP points, balanced initial role assignments, publication, reassignment, and submitted-work corrections in owned active classes. |
 
 ### 5.4 Siswa (`FR-SW-*`)
 
@@ -177,6 +181,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | FR-SW-05 | Take multiple-choice quizzes in joined classes. |
 | FR-SW-06 | View own grades via a student dashboard. |
 | FR-SW-07 | View general discussions and create material-based topics/comments in joined active classes. Linked topics require a published material and become hidden when that material is unpublished. |
+| FR-SW-08 | View assigned published LKM, submit one approved HTTPS proof URL, then submit one checkbox-based SOP reflection. |
 
 ---
 
@@ -192,6 +197,7 @@ IDs: `FR-<MODULE>-<NN>`. Priority: `MUST` for this release.
 | BR-06 | Super Admin monitoring shows **all activity logs**, including retained historical attendance events. | Central `activity_logs` table stores current and historical events. |
 | BR-07 | **No limit** on students per class or classes per guru. | Do not add artificial caps in validation or schema. |
 | BR-08 | User data privacy handled per applicable **personal-data-protection regulation**. | Hash passwords, encrypt sensitive fields if added, restrict PII access by role, log access. |
+| BR-09 | LKM is class-scoped. Creation requires at least one role and one SOP point per role; existing members are shuffled and assigned round-robin. Role structure locks after first proof. Student proof and reflection are one-time submissions; instructor corrections preserve timestamps. | Transactions, unique constraints, scoped bindings, policies, approved proof hosts, and row locks enforce workflow integrity. |
 
 > **Conflict resolution priority:** `BR-*` > `DATA-*` > `FR-*` > UI copy. If two rules appear to conflict, the higher-priority section wins; flag it.
 
@@ -401,6 +407,42 @@ Package-default pivot connecting roles to permissions.
 | body | TEXT | required |
 | created_at / updated_at | TIMESTAMP | Laravel timestamps |
 
+### DATA-25 `lkms`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| class_id | BIGINT UNSIGNED | FK → classes.id, cascade delete, indexed |
+| created_by | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed; audit metadata only |
+| title | VARCHAR(255) | required |
+| description | TEXT | required |
+| is_published | TINYINT(1) | required, default 0, indexed |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+
+### DATA-26 `lkm_roles`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| lkm_id | BIGINT UNSIGNED | FK → lkms.id, cascade delete, indexed |
+| name | VARCHAR(255) | required; UNIQUE(lkm_id, name) |
+| instructions | TEXT | required |
+| description | TEXT | required |
+| sop_items | JSON | required ordered strings; minimum one item |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+
+### DATA-27 `lkm_assignments`
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT UNSIGNED | PK, auto-increment |
+| lkm_id | BIGINT UNSIGNED | FK → lkms.id, cascade delete, indexed |
+| lkm_role_id | BIGINT UNSIGNED | FK → lkm_roles.id, restrict delete, indexed |
+| student_id | BIGINT UNSIGNED | FK → users.id, restrict delete, indexed |
+| proof_url | VARCHAR(1024) | nullable |
+| proof_submitted_at | TIMESTAMP | nullable, indexed |
+| sop_checks | JSON | nullable checked SOP indexes |
+| reflection_submitted_at | TIMESTAMP | nullable, indexed |
+| created_at / updated_at | TIMESTAMP | Laravel timestamps |
+| — | — | UNIQUE(lkm_id, student_id) |
+
 ### Entity Relationship (text)
 ```
 users(1)───<(N)classes            [guru_id]
@@ -417,6 +459,9 @@ users(1)──<(N)activity_logs
 classes(1)──<(N)discussion_topics──<(N)discussion_comments
 materials(1)──<(N)discussion_topics [material_id nullable; null = general]
 users(1)──<(N)discussion_topics / discussion_comments [author_id]
+classes(1)──<(N)lkms──<(N)lkm_roles
+lkms(1)──<(N)lkm_assignments──>(1)users [student_id]
+lkm_roles(1)──<(N)lkm_assignments
 ```
 
 ---
@@ -449,6 +494,10 @@ GET   /admin/classes/{class}/discussions admin.classes.discussions.index FR-SA-0
 GET   /admin/classes/{class}/discussions/{discussion} admin.classes.discussions.show FR-SA-07
 GET   /admin/classes/{class}/materials/{material}/discussions admin.classes.materials.discussions.index FR-SA-07
 DELETE /admin/classes/{class}/discussions/{discussion}/comments/{comment} admin.classes.discussions.comments.destroy FR-SA-07
+resource /admin/classes/{class}/lkms   admin.classes.lkms      FR-SA-08 / BR-09 (except destroy)
+POST/PUT/DELETE /admin/classes/{class}/lkms/{lkm}/roles[...] admin.classes.lkms.roles FR-SA-08 / BR-09
+POST/PATCH /admin/classes/{class}/lkms/{lkm}/assignments[...] admin.classes.lkms.assignments FR-SA-08 / BR-09
+GET/PUT /admin/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] admin.classes.lkms.submissions FR-SA-08 / BR-09
 
 # Guru  (middleware: role:guru)
 GET   /guru/dashboard               guru.dashboard
@@ -466,6 +515,10 @@ POST  /guru/classes/{class}/materials/{material}/discussions guru.classes.materi
 GET   /guru/classes/{class}/discussions/{discussion} guru.classes.discussions.show FR-GR-14
 POST  /guru/classes/{class}/discussions/{discussion}/comments guru.classes.discussions.comments.store FR-GR-14
 DELETE /guru/classes/{class}/discussions/{discussion}/comments/{comment} guru.classes.discussions.comments.destroy FR-GR-14
+resource /guru/classes/{class}/lkms    guru.classes.lkms       FR-GR-15 / BR-09 (except destroy)
+POST/PUT/DELETE /guru/classes/{class}/lkms/{lkm}/roles[...] guru.classes.lkms.roles FR-GR-15 / BR-09
+POST/PATCH /guru/classes/{class}/lkms/{lkm}/assignments[...] guru.classes.lkms.assignments FR-GR-15 / BR-09
+GET/PUT /guru/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] guru.classes.lkms.submissions FR-GR-15 / BR-09
 
 # Siswa  (middleware: role:siswa)
 GET   /siswa/dashboard              siswa.dashboard           FR-SW-06
@@ -481,6 +534,9 @@ GET   /siswa/classes/{class}/materials/{material}/discussions/create siswa.class
 POST  /siswa/classes/{class}/materials/{material}/discussions siswa.classes.materials.discussions.store FR-SW-07
 GET   /siswa/classes/{class}/discussions/{discussion} siswa.classes.discussions.show FR-SW-07
 POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.discussions.comments.store FR-SW-07
+GET   /siswa/classes/{class}/lkms/{lkm} siswa.classes.lkms.show FR-SW-08 / BR-09
+POST  /siswa/classes/{class}/lkms/{lkm}/proof siswa.classes.lkms.proof.store FR-SW-08 / BR-09
+POST  /siswa/classes/{class}/lkms/{lkm}/reflection siswa.classes.lkms.reflection.store FR-SW-08 / BR-09
 ```
 
 ---
@@ -499,6 +555,10 @@ POST  /siswa/classes/{class}/discussions/{discussion}/comments siswa.classes.dis
 | grade-components.store | name required; weight: required|numeric|0–100; warn if class total ≠ 100 (BR-03) |
 | material-discussions.store | title: required|string|max:255; body: required|string|max:10000; class/material IDs derived server-side; published material in an active class; active owning guru or joined siswa only |
 | discussion-comments.store | body: required|string|max:10000; owning guru or joined siswa; active class/author only; linked topics require a published material for siswa |
+| lkms.store | title and description required; roles required|array|min:1; role names required and unique per LKM; instructions and descriptions required; every sop_items required|array|min:1 |
+| lkms.update | title and description required; is_published required|boolean; role structure excluded and remains editable only through role endpoints before first proof |
+| lkm proof submit/correction | one required HTTPS URL, max 1024 chars; exact host in drive.google.com, docs.google.com, youtube.com, www.youtube.com, m.youtube.com, youtu.be |
+| lkm reflection submit/correction | sop_checks present|array; each value integer|distinct and valid for assigned role; empty array allowed |
 
 **Read-only guard (BR-05):** any write targeting a record owned by an inactive user must be rejected (403) by a shared policy/middleware.
 
@@ -635,6 +695,25 @@ Feature: Class discussions
     Then non-members cannot view or comment
     And the owning guru and super_admin can delete comments
     And inactive classes and inactive users cannot write
+
+Feature: LKM workflow (BR-09)
+  Scenario: Balanced initial role assignment
+    Given an active class, valid LKM roles, and existing students
+    When its guru or super_admin creates the LKM
+    Then roles and assignments are saved atomically
+    And shuffled round-robin role counts differ by at most one
+
+  Scenario: Student completes one-time LKM workflow
+    Given an active student assigned to a published LKM in a joined active class
+    When they submit an approved HTTPS proof URL and then any subset of SOP checks
+    Then original proof and reflection timestamps are stored
+    And both stages become read-only for the student
+
+  Scenario: LKM structure and assignment integrity
+    Given any student has submitted proof
+    Then role names, descriptions, instructions, and SOP points are locked
+    And that student's role cannot be reassigned
+    But the instructor may correct submitted URL and checks without changing timestamps
 ```
 
 ---
@@ -652,6 +731,7 @@ Build in order. Each milestone must pass its acceptance criteria (§11) before t
 - **M6 — Grading & recap.** `grade_components` manual weights (`BR-03`), `component_scores`, final-grade calculation, guru recap, siswa grade dashboard, Super Admin all-class recap + export (`FR-SA-05`).
 - **M7 — Monitoring.** Super Admin monitoring UI over `activity_logs` (`BR-06`) with filters.
 - **M7.8 — Material-based discussions.** Compact topic previews beneath each material; published-material topic creation by the owning guru and joined students; retained general topics; flat comments; comment moderation by the owning guru and Super Admin (`FR-SA-07`, `FR-GR-14`, `FR-SW-07`).
+- **M7.9 — LKM workflow.** Class-scoped LKM roles and SOP, balanced assignment, publication, one-time student proof/reflection, and timestamp-preserving instructor correction (`FR-SA-08`, `FR-GR-15`, `FR-SW-08`, `BR-09`, `DATA-25..27`).
 - **M8 — Hardening & Octane.** Enable Octane (FrankenPHP/Swoole), audit for shared-state leaks, perf pass (`NFR-01`), security review (`NFR-03`), full test suite green.
 
 ---

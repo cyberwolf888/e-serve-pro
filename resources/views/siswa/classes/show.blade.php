@@ -1,4 +1,4 @@
-{{-- siswa/classes/show.blade.php — FR-SW-04 / FR-SW-05 / NFR-08 / M3 / M4 --}}
+{{-- siswa/classes/show.blade.php — FR-SW-04 / FR-SW-05 / FR-SW-08 / NFR-08 / M3 / M4 / M7.9 --}}
 @extends('layouts.app')
 @section('breadcrumb')<x-breadcrumb :items="[['label' => 'Kelas Saya', 'url' => route('siswa.classes.index')], ['label' => $class->name]]" />@endsection
 @section('content')
@@ -77,6 +77,17 @@
                     </a>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="kt-card">
+        <div class="kt-card-header"><h3 class="kt-card-title flex items-center gap-2 text-xs font-semibold uppercase tracking-wide"><i class="ki-filled ki-people text-base text-primary"></i>LKM Saya</h3></div>
+        <div class="kt-card-content grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-7.5">
+            @forelse($lkmAssignments as $assignment)
+                <div class="kt-card"><div class="kt-card-content grid gap-3 p-5"><div class="flex items-start justify-between gap-2"><h4 class="font-semibold">{{ $assignment->lkm->title }}</h4>@if($assignment->reflection_submitted_at)<span class="kt-badge kt-badge-success kt-badge-outline">Selesai</span>@elseif($assignment->proof_submitted_at)<span class="kt-badge kt-badge-warning kt-badge-outline">Refleksi</span>@else<span class="kt-badge kt-badge-outline">Belum mulai</span>@endif</div><p class="text-sm text-secondary-foreground">Peran: {{ $assignment->role->name }}</p><a href="{{ route('siswa.classes.lkms.show', [$class, $assignment->lkm]) }}" class="kt-btn kt-btn-sm kt-btn-outline">Buka LKM</a></div></div>
+            @empty
+                <p class="text-sm text-secondary-foreground">Belum ada LKM terbit yang ditugaskan.</p>
+            @endforelse
         </div>
     </div>
 </div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JoinSchoolClassRequest;
 use App\Models\SchoolClass;
 use App\Notifications\AddedToClass;
+use App\Repositories\LkmRepository;
 use App\Repositories\MaterialRepository;
 use App\Repositories\QuizRepository;
 use App\Repositories\SchoolClassRepository;
@@ -22,6 +23,7 @@ class SchoolClassController extends Controller
         private SchoolClassService $service,
         private MaterialRepository $materialRepo,
         private QuizRepository $quizRepo,
+        private LkmRepository $lkmRepo,
     ) {}
 
     public function index(): View
@@ -49,6 +51,7 @@ class SchoolClassController extends Controller
             'class' => $class,
             'materials' => $this->materialRepo->publishedForClass($class),
             'quizzes' => $this->quizRepo->availableForStudent($class, auth()->user()),
+            'lkmAssignments' => $this->lkmRepo->studentAssignments($class, auth()->user()),
         ]);
     }
 }
