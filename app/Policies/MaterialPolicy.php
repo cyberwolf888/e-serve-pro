@@ -20,7 +20,8 @@ class MaterialPolicy
 
     public function view(User $user, Material $material): bool
     {
-        return $this->viewAny($user, $material->schoolClass);
+        return (! $user->hasRole('siswa') || $material->is_published)
+            && $this->viewAny($user, $material->schoolClass);
     }
 
     public function create(User $user, SchoolClass $class): bool

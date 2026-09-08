@@ -41,6 +41,6 @@ class AddedToClass extends Notification
             ->subject($subject)
             ->line($line)
             ->action('Lihat Kelas', url(route('siswa.classes.show', $this->class)))
-            ->line('Silakan masuk ke portal untuk melihat materi, pertemuan, dan kuis yang tersedia.');
+            ->line('Silakan masuk ke portal untuk melihat materi dan kuis yang tersedia.');
     }
 }

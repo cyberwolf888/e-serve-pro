@@ -83,20 +83,20 @@
 
 ---
 
-## M4 — Materials, Meetings & Attendance
+## M4 — Materials & Publication
 
-- [x] Migration `materials` (type figma|file, figma_url, file_path, file_size_kb). `[DATA-04]`
-- [x] Migration `meetings`. `[DATA-05]`
-- [x] Migration `meeting_materials` UNIQUE(meeting_id, material_id). `[DATA-06]`
-- [x] Migration `attendances` UNIQUE(meeting_id, student_id), status enum. `[DATA-07]`
+- [x] Migration `materials` (description, draft/published status, Figma/file source). `[DATA-04]`
+- [x] Legacy `meetings` table retained; runtime retired. `[DATA-05]`
+- [x] Legacy `meeting_materials` table retained; runtime retired. `[DATA-06]`
+- [x] Legacy `attendances` table retained; runtime retired. `[DATA-07]`
 - [x] Material via Figma link. `[FR-GR-04]`
 - [x] Material via PDF upload — validate `mimes:pdf`, `max:20480` KB, store size. `[FR-GR-05, BR-04, §9]`
-- [x] Meeting CRUD per class (title, scheduled_at). `[FR-GR-06]`
-- [x] Record attendance per meeting (hadir/izin/sakit/alfa). `[FR-GR-07]`
-- [x] Share materials to a meeting. `[FR-GR-08]`
-- [x] Siswa views meetings + accesses shared materials of joined classes only. `[FR-SW-04, §3.2]`
-- [x] Log attendance events. `[BR-06]`
-- [x] **Gate M4:** non-PDF/oversized upload rejected; valid PDF saved; attendance recorded & logged. `[§11 Materials scenarios]`
+- [x] Legacy meeting CRUD retired; routes removed and data retained. `[FR-GR-06]`
+- [x] Legacy attendance recording retired; routes removed and data retained. `[FR-GR-07]`
+- [x] Legacy meeting sharing retired; pivot data retained. `[FR-GR-08]`
+- [x] Siswa accesses only published materials of joined classes. `[FR-SW-04, §3.2]`
+- [x] Historical attendance events remain visible in monitoring. `[BR-06]`
+- [x] **Gate M4:** non-PDF/oversized upload rejected; valid PDF saved; drafts hidden and published materials accessible to enrolled students. `[§11 Materials scenarios]`
 
 ---
 
@@ -131,7 +131,7 @@
 
 - [x] Super Admin monitoring UI over `activity_logs`. `[FR-SA-04, BR-06]`
 - [x] Filters: by user, event_type, date range. `[BR-06]`
-- [x] Confirm login, quiz_attempt, attendance events all recorded from M1/M5/M4. `[BR-06]`
+- [x] Confirm login and quiz_attempt events recorded; historical attendance events remain visible. `[BR-06]`
 - [x] Paginate logs. `[NFR-02]`
 - [x] **Gate M7:** all event types visible & filterable by super_admin. `[§11 Monitoring scenario]`
 
@@ -204,7 +204,7 @@
 - [ ] `BR-01` … `BR-08` each have a passing test.
 - [ ] Inactive-user data is read-only everywhere, never hard-deleted. `[BR-05]`
 - [ ] Every uploaded file is PDF ≤ 20 MB. `[BR-04]`
-- [ ] Activity logs cover login, quiz attempts, attendance. `[BR-06]`
+- [ ] Activity logs cover login, quiz attempts, and retained historical attendance events. `[BR-06]`
 - [ ] UI uses Metronic 9.5.0 components consistently. `[NFR-08]`
 - [ ] Seeder creates an initial Super Admin account.
 
@@ -216,7 +216,7 @@
 - [x] **Q2** Do quiz scores auto-populate a matching `grade_component`, or are all component scores entered manually? *(decided: linked quiz component auto-fills/backfills scores; manual overrides persist)* `[§13]`
 - [x] **Q3** Recap export format — CSV / XLSX / PDF? *(decided: XLSX)* `[§13]`
 - [ ] **Q4** Extra required `siswa` fields (e.g. NIS / student ID)? `[§13]`
-- [x] **Q5** Super Admin CRUD for materials/meetings/attendance in M4? *(implemented via ADMIN_CLASS_ACCESS_PLAN: Super Admin reuses guru controllers/views under `/admin` with role-aware route prefix; policies grant true all-class access while quiz integrity locks remain)*
+- [x] **Q5** Super Admin CRUD for materials; legacy meeting/attendance runtime retired. *(materials reuse guru controllers/views under `/admin`; historical meeting/attendance data remains retained)*
 
 ---
 

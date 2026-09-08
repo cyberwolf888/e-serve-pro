@@ -16,7 +16,7 @@
                 <span class="text-primary">F&amp;B Service</span>
             </h1>
             <p class="text-base lg:text-lg text-secondary-foreground max-w-lg">
-                E-SERVEPro LEARNING menghubungkan materi, pertemuan, presensi, kuis, dan penilaian dalam
+                E-SERVEPro LEARNING menghubungkan materi, kelas, kuis, dan penilaian dalam
                 pengalaman belajar aktif yang selaras dengan standar kinerja industri perhotelan.
             </p>
             <div class="flex flex-wrap gap-3">
@@ -63,11 +63,11 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
         @foreach ([
             ['icon' => 'ki-book-open', 'title' => 'Materi F&B Kontekstual', 'desc' => 'Pelajari prosedur layanan F&B melalui materi visual dan dokumen pembelajaran terstruktur.'],
-            ['icon' => 'ki-calendar', 'title' => 'Pertemuan Terarah', 'desc' => 'Kelola setiap sesi pembelajaran beserta materi dan aktivitas kelas yang relevan.'],
-            ['icon' => 'ki-check-circle', 'title' => 'Presensi Terintegrasi', 'desc' => 'Dokumentasikan kehadiran peserta pada setiap pertemuan secara tertib dan terukur.'],
+            ['icon' => 'ki-calendar', 'title' => 'Publikasi Terkendali', 'desc' => 'Atur materi sebagai draf atau terbit sesuai kesiapan pembelajaran.'],
+            ['icon' => 'ki-check-circle', 'title' => 'Diskusi Kelas', 'desc' => 'Bangun interaksi pembelajaran melalui topik dan komentar kelas.'],
             ['icon' => 'ki-notepad-edit', 'title' => 'Evaluasi Otomatis', 'desc' => 'Ukur pemahaman melalui kuis pilihan ganda dengan penilaian otomatis.'],
             ['icon' => 'ki-chart-line', 'title' => 'Penilaian Kinerja', 'desc' => 'Rekap capaian belajar berdasarkan komponen penilaian yang berorientasi pada kompetensi hospitality.'],
-            ['icon' => 'ki-shield-tick', 'title' => 'Monitoring Pembelajaran', 'desc' => 'Pantau aktivitas masuk, kuis, presensi, dan perkembangan belajar dalam satu layanan.'],
+            ['icon' => 'ki-shield-tick', 'title' => 'Monitoring Pembelajaran', 'desc' => 'Pantau aktivitas masuk, kuis, dan perkembangan belajar dalam satu layanan.'],
         ] as $feature)
             <div class="kt-card">
                 <div class="kt-card-body p-6 flex flex-col gap-3">
@@ -86,7 +86,7 @@
     <div class="grid sm:grid-cols-3 gap-5 max-w-5xl mx-auto">
         @foreach ([
             ['icon' => 'ki-shield-tick', 'title' => 'Super Admin (Peneliti)', 'desc' => 'Mengelola pengguna, memantau aktivitas pembelajaran, dan menganalisis rekap capaian lintas kelas.'],
-            ['icon' => 'ki-profile-circle', 'title' => 'Guru (Pengajar)', 'desc' => 'Merancang kelas F&B Service, membagikan materi, mengelola pertemuan, dan menilai capaian peserta.'],
+            ['icon' => 'ki-profile-circle', 'title' => 'Guru (Pengajar)', 'desc' => 'Merancang kelas F&B Service, menerbitkan materi, mengelola kuis, dan menilai capaian peserta.'],
             ['icon' => 'ki-people', 'title' => 'Siswa (Peserta Didik)', 'desc' => 'Mengakses materi kontekstual, mengikuti aktivitas kelas, mengerjakan kuis, dan memantau hasil belajar.'],
         ] as $role)
             <div class="kt-card">

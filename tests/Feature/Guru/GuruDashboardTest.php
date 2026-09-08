@@ -5,10 +5,8 @@
 namespace Tests\Feature\Guru;
 
 use App\Models\ActivityLog;
-use App\Models\Attendance;
 use App\Models\ClassMember;
 use App\Models\Material;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\SchoolClass;
@@ -37,10 +35,6 @@ class GuruDashboardTest extends TestCase
         ClassMember::create(['class_id' => $class->id, 'student_id' => $student->id, 'joined_at' => now()]);
         ClassMember::create(['class_id' => $otherClass->id, 'student_id' => $otherStudent->id, 'joined_at' => now()]);
         Material::create(['class_id' => $class->id, 'title' => 'Materi', 'type' => 'figma', 'figma_url' => 'https://figma.com/file/test']);
-        Meeting::create(['class_id' => $class->id, 'title' => 'Akan Datang', 'scheduled_at' => now()->addDay()]);
-        $pastMeeting = Meeting::create(['class_id' => $class->id, 'title' => 'Belum Lengkap', 'scheduled_at' => now()->subDay()]);
-        Attendance::create(['meeting_id' => $pastMeeting->id, 'student_id' => $student->id, 'status' => 'hadir', 'recorded_at' => now()]);
-        Meeting::create(['class_id' => $otherClass->id, 'title' => 'Guru Lain', 'scheduled_at' => now()->addDay()]);
         Quiz::create(['class_id' => $class->id, 'title' => 'Aktif', 'is_published' => true]);
         $closedQuiz = Quiz::create(['class_id' => $class->id, 'title' => 'Selesai', 'is_published' => true, 'closes_at' => now()->subDay()]);
         QuizAttempt::create(['quiz_id' => $closedQuiz->id, 'student_id' => $student->id, 'started_at' => now()->subDays(2)]);
@@ -51,8 +45,12 @@ class GuruDashboardTest extends TestCase
         $response = $this->actingAs($guru)->get(route('guru.dashboard'));
         $dashboard = $response->viewData('dashboard');
 
-        $response->assertOk()->assertSee('Dashboard Guru')->assertSee('Ringkasan kelas Anda dalam 30 hari terakhir');
-        $this->assertSame([1, 1, 1, 0, 1, 1], collect($dashboard['kpis'])->pluck('value')->all());
+        $response->assertOk()
+            ->assertSee('Dashboard Guru')
+            ->assertSee('Ringkasan kelas Anda dalam 30 hari terakhir')
+            ->assertDontSee('Pertemuan 30 Hari')
+            ->assertDontSee('Absensi Belum Dicatat');
+        $this->assertSame([1, 1, 1, 1], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertCount(30, $dashboard['chart']['categories']);
         $this->assertCount(30, $dashboard['chart']['data']);
         $this->assertCount(1, $dashboard['recentActivities']);

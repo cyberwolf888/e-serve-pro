@@ -24,8 +24,6 @@ class GuruDashboardService
             'kpis' => [
                 ['label' => 'Kelas Aktif', 'value' => $this->repo->countActiveClasses($guru)],
                 ['label' => 'Total Siswa', 'value' => $this->repo->countStudents($guru)],
-                ['label' => 'Pertemuan 30 Hari', 'value' => $this->repo->countUpcomingMeetings($guru, $now, $now->copy()->addDays(30)->endOfDay())],
-                ['label' => 'Absensi Belum Dicatat', 'value' => $this->repo->countUnrecordedAttendances($guru, $now)],
                 ['label' => 'Kuis Aktif', 'value' => $this->repo->countActiveQuizzes($guru, $now)],
                 ['label' => 'Kuis Perlu Ditinjau', 'value' => $this->repo->countClosedQuizzesWithAttempts($guru, $now)],
             ],

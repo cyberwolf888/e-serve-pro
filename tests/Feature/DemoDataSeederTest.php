@@ -31,8 +31,9 @@ class DemoDataSeederTest extends TestCase
         $this->assertSame(50, User::role('siswa')->count());
         $this->assertSame(50, SchoolClass::count());
         $this->assertSame(1250, ClassMember::count());
-        $this->assertSame(500, Meeting::count());
+        $this->assertSame(0, Meeting::count());
         $this->assertSame(500, Material::count());
+        $this->assertSame(500, Material::where('is_published', true)->whereNotNull('description')->count());
         $this->assertSame(500, Quiz::count());
         $this->assertSame(500, QuizQuestion::count());
         $this->assertSame(2000, QuizOption::count());
@@ -40,7 +41,7 @@ class DemoDataSeederTest extends TestCase
         SchoolClass::all()->each(function (SchoolClass $class) {
             $this->assertSame(5, SchoolClass::where('guru_id', $class->guru_id)->count());
             $this->assertSame(25, ClassMember::where('class_id', $class->id)->count());
-            $this->assertSame(10, Meeting::where('class_id', $class->id)->count());
+            $this->assertSame(10, Material::where('class_id', $class->id)->count());
         });
 
         QuizQuestion::all()->each(function (QuizQuestion $question) {
@@ -52,14 +53,25 @@ class DemoDataSeederTest extends TestCase
     /** @test — failure path: re-running the seeder must not duplicate rows */
     public function test_seeder_is_idempotent_on_rerun(): void
     {
+        $class = SchoolClass::firstOrFail();
+        $material = Material::where('class_id', $class->id)->firstOrFail();
+        $meeting = Meeting::create([
+            'class_id' => $class->id,
+            'title' => 'Pertemuan Historis',
+            'scheduled_at' => now()->subYear(),
+        ]);
+        $meeting->materials()->attach($material);
+
         $this->seed(DemoDataSeeder::class);
 
         $this->assertSame(10, User::role('guru')->count());
         $this->assertSame(50, User::role('siswa')->count());
         $this->assertSame(50, SchoolClass::count());
         $this->assertSame(1250, ClassMember::count());
-        $this->assertSame(500, Meeting::count());
+        $this->assertSame(1, Meeting::count());
         $this->assertSame(500, Material::count());
+        $this->assertSame(500, Material::where('is_published', true)->whereNotNull('description')->count());
+        $this->assertTrue($meeting->materials()->whereKey($material->id)->exists());
         $this->assertSame(500, Quiz::count());
         $this->assertSame(500, QuizQuestion::count());
         $this->assertSame(2000, QuizOption::count());

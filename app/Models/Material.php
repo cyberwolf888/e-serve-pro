@@ -9,9 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['class_id', 'title', 'type', 'figma_url', 'file_path', 'file_size_kb'])]
+#[Fillable(['class_id', 'title', 'description', 'type', 'figma_url', 'file_path', 'file_size_kb', 'is_published'])]
 class Material extends Model
 {
+    protected $attributes = [
+        'is_published' => false,
+    ];
+
+    protected function casts(): array
+    {
+        return ['is_published' => 'boolean'];
+    }
+
     public function schoolClass(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');

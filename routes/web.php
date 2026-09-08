@@ -14,10 +14,8 @@ use App\Http\Controllers\DiscussionCommentController;
 use App\Http\Controllers\DiscussionTopicController;
 use App\Http\Controllers\GradeComponentController;
 use App\Http\Controllers\GradeController;
-use App\Http\Controllers\Guru\AttendanceController as GuruAttendanceController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\MaterialController as GuruMaterialController;
-use App\Http\Controllers\Guru\MeetingController as GuruMeetingController;
 use App\Http\Controllers\Guru\QuizController as GuruQuizController;
 use App\Http\Controllers\Guru\QuizQuestionController as GuruQuizQuestionController;
 use App\Http\Controllers\Guru\SchoolClassController as GuruSchoolClassController;
@@ -111,15 +109,6 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     // FR-SA-03 / FR-GR-04 / FR-GR-05 / BR-04 / ADMIN_CLASS_ACCESS_PLAN
     Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
 
-    // FR-SA-03 / FR-GR-06 / FR-GR-07 / FR-GR-08
-    Route::resource('classes.meetings', GuruMeetingController::class);
-    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
-        ->name('classes.meetings.share');
-    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
-        ->name('classes.meetings.attendance.edit');
-    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
-        ->name('classes.meetings.attendance.store');
-
     // FR-SA-03 / FR-GR-09
     Route::resource('classes.quizzes', GuruQuizController::class);
     Route::patch('classes/{class}/quizzes/{quiz}/publish', [GuruQuizController::class, 'publish'])->name('classes.quizzes.publish');
@@ -143,17 +132,6 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
 
     // FR-GR-04 / FR-GR-05 / BR-04
     Route::resource('classes.materials', GuruMaterialController::class)->except(['show']);
-
-    // FR-GR-06 / FR-GR-08
-    Route::resource('classes.meetings', GuruMeetingController::class);
-    Route::post('classes/{class}/meetings/{meeting}/materials', [GuruMeetingController::class, 'share'])
-        ->name('classes.meetings.share');
-
-    // FR-GR-07
-    Route::get('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'edit'])
-        ->name('classes.meetings.attendance.edit');
-    Route::post('classes/{class}/meetings/{meeting}/attendance', [GuruAttendanceController::class, 'store'])
-        ->name('classes.meetings.attendance.store');
 
     // FR-GR-09
     Route::resource('classes.quizzes', GuruQuizController::class);

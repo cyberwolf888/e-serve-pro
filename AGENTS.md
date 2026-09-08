@@ -1,6 +1,6 @@
 # E-SERVEPro
 
-Web-based Indonesian-language learning platform aligned with *Kurikulum Merdeka*. Three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, **Siswa (Student)**. Built in Laravel. This file is the entry point for coding agents; the full spec and task list live in the referenced docs below.
+Three roles: **Super Admin (Peneliti)**, **Guru (Teacher)**, **Siswa (Student)**. Built in Laravel. This file is the entry point for coding agents; the full spec and task list live in the referenced docs below.
 
 ## Tech Stack (fixed — never substitute)
 

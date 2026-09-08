@@ -1,20 +1,18 @@
 <?php
 
 // Demo fixtures: 10 guru, 50 siswa, 5 kelas/guru, 25 siswa/kelas (random),
-// 10 pertemuan/kelas each with 1 materi + 1 kuis (4 opsi, 1 benar).
+// 10 published materials + 10 quizzes/class (4 options, 1 correct).
 
 namespace Database\Seeders;
 
 use App\Models\ClassMember;
 use App\Models\Material;
-use App\Models\Meeting;
 use App\Models\Quiz;
 use App\Models\QuizOption;
 use App\Models\QuizQuestion;
 use App\Models\SchoolClass;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +27,7 @@ class DemoDataSeeder extends Seeder
 
     private const MEMBERS_PER_CLASS = 25;
 
-    private const SESSIONS_PER_CLASS = 10;
+    private const ITEMS_PER_CLASS = 10;
 
     public function run(): void
     {
@@ -40,7 +38,7 @@ class DemoDataSeeder extends Seeder
 
         $classes = $this->seedClasses($gurus);
         $this->seedMembers($classes, $siswas);
-        $this->seedSessions($classes);
+        $this->seedLearningContent($classes);
     }
 
     /** @return Collection<int, User> */
@@ -118,23 +116,19 @@ class DemoDataSeeder extends Seeder
     }
 
     /** @param  Collection<int, SchoolClass>  $classes */
-    private function seedSessions(Collection $classes): void
+    private function seedLearningContent(Collection $classes): void
     {
-        $base = Carbon::parse('2026-01-12');
-
         foreach ($classes as $class) {
-            for ($n = 1; $n <= self::SESSIONS_PER_CLASS; $n++) {
-                $meeting = Meeting::updateOrCreate(
-                    ['class_id' => $class->id, 'title' => "Pertemuan {$n}"],
-                    ['scheduled_at' => $base->copy()->addWeeks($n - 1)]
-                );
-
-                $material = Material::updateOrCreate(
+            for ($n = 1; $n <= self::ITEMS_PER_CLASS; $n++) {
+                Material::updateOrCreate(
                     ['class_id' => $class->id, 'title' => "Materi Pertemuan {$n}"],
-                    ['type' => 'figma', 'figma_url' => "https://figma.com/file/demo-{$class->id}-{$n}"]
+                    [
+                        'description' => "Materi pembelajaran {$n} untuk {$class->name}.",
+                        'type' => 'figma',
+                        'figma_url' => "https://figma.com/file/demo-{$class->id}-{$n}",
+                        'is_published' => true,
+                    ]
                 );
-
-                $meeting->materials()->syncWithoutDetaching([$material->id]);
 
                 $quiz = Quiz::updateOrCreate(
                     ['class_id' => $class->id, 'title' => "Kuis Pertemuan {$n}"],

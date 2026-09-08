@@ -20,7 +20,9 @@
                 <thead>
                     <tr>
                         <th class="min-w-[240px]">Judul</th>
+                        <th class="min-w-[280px]">Deskripsi</th>
                         <th class="min-w-[100px]">Jenis</th>
+                        <th class="min-w-[100px]">Status</th>
                         <th class="w-[100px]"></th>
                     </tr>
                 </thead>
@@ -28,8 +30,12 @@
                     @forelse($materials as $material)
                     <tr>
                         <td><span class="font-semibold text-primary">{{ $material->title }}</span></td>
+                        <td class="text-sm text-secondary-foreground">{{ $material->description ?: '—' }}</td>
                         <td>
                             <span class="kt-badge kt-badge-outline">{{ $material->type === 'figma' ? 'Tautan' : 'PDF' }}</span>
+                        </td>
+                        <td>
+                            <span class="kt-badge {{ $material->is_published ? 'kt-badge-success' : 'kt-badge-outline' }}">{{ $material->is_published ? 'Terbit' : 'Draf' }}</span>
                         </td>
                         <td>
                             <div class="flex gap-1.5">
@@ -48,7 +54,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="3" class="py-8 text-center text-sm text-secondary-foreground">Belum ada materi.</td></tr>
+                    <tr><td colspan="5" class="py-8 text-center text-sm text-secondary-foreground">Belum ada materi.</td></tr>
                     @endforelse
                 </tbody>
             </table>

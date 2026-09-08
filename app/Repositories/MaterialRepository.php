@@ -15,6 +15,11 @@ class MaterialRepository
         return $class->materials()->latest()->get();
     }
 
+    public function publishedForClass(SchoolClass $class): Collection
+    {
+        return $class->materials()->where('is_published', true)->latest()->get();
+    }
+
     public function create(array $data): Material
     {
         return Material::create($data);

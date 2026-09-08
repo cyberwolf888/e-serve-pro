@@ -20,7 +20,13 @@ class MaterialService
 
     public function create(SchoolClass $class, array $data): Material
     {
-        $attributes = ['class_id' => $class->id, 'title' => $data['title'], 'type' => $data['type']];
+        $attributes = [
+            'class_id' => $class->id,
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'type' => $data['type'],
+            'is_published' => $data['is_published'],
+        ];
 
         if ($data['type'] === 'figma') {
             $attributes['figma_url'] = $data['figma_url'];
@@ -33,7 +39,12 @@ class MaterialService
 
     public function update(Material $material, array $data): Material
     {
-        $attributes = ['title' => $data['title'], 'type' => $data['type']];
+        $attributes = [
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'type' => $data['type'],
+            'is_published' => $data['is_published'],
+        ];
 
         if ($data['type'] === 'figma') {
             $attributes['figma_url'] = $data['figma_url'];

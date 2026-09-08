@@ -18,12 +18,11 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7.5 xl:grid-cols-4">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 lg:gap-7.5">
         @php
             $kpiStyles = [
                 ['icon' => 'ki-book-open', 'iconClass' => 'bg-primary/10 text-primary', 'palette' => 'bg-gradient-to-br from-primary/15 via-primary/5 to-transparent'],
-                ['icon' => 'ki-calendar', 'iconClass' => 'dashboard-kpi-success-icon', 'palette' => 'dashboard-kpi-success'],
-                ['icon' => 'ki-notepad', 'iconClass' => 'dashboard-kpi-warning-icon', 'palette' => 'dashboard-kpi-warning'],
+                ['icon' => 'ki-notepad', 'iconClass' => 'dashboard-kpi-success-icon', 'palette' => 'dashboard-kpi-success'],
                 ['icon' => 'ki-chart-line-up-2', 'iconClass' => 'bg-destructive/10 text-destructive', 'palette' => 'bg-gradient-to-br from-destructive/15 via-destructive/5 to-transparent'],
             ];
         @endphp

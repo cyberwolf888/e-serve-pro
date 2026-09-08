@@ -50,48 +50,30 @@
         <div class="lg:col-span-8 kt-card">
             <div class="kt-card-header">
                 <h3 class="kt-card-title flex items-center gap-2 text-xs font-semibold uppercase tracking-wide">
-                    <i class="ki-filled ki-calendar text-base text-primary"></i>Pertemuan
+                    <i class="ki-filled ki-book-open text-base text-primary"></i>Materi Terbit
                 </h3>
             </div>
-            <div class="kt-card-content p-7.5">
-                @forelse($meetings as $meeting)
-                    <div class="grid grid-cols-[auto_1fr] gap-4 md:gap-5">
-                        <div class="flex flex-col items-center">
-                            {{-- ASSUMPTION: no sequential meeting-number column (DATA-05); derived from desc-ordered position --}}
-                            <div class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 font-semibold {{ $loop->first ? 'border-primary text-primary' : 'border-border text-secondary-foreground' }}">
-                                {{ $meetings->count() - $loop->index }}
-                            </div>
-                            @if(! $loop->last)<div class="w-px grow bg-border"></div>@endif
-                        </div>
-                        <div class="kt-card {{ ! $loop->last ? 'mb-5' : '' }}">
-                            <div class="kt-card-content grid gap-3 p-5">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <span class="font-medium">{{ $meeting->title }}</span>
-                                    <span class="kt-badge bg-primary/10 text-primary border-0 gap-1.5">
-                                        <i class="ki-filled ki-time text-sm"></i>{{ $meeting->scheduled_at->translatedFormat('d M Y H:i') }}
-                                    </span>
-                                </div>
-                                @if($meeting->notes)<p class="text-sm text-secondary-foreground">{{ $meeting->notes }}</p>@endif
-                                @if($meeting->materials->isNotEmpty())
-                                    <div class="flex flex-wrap gap-2">
-                                        @foreach($meeting->materials as $material)
-                                            @if($material->type === 'figma')
-                                                <a href="{{ $material->figma_url }}" target="_blank" rel="noopener" class="kt-btn kt-btn-sm kt-btn-outline">
-                                                    <i class="ki-filled ki-share me-1"></i>{{ $material->title }}
-                                                </a>
-                                            @else
-                                                <a href="{{ route('materials.download', $material) }}" class="kt-btn kt-btn-sm kt-btn-outline">
-                                                    <i class="ki-filled ki-file-down me-1"></i>{{ $material->title }}
-                                                </a>
-                                            @endif
-                                        @endforeach
-                                    </div>
+            <div class="kt-card-content grid gap-4 p-7.5">
+                @forelse($materials as $material)
+                    <div class="kt-card">
+                        <div class="kt-card-content grid gap-3 p-5">
+                            <span class="font-medium">{{ $material->title }}</span>
+                            @if($material->description)<p class="text-sm text-secondary-foreground">{{ $material->description }}</p>@endif
+                            <div>
+                                @if($material->type === 'figma')
+                                    <a href="{{ $material->figma_url }}" target="_blank" rel="noopener" class="kt-btn kt-btn-sm kt-btn-outline">
+                                        <i class="ki-filled ki-share me-1"></i>Buka Materi
+                                    </a>
+                                @else
+                                    <a href="{{ route('materials.download', $material) }}" class="kt-btn kt-btn-sm kt-btn-outline">
+                                        <i class="ki-filled ki-file-down me-1"></i>Unduh Materi
+                                    </a>
                                 @endif
                             </div>
                         </div>
                     </div>
                 @empty
-                    <p class="text-secondary-foreground text-sm">Belum ada pertemuan.</p>
+                    <p class="text-secondary-foreground text-sm">Belum ada materi yang diterbitkan.</p>
                 @endforelse
             </div>
         </div>
