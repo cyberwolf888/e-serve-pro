@@ -1,11 +1,12 @@
 <?php
 
-// FR-SA-08 / FR-GR-15 / BR-09 / DATA-25..27 / M7.9
+// FR-SA-08 / FR-GR-11 / FR-GR-15 / BR-09 / DATA-25..27 / M7.9
 
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HasRoutePrefix;
+use App\Http\Requests\GradeLkmSubmissionRequest;
 use App\Http\Requests\StoreLkmAssignmentRequest;
 use App\Http\Requests\StoreLkmRequest;
 use App\Http\Requests\StoreLkmRoleRequest;
@@ -138,6 +139,25 @@ class LkmController extends Controller
             'assignment' => $assignment->load(['student', 'role']),
             'routePrefix' => $this->routePrefix(),
         ]);
+    }
+
+    public function submissions(SchoolClass $class, Lkm $lkm): View
+    {
+        $this->authorize('viewAny', [Lkm::class, $class]);
+
+        return view('guru.lkms.submissions', [
+            'class' => $class,
+            'lkm' => $lkm,
+            'assignments' => $this->repo->submittedAssignments($lkm),
+            'routePrefix' => $this->routePrefix(),
+        ]);
+    }
+
+    public function gradeSubmission(GradeLkmSubmissionRequest $request, SchoolClass $class, Lkm $lkm, LkmAssignment $assignment): RedirectResponse
+    {
+        $this->service->correctSubmission($lkm, $assignment, $request->validated());
+
+        return back()->with('success', 'Nilai LKM berhasil disimpan.');
     }
 
     public function updateSubmission(UpdateLkmSubmissionRequest $request, SchoolClass $class, Lkm $lkm, LkmAssignment $assignment): RedirectResponse

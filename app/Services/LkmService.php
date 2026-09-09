@@ -145,11 +145,15 @@ class LkmService
                 throw ValidationException::withMessages(['proof_url' => 'Mahasiswa belum mengirim bukti.']);
             }
 
-            $changes = ['proof_url' => $data['proof_url']];
-            if ($assignment->reflection_submitted_at !== null) {
-                $checks = $data['sop_checks'];
-                sort($checks);
-                $changes['sop_checks'] = array_values($checks);
+            $changes = [];
+            if (isset($data['proof_url'])) {
+                $changes['proof_url'] = $data['proof_url'];
+
+                if ($assignment->reflection_submitted_at !== null) {
+                    $checks = $data['sop_checks'];
+                    sort($checks);
+                    $changes['sop_checks'] = array_values($checks);
+                }
             }
 
             if (isset($data['score'])) {

@@ -1,6 +1,6 @@
 <?php
 
-// DATA-25..27 / FR-GR-15 / FR-SW-08 / M7.9
+// DATA-25..27 / FR-SA-08 / FR-GR-11 / FR-GR-15 / FR-SW-08 / M7.9
 
 namespace App\Repositories;
 
@@ -89,6 +89,15 @@ class LkmRepository
             ->whereIn('student_id', $studentIds)
             ->with(['role', 'student'])
             ->get();
+    }
+
+    public function submittedAssignments(Lkm $lkm): LengthAwarePaginator
+    {
+        return $lkm->assignments()
+            ->whereNotNull('proof_submitted_at')
+            ->with(['student', 'role', 'lkm.schoolClass.guru'])
+            ->latest('proof_submitted_at')
+            ->paginate(25);
     }
 
     public function studentAssignments(SchoolClass $class, User $student): Collection

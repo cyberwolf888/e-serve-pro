@@ -122,13 +122,15 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
 
-    // FR-SA-08 / BR-09 / M7.9
+    // FR-SA-08 / FR-GR-11 / BR-09 / M7.9
     Route::resource('classes.lkms', GuruLkmController::class)->except(['destroy'])->scoped();
     Route::post('classes/{class}/lkms/{lkm}/roles', [GuruLkmController::class, 'storeRole'])->scopeBindings()->name('classes.lkms.roles.store');
     Route::put('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'updateRole'])->scopeBindings()->name('classes.lkms.roles.update');
     Route::delete('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'destroyRole'])->scopeBindings()->name('classes.lkms.roles.destroy');
     Route::post('classes/{class}/lkms/{lkm}/assignments', [GuruLkmController::class, 'storeAssignment'])->scopeBindings()->name('classes.lkms.assignments.store');
     Route::patch('classes/{class}/lkms/{lkm}/assignments/{assignment}', [GuruLkmController::class, 'updateAssignment'])->scopeBindings()->name('classes.lkms.assignments.update');
+    Route::get('classes/{class}/lkms/{lkm}/submissions', [GuruLkmController::class, 'submissions'])->scopeBindings()->name('classes.lkms.submissions.index');
+    Route::patch('classes/{class}/lkms/{lkm}/submissions/{assignment}/grade', [GuruLkmController::class, 'gradeSubmission'])->scopeBindings()->name('classes.lkms.submissions.grade');
     Route::get('classes/{class}/lkms/{lkm}/submissions/{assignment}/edit', [GuruLkmController::class, 'editSubmission'])->scopeBindings()->name('classes.lkms.submissions.edit');
     Route::put('classes/{class}/lkms/{lkm}/submissions/{assignment}', [GuruLkmController::class, 'updateSubmission'])->scopeBindings()->name('classes.lkms.submissions.update');
 
@@ -144,13 +146,15 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::patch('classes/{class}/activate', [GuruSchoolClassController::class, 'activate'])->name('classes.activate');
     Route::post('classes/{class}/students', [GuruSchoolClassController::class, 'addStudent'])->name('classes.students.store');
 
-    // FR-GR-15 / BR-09 / M7.9
+    // FR-GR-11 / FR-GR-15 / BR-09 / M7.9
     Route::resource('classes.lkms', GuruLkmController::class)->except(['destroy'])->scoped();
     Route::post('classes/{class}/lkms/{lkm}/roles', [GuruLkmController::class, 'storeRole'])->scopeBindings()->name('classes.lkms.roles.store');
     Route::put('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'updateRole'])->scopeBindings()->name('classes.lkms.roles.update');
     Route::delete('classes/{class}/lkms/{lkm}/roles/{role}', [GuruLkmController::class, 'destroyRole'])->scopeBindings()->name('classes.lkms.roles.destroy');
     Route::post('classes/{class}/lkms/{lkm}/assignments', [GuruLkmController::class, 'storeAssignment'])->scopeBindings()->name('classes.lkms.assignments.store');
     Route::patch('classes/{class}/lkms/{lkm}/assignments/{assignment}', [GuruLkmController::class, 'updateAssignment'])->scopeBindings()->name('classes.lkms.assignments.update');
+    Route::get('classes/{class}/lkms/{lkm}/submissions', [GuruLkmController::class, 'submissions'])->scopeBindings()->name('classes.lkms.submissions.index');
+    Route::patch('classes/{class}/lkms/{lkm}/submissions/{assignment}/grade', [GuruLkmController::class, 'gradeSubmission'])->scopeBindings()->name('classes.lkms.submissions.grade');
     Route::get('classes/{class}/lkms/{lkm}/submissions/{assignment}/edit', [GuruLkmController::class, 'editSubmission'])->scopeBindings()->name('classes.lkms.submissions.edit');
     Route::put('classes/{class}/lkms/{lkm}/submissions/{assignment}', [GuruLkmController::class, 'updateSubmission'])->scopeBindings()->name('classes.lkms.submissions.update');
 
