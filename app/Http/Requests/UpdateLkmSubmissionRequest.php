@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-15 / BR-09 / §9 / M7.9
+// DATA-27 / FR-GR-11 / FR-GR-15 / BR-09 / §9 / M7.9
 
 namespace App\Http\Requests;
 
@@ -24,7 +24,10 @@ class UpdateLkmSubmissionRequest extends FormRequest
 
     public function rules(): array
     {
-        $rules = ['proof_url' => ['required', 'string', 'url', 'max:1024', new AllowedLkmProofUrl]];
+        $rules = [
+            'proof_url' => ['required', 'string', 'url', 'max:1024', new AllowedLkmProofUrl],
+            'score' => ['nullable', 'numeric', 'between:0,100'],
+        ];
 
         if ($this->route('assignment')->reflection_submitted_at !== null) {
             $rules += [
@@ -45,6 +48,10 @@ class UpdateLkmSubmissionRequest extends FormRequest
                 fn ($index) => $index < 0 || $index >= count($assignment->role->sop_items)
             )) {
                 $validator->errors()->add('sop_checks', 'Pilihan refleksi tidak valid.');
+            }
+
+            if ($this->filled('score') && $assignment->reflection_submitted_at === null) {
+                $validator->errors()->add('score', 'Nilai hanya dapat diberikan setelah bukti dan refleksi selesai.');
             }
         }];
     }

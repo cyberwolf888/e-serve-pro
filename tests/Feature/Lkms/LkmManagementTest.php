@@ -1,6 +1,6 @@
 <?php
 
-// FR-SA-08 / FR-GR-15 / BR-09 / DATA-25..27 / §11 / M7.9
+// FR-SA-08 / FR-GR-11 / FR-GR-15 / BR-09 / DATA-25..27 / §11 / M7.9
 
 namespace Tests\Feature\Lkms;
 
@@ -207,6 +207,72 @@ class LkmManagementTest extends TestCase
         ])->assertRedirect();
         $this->assertFalse($lkm->fresh()->is_published);
         $this->assertModelExists($assignment->fresh());
+    }
+
+    public function test_guru_and_super_admin_grade_completed_assignment_and_blank_preserves_score(): void
+    {
+        [$guru, $class, $lkm, $student] = $this->lkmFixture(true);
+        $admin = $this->user('super_admin');
+        $assignment = $lkm->assignments()->where('student_id', $student->id)->firstOrFail();
+        $assignment->update([
+            'proof_url' => 'https://youtu.be/proof',
+            'proof_submitted_at' => now(),
+            'sop_checks' => [0],
+            'reflection_submitted_at' => now(),
+        ]);
+
+        $payload = ['proof_url' => $assignment->proof_url, 'sop_checks' => [0], 'score' => 82.5];
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertRedirect();
+        $this->assertSame('82.50', $assignment->fresh()->score);
+        $this->actingAs($guru)->get(route('guru.classes.lkms.show', [$class, $lkm]))
+            ->assertOk()->assertSee('82.50');
+        $this->actingAs($guru)->get(route('guru.classes.lkms.submissions.edit', [$class, $lkm, $assignment]))
+            ->assertOk()->assertSee('Nilai LKM');
+
+        $payload['score'] = 91;
+        $this->actingAs($admin)->put(route('admin.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertRedirect();
+        $this->assertSame('91.00', $assignment->fresh()->score);
+
+        $payload['score'] = '';
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertRedirect();
+        $this->assertSame('91.00', $assignment->fresh()->score);
+    }
+
+    public function test_invalid_or_unauthorized_lkm_grades_are_rejected_without_mutation(): void
+    {
+        [$guru, $class, $lkm, $student] = $this->lkmFixture(true);
+        $foreignGuru = $this->user('guru');
+        $assignment = $lkm->assignments()->where('student_id', $student->id)->firstOrFail();
+        $assignment->update(['proof_url' => 'https://youtu.be/proof', 'proof_submitted_at' => now()]);
+        $payload = ['proof_url' => $assignment->proof_url, 'score' => 80];
+
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertSessionHasErrors('score');
+        $this->actingAs($foreignGuru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertForbidden();
+
+        $assignment->update(['sop_checks' => [0], 'reflection_submitted_at' => now()]);
+        foreach ([-0.01, 100.01] as $score) {
+            $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), [...$payload, 'score' => $score])
+                ->assertSessionHasErrors('score');
+        }
+
+        $student->update(['is_active' => false]);
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertForbidden();
+        $student->update(['is_active' => true]);
+        $class->update(['is_active' => false]);
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertForbidden();
+        $class->update(['is_active' => true]);
+        $guru->update(['is_active' => false]);
+        $this->actingAs($guru)->put(route('guru.classes.lkms.submissions.update', [$class, $lkm, $assignment]), $payload)
+            ->assertForbidden();
+
+        $this->assertNull($assignment->fresh()->score);
     }
 
     public function test_nested_resource_tampering_returns_not_found(): void

@@ -1,6 +1,6 @@
 <?php
 
-// DATA-13 / FR-GR-12 / BR-03 / M6
+// DATA-13 / DATA-27 / FR-GR-11 / FR-GR-12 / FR-GR-15 / BR-03 / M6
 
 namespace App\Models;
 
@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['class_id', 'name', 'weight', 'quiz_id'])]
+#[Fillable(['class_id', 'name', 'weight', 'quiz_id', 'lkm_id'])]
 class GradeComponent extends Model
 {
     protected function casts(): array
@@ -25,6 +25,11 @@ class GradeComponent extends Model
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
+    }
+
+    public function lkm(): BelongsTo
+    {
+        return $this->belongsTo(Lkm::class);
     }
 
     public function scores(): HasMany

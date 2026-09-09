@@ -1,6 +1,6 @@
 <?php
 
-// DATA-25 / FR-GR-15 / FR-SW-08 / M7.9
+// DATA-25 / FR-GR-11 / FR-GR-12 / FR-GR-15 / FR-SW-08 / M7.9
 
 namespace App\Models;
 
@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['class_id', 'created_by', 'title', 'description', 'is_published'])]
 class Lkm extends Model
@@ -39,5 +40,10 @@ class Lkm extends Model
     public function assignments(): HasMany
     {
         return $this->hasMany(LkmAssignment::class);
+    }
+
+    public function gradeComponent(): HasOne
+    {
+        return $this->hasOne(GradeComponent::class);
     }
 }

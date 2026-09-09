@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-11 / FR-GR-12 / BR-03 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
+// DATA-27 / FR-GR-11 / FR-GR-12 / FR-GR-15 / BR-03 / §3.2 / M6 / ADMIN_CLASS_ACCESS_PLAN
 
 namespace App\Http\Controllers;
 
@@ -31,6 +31,7 @@ class GradeComponentController extends Controller
             'class' => $class,
             'components' => $this->repo->components($class),
             'quizzes' => $class->quizzes()->orderBy('title')->get(),
+            'lkms' => $class->lkms()->orderBy('title')->get(),
             'routePrefix' => $this->routePrefix(),
         ]);
     }

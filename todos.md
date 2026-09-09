@@ -193,6 +193,7 @@
 - [x] Role structure locks after first proof; submitted assignments cannot be reassigned; nested resource mismatches return 404. `[BR-09, §3.2]`
 - [x] Metronic instructor/student pages, class tab/cards, and native repeatable role/SOP form work responsively. `[NFR-07, NFR-08]`
 - [x] Feature tests cover management, validation, access, assignment balance, submission integrity, corrections, and inactive records. `[§11]`
+- [x] Grade completed LKM, link one LKM to one weighted component, and synchronize non-overridden scores. `[DATA-27, FR-GR-11, FR-GR-12, FR-GR-15]`
 - [!] **Gate M7.9:** 19 LKM tests, Pint, frontend build, Blade cache, and desktop/mobile browser smoke checks pass; full suite retains 3 unrelated baseline failures across 2 existing suites.
 
 ---

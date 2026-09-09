@@ -1,6 +1,6 @@
 <?php
 
-// FR-GR-15 / FR-SW-08 / BR-09 / DATA-25..27 / M7.9
+// FR-GR-11 / FR-GR-15 / FR-SW-08 / BR-09 / DATA-25..27 / M7.9
 
 namespace App\Services;
 
@@ -16,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 
 class LkmService
 {
-    public function __construct(private LkmRepository $repo) {}
+    public function __construct(private LkmRepository $repo, private GradeService $gradeService) {}
 
     public function create(SchoolClass $class, User $creator, array $data): Lkm
     {
@@ -151,7 +151,16 @@ class LkmService
                 sort($checks);
                 $changes['sop_checks'] = array_values($checks);
             }
+
+            if (isset($data['score'])) {
+                if ($assignment->reflection_submitted_at === null) {
+                    throw ValidationException::withMessages(['score' => 'Nilai hanya dapat diberikan setelah bukti dan refleksi selesai.']);
+                }
+
+                $changes['score'] = $data['score'];
+            }
             $assignment->update($changes);
+            $this->gradeService->syncLkmAssignment($assignment);
 
             return $assignment;
         });

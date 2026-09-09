@@ -1,12 +1,13 @@
 <?php
 
-// DATA-13 / DATA-14 / DATA-15 / FR-GR-10 / M6
+// DATA-13 / DATA-14 / DATA-15 / DATA-27 / FR-GR-10 / FR-GR-11 / FR-GR-15 / M6
 
 namespace App\Repositories;
 
 use App\Models\ComponentScore;
 use App\Models\FinalGrade;
 use App\Models\GradeComponent;
+use App\Models\Lkm;
 use App\Models\Quiz;
 use App\Models\SchoolClass;
 use App\Models\User;
@@ -16,7 +17,7 @@ class GradeRepository
 {
     public function components(SchoolClass $class): Collection
     {
-        return $class->gradeComponents()->with('quiz')->orderBy('id')->get();
+        return $class->gradeComponents()->with(['quiz', 'lkm'])->orderBy('id')->get();
     }
 
     public function createComponent(array $data): GradeComponent
@@ -41,7 +42,12 @@ class GradeRepository
         return $quiz->attempts()->with('student')->whereNotNull('submitted_at')->get();
     }
 
-    public function syncQuizScore(GradeComponent $component, User $student, float $score): void
+    public function lkmAssignments(Lkm $lkm): Collection
+    {
+        return $lkm->assignments()->with('student')->whereNotNull('score')->get();
+    }
+
+    public function syncAutomaticScore(GradeComponent $component, User $student, float $score): void
     {
         $component->scores()->updateOrCreate(
             ['student_id' => $student->id],
