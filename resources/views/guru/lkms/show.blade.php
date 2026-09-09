@@ -7,7 +7,7 @@
     @include('guru.classes._tabs', ['class' => $class, 'routePrefix' => $routePrefix])
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div><h1 class="text-xl font-semibold text-mono">{{ $lkm->title }}</h1><p class="text-sm text-secondary-foreground mt-1">{{ $lkm->description }}</p></div>
-        <div class="flex items-center gap-2"><span class="kt-badge {{ $lkm->is_published ? 'kt-badge-success' : '' }} kt-badge-outline">{{ $lkm->is_published ? 'Terbit' : 'Draf' }}</span>@can('update', $lkm)<a href="{{ route($routePrefix.'.classes.lkms.edit', [$class, $lkm]) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-pencil"></i>Ubah</a>@endcan</div>
+        <div class="flex flex-wrap items-center gap-2"><span class="kt-badge {{ $lkm->is_published ? 'kt-badge-success' : '' }} kt-badge-outline">{{ $lkm->is_published ? 'Terbit' : 'Draf' }}</span><a href="{{ route($routePrefix.'.classes.lkms.submissions.index', [$class, $lkm]) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-check-square"></i>Kiriman & Penilaian</a>@can('update', $lkm)<a href="{{ route($routePrefix.'.classes.lkms.edit', [$class, $lkm]) }}" class="kt-btn kt-btn-outline"><i class="ki-filled ki-pencil"></i>Ubah</a>@endcan</div>
     </div>
     @if(session('success'))<div class="kt-alert kt-alert-success">{{ session('success') }}</div>@endif
     @foreach(['role', 'student_id', 'lkm_role_id', 'proof_url', 'sop_checks', 'score'] as $field)@error($field)<div class="kt-alert kt-alert-destructive">{{ $message }}</div>@enderror @endforeach

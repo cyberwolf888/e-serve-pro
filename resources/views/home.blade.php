@@ -30,10 +30,8 @@
             </div>
         </div>
         <div class="flex flex-col gap-4">
-            <div class="flex flex-wrap items-center justify-center gap-4">
-                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-tut-wuri-handayani.jpeg') }}" alt="Tut Wuri Handayani" class="h-10 w-auto object-contain"></span>
-                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-bima.jpeg') }}" alt="BIMA" class="h-10 w-auto object-contain"></span>
-                <span class="bg-white rounded-lg p-2 flex items-center"><img src="{{ asset('assets/media/logo-undiksha.png') }}" alt="Undiksha" class="h-10 w-auto object-contain"></span>
+            <div class="flex justify-center">
+                <img src="{{ asset('assets/media/partner-logo.png') }}" alt="Logo mitra E-SERVEPro" class="h-auto w-full max-w-[600px] object-contain">
             </div>
             {{-- ASSUMPTION: picsum.photos placeholder per user direction; swap for a real product screenshot later --}}
             <img

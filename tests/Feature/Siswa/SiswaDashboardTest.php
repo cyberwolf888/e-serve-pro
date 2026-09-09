@@ -48,6 +48,7 @@ class SiswaDashboardTest extends TestCase
         $response->assertOk()
             ->assertSee('Dashboard Mahasiswa')
             ->assertSee('Ringkasan pembelajaran Anda dalam 30 hari terakhir')
+            ->assertSee('assets/media/partner-logo.png', false)
             ->assertDontSee('Pertemuan 30 Hari');
         $this->assertSame([1, 2, 1], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertCount(30, $dashboard['chart']['categories']);

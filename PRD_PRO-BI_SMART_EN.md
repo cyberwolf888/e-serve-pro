@@ -497,6 +497,8 @@ DELETE /admin/classes/{class}/discussions/{discussion}/comments/{comment} admin.
 resource /admin/classes/{class}/lkms   admin.classes.lkms      FR-SA-08 / BR-09 (except destroy)
 POST/PUT/DELETE /admin/classes/{class}/lkms/{lkm}/roles[...] admin.classes.lkms.roles FR-SA-08 / BR-09
 POST/PATCH /admin/classes/{class}/lkms/{lkm}/assignments[...] admin.classes.lkms.assignments FR-SA-08 / BR-09
+GET   /admin/classes/{class}/lkms/{lkm}/submissions admin.classes.lkms.submissions.index FR-SA-08 / FR-GR-11 / NFR-08
+PATCH /admin/classes/{class}/lkms/{lkm}/submissions/{assignment}/grade admin.classes.lkms.submissions.grade FR-SA-08 / FR-GR-11 / DATA-27
 GET/PUT /admin/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] admin.classes.lkms.submissions FR-SA-08 / BR-09
 
 # Guru  (middleware: role:guru)
@@ -518,6 +520,8 @@ DELETE /guru/classes/{class}/discussions/{discussion}/comments/{comment} guru.cl
 resource /guru/classes/{class}/lkms    guru.classes.lkms       FR-GR-15 / BR-09 (except destroy)
 POST/PUT/DELETE /guru/classes/{class}/lkms/{lkm}/roles[...] guru.classes.lkms.roles FR-GR-15 / BR-09
 POST/PATCH /guru/classes/{class}/lkms/{lkm}/assignments[...] guru.classes.lkms.assignments FR-GR-15 / BR-09
+GET   /guru/classes/{class}/lkms/{lkm}/submissions guru.classes.lkms.submissions.index FR-GR-11 / FR-GR-15 / NFR-08
+PATCH /guru/classes/{class}/lkms/{lkm}/submissions/{assignment}/grade guru.classes.lkms.submissions.grade FR-GR-11 / FR-GR-15 / DATA-27
 GET/PUT /guru/classes/{class}/lkms/{lkm}/submissions/{assignment}[...] guru.classes.lkms.submissions FR-GR-15 / BR-09
 
 # Siswa  (middleware: role:siswa)

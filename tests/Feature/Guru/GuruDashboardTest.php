@@ -48,6 +48,7 @@ class GuruDashboardTest extends TestCase
         $response->assertOk()
             ->assertSee('Dashboard Dosen')
             ->assertSee('Ringkasan kelas Anda dalam 30 hari terakhir')
+            ->assertSee('assets/media/partner-logo.png', false)
             ->assertDontSee('Pertemuan 30 Hari')
             ->assertDontSee('Absensi Belum Dicatat');
         $this->assertSame([1, 1, 1, 1], collect($dashboard['kpis'])->pluck('value')->all());

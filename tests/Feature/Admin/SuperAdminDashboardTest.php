@@ -43,7 +43,10 @@ class SuperAdminDashboardTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
         $dashboard = $response->viewData('dashboard');
 
-        $response->assertOk()->assertSee('Dashboard Super Admin')->assertSee('Ringkasan operasional 30 hari terakhir');
+        $response->assertOk()
+            ->assertSee('Dashboard Super Admin')
+            ->assertSee('Ringkasan operasional 30 hari terakhir')
+            ->assertSee('assets/media/partner-logo.png', false);
         $this->assertSame(['Total Dosen', 'Total Mahasiswa'], collect($dashboard['kpis'])->take(2)->pluck('label')->all());
         $this->assertSame([2, 2, 2, 1, 1, 13], collect($dashboard['kpis'])->pluck('value')->all());
         $this->assertCount(30, $dashboard['chart']['categories']);

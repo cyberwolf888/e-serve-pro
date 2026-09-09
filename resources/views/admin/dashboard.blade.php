@@ -11,12 +11,11 @@
 
 @section('content')
 <div class="grid gap-5 lg:gap-7.5 pb-7.5">
-    <div class="flex flex-wrap items-end justify-between gap-5 pt-2">
-        <div class="flex flex-col gap-2">
-            <h1 class="text-xl font-medium leading-none text-mono">Dashboard Super Admin</h1>
-            <p class="text-sm text-secondary-foreground">Ringkasan operasional 30 hari terakhir</p>
-        </div>
-    </div>
+    <x-dashboard-hero
+        title="Dashboard Super Admin"
+        description="Ringkasan operasional 30 hari terakhir"
+        icon="ki-security-user"
+    />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-7.5">
         @php
