@@ -29,6 +29,10 @@ class DemoDataSeederTest extends TestCase
     {
         $this->assertSame(10, User::role('guru')->count());
         $this->assertSame(50, User::role('siswa')->count());
+        $this->assertDatabaseHas('users', ['email' => 'dosen@mail.com', 'name' => 'Dosen 1']);
+        $this->assertDatabaseHas('users', ['email' => 'mahasiswa@mail.com', 'name' => 'Mahasiswa 1']);
+        $this->assertDatabaseMissing('users', ['email' => 'guru@mail.com']);
+        $this->assertDatabaseMissing('users', ['email' => 'siswa@mail.com']);
         $this->assertSame(50, SchoolClass::count());
         $this->assertSame(1250, ClassMember::count());
         $this->assertSame(0, Meeting::count());
