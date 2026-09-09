@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        // Demo fixtures: 10 guru (incl. guru@mail.com), 50 siswa (incl. siswa@mail.com),
-        // 5 kelas/guru, 25 siswa/kelas, 10 pertemuan/kelas + materi/kuis.
+        // Demo fixtures: 10 lecturers (incl. dosen@mail.com), 50 students (incl. mahasiswa@mail.com),
+        // 5 classes/lecturer, 25 students/class, 10 meetings/class + materials/quizzes.
         $this->call(DemoDataSeeder::class);
 
         $superAdmin = User::updateOrCreate([

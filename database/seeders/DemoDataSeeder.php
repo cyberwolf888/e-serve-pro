@@ -1,6 +1,6 @@
 <?php
 
-// Demo fixtures: 10 guru, 50 siswa, 5 kelas/guru, 25 siswa/kelas (random),
+// Demo fixtures: 10 lecturers, 50 students, 5 classes/lecturer, 25 students/class (random),
 // 10 published materials + 10 quizzes/class (4 options, 1 correct).
 
 namespace Database\Seeders;
@@ -16,14 +16,15 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DemoDataSeeder extends Seeder
 {
-    private const GURU_COUNT = 10;
+    private const LECTURER_COUNT = 10;
 
-    private const SISWA_COUNT = 50;
+    private const STUDENT_COUNT = 50;
 
-    private const CLASSES_PER_GURU = 5;
+    private const CLASSES_PER_LECTURER = 5;
 
     private const MEMBERS_PER_CLASS = 25;
 
@@ -33,11 +34,11 @@ class DemoDataSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        $gurus = $this->seedUsers('guru', self::GURU_COUNT, 'Guru');
-        $siswas = $this->seedUsers('siswa', self::SISWA_COUNT, 'Siswa');
+        $lecturers = $this->seedUsers('guru', self::LECTURER_COUNT, 'Dosen');
+        $students = $this->seedUsers('siswa', self::STUDENT_COUNT, 'Mahasiswa');
 
-        $classes = $this->seedClasses($gurus);
-        $this->seedMembers($classes, $siswas);
+        $classes = $this->seedClasses($lecturers);
+        $this->seedMembers($classes, $students);
         $this->seedLearningContent($classes);
     }
 
@@ -45,9 +46,10 @@ class DemoDataSeeder extends Seeder
     private function seedUsers(string $role, int $count, string $label): Collection
     {
         $users = collect();
+        $emailPrefix = Str::lower($label);
 
         for ($i = 1; $i <= $count; $i++) {
-            $email = $i === 1 ? "{$role}@mail.com" : "{$role}{$i}@mail.com";
+            $email = $i === 1 ? "{$emailPrefix}@mail.com" : "{$emailPrefix}{$i}@mail.com";
 
             $user = User::firstOrCreate(['email' => $email], [
                 'name' => "{$label} {$i}",
@@ -63,20 +65,20 @@ class DemoDataSeeder extends Seeder
     }
 
     /**
-     * @param  Collection<int, User>  $gurus
+     * @param  Collection<int, User>  $lecturers
      * @return Collection<int, SchoolClass>
      */
-    private function seedClasses(Collection $gurus): Collection
+    private function seedClasses(Collection $lecturers): Collection
     {
         $classes = collect();
 
-        foreach ($gurus as $guruIndex => $guru) {
-            for ($c = 1; $c <= self::CLASSES_PER_GURU; $c++) {
-                $code = sprintf('SEED%02d%d', $guruIndex + 1, $c);
+        foreach ($lecturers as $lecturerIndex => $lecturer) {
+            for ($c = 1; $c <= self::CLASSES_PER_LECTURER; $c++) {
+                $code = sprintf('SEED%02d%d', $lecturerIndex + 1, $c);
 
                 $classes->push(SchoolClass::updateOrCreate(['class_code' => $code], [
-                    'guru_id' => $guru->id,
-                    'name' => "Kelas {$guru->name} - {$c}",
+                    'guru_id' => $lecturer->id,
+                    'name' => "Kelas {$lecturer->name} - {$c}",
                     'is_active' => true,
                 ]));
             }
@@ -87,15 +89,15 @@ class DemoDataSeeder extends Seeder
 
     /**
      * @param  Collection<int, SchoolClass>  $classes
-     * @param  Collection<int, User>  $siswas
+     * @param  Collection<int, User>  $students
      */
-    private function seedMembers(Collection $classes, Collection $siswas): void
+    private function seedMembers(Collection $classes, Collection $students): void
     {
         $now = now();
 
         foreach ($classes as $class) {
             // ponytail: hash-sort picks a stable "random" 25 per class without touching global RNG state
-            $rows = $siswas
+            $rows = $students
                 ->sortBy(fn (User $s) => md5($class->id.'-'.$s->id))
                 ->take(self::MEMBERS_PER_CLASS)
                 ->map(fn (User $s) => [
